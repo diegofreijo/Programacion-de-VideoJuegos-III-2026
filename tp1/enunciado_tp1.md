@@ -54,11 +54,9 @@ Alcanza con expandir un poco lo que pusieron en el TP0. Si crees que ayuda a ent
 
 Elegí los **3 problemas técnicos** que consideres más importantes de tu juego. Están relacionados con los que eligieron en el TP0, pero no hace falta que sean los mismos.
 
-Para simplificarles un poco esta parte, hice un listado de potenciales problemas. Me basé en problemas que suelen aparecer en todo tipo de juegos, además de algunos relacionados con sus casos particulares. No es necesario elegir uno de esta lista, pero por las dudas validá conmigo los que elegiste antes de mandarte a resolverlos por tu cuenta.
+Para simplificarles un poco esta parte, hice un [listado de potenciales problemas](problemas_tp1.md) en otro archivo en este mismo repo. Me basé en problemas que suelen aparecer en todo tipo de juegos, además de algunos relacionados con sus casos particulares. No es necesario elegir uno de esta lista, pero por las dudas validá conmigo los que elegiste antes de mandarte a resolverlos por tu cuenta.
 
 Algunos problemas pueden terminar siendo mucho mas grandes que otros, pero depende del contexto. Si me lo saben justificar, pueden elegir un "megaproblema" y tomarlo como que vale por dos problemas.
-
-asdasdasd
 
 ### 4.3. Soluciones
 
