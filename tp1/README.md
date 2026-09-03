@@ -1,9 +1,9 @@
 # Trabajo Práctico 1: Diseño de Arquitectura en Unity
 
-**Integrantes por equipo:** 1
-**Fecha límite de entrega:** 23/09, 23:59
-**Fecha límite de reentrega:** 29/09, 23:59
-**Se aprueba con:** 4
+- **Integrantes por equipo:** 1
+- **Fecha límite de entrega:** 23/09, 23:59
+- **Fecha límite de reentrega:** 29/09, 23:59
+- **Se aprueba con:** 4
 
 ## 1. Objetivo
 
