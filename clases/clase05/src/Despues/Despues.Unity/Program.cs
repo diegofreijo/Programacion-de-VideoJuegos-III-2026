@@ -21,11 +21,18 @@ public static class Program
         };
 
         var enemyViews = new List<EnemyView>();
+        EnemyController? bossController = null;
         foreach (var (controller, position) in enemyPlacements)
         {
             var view = UnityObject.Instantiate<EnemyView>(controller.Stats.Name, position);
             view.Initialize(controller, playerGameObject.transform, player);
             enemyViews.Add(view);
+
+            // Guarda una referencia al jefe para poder disparar un evento de daño scripted más adelante
+            if (controller.Stats.Name == "Jefe Final")
+            {
+                bossController = controller;
+            }
         }
 
         const int frameCount = 20;
@@ -35,6 +42,14 @@ public static class Program
         {
             Time.deltaTime = deltaTime;
             Debug.Log($"--- Frame {frame} ---");
+
+            // Evento scripted en frame 10: el jugador logra herir gravemente al jefe
+            // Esto desencadena el cambio de atacante (de RangedAttack a MeleeAttack).
+            if (frame == 10 && bossController != null)
+            {
+                Debug.Log("[Simulación] El jugador logra herir gravemente al jefe.");
+                bossController.TakeDamage(90);
+            }
 
             foreach (var view in enemyViews)
             {
