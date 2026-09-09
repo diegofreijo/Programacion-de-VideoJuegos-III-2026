@@ -11,6 +11,10 @@ public static class Program
         var enemies = new List<Enemy>
         {
             UnityObject.Instantiate<Enemy>("Goblin", new Vector3(-5, 0, 0)),
+            UnityObject.Instantiate<FlyingEnemy>("Murciélago", new Vector3(5, 0, 0)),
+            UnityObject.Instantiate<ArcherEnemy>("Esqueleto Arquero", new Vector3(-8, 0, 0)),
+            UnityObject.Instantiate<FlyingArcherEnemy>("Wyvern", new Vector3(8, 0, 0)),
+            UnityObject.Instantiate<BossEnemy>("Jefe Final", new Vector3(0, 0, -10)),
         };
 
         foreach (var enemy in enemies)
