@@ -6,4 +6,6 @@ public class GroundMover : IMover
     {
         return Vector3D.MoveTowards(currentPosition, targetPosition, speed * deltaTime);
     }
+
+    public Vector3D GetAttackPoint(Vector3D targetPosition) => targetPosition;
 }

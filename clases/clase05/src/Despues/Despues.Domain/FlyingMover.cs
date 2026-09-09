@@ -11,7 +11,9 @@ public class FlyingMover : IMover
 
     public Vector3D Move(Vector3D currentPosition, Vector3D targetPosition, float speed, float deltaTime)
     {
-        var hoverPoint = new Vector3D(targetPosition.X, targetPosition.Y + _flightHeight, targetPosition.Z);
-        return Vector3D.MoveTowards(currentPosition, hoverPoint, speed * deltaTime);
+        return Vector3D.MoveTowards(currentPosition, GetAttackPoint(targetPosition), speed * deltaTime);
     }
+
+    public Vector3D GetAttackPoint(Vector3D targetPosition) =>
+        new(targetPosition.X, targetPosition.Y + _flightHeight, targetPosition.Z);
 }

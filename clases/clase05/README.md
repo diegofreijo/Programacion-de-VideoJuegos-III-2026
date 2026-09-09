@@ -35,6 +35,10 @@ sin cuidado por el diseño se puede refactorizar para respetar:
 
 ## Cómo correr
 
+Los siguientes comandos asumen que la terminal está parada en `clases/clase05/`
+(esta carpeta, la que contiene el `.sln`); si estás en la raíz del monorepo del
+curso, primero hacé `cd clases/clase05`.
+
 ```bash
 dotnet run --project src/Antes
 dotnet run --project src/Despues/Despues.Unity

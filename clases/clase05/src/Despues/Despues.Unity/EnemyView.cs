@@ -29,12 +29,17 @@ public class EnemyView : MonoBehaviour
 
         var attackerBefore = _controller.Attacker.Name;
         var targetPosition = ToDomain(_targetTransform.position);
-        _controller.Tick(targetPosition, _target, Time.deltaTime);
+        var attacked = _controller.Tick(targetPosition, _target, Time.deltaTime);
         transform.position = ToUnity(_controller.Position);
 
         if (_controller.Attacker.Name != attackerBefore)
         {
             Debug.Log($"[{_controller.Stats.Name}] ¡cambia su forma de atacar a \"{_controller.Attacker.Name}\"!");
+        }
+
+        if (attacked)
+        {
+            Debug.Log($"[{_controller.Stats.Name}] ataca con \"{_controller.Attacker.Name}\" por {_controller.Stats.AttackDamage}. Vida del jugador restante: {_target.Health}");
         }
     }
 

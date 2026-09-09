@@ -33,11 +33,11 @@ public class EnemyController : IDamageable
         Stats.Health = Math.Max(0, Stats.Health - amount);
     }
 
-    public void Tick(Vector3D targetPosition, IDamageable target, float deltaTime)
+    public bool Tick(Vector3D targetPosition, IDamageable target, float deltaTime)
     {
         if (IsDead)
         {
-            return;
+            return false;
         }
 
         // Cambio de comportamiento en tiempo de ejecución vía polimorfismo:
@@ -47,13 +47,22 @@ public class EnemyController : IDamageable
             Attacker = _enrageAttacker;
         }
 
-        var distance = Vector3D.Distance(Position, targetPosition);
+        // El rango de ataque se mide contra el punto al que el mover realmente
+        // lleva al enemigo (para uno que vuela, el punto de sobrevuelo), no
+        // contra la posición cruda del objetivo.
+        var attackPoint = _mover.GetAttackPoint(targetPosition);
+        var distance = Vector3D.Distance(Position, attackPoint);
         if (distance > Stats.AttackRange)
         {
             Position = _mover.Move(Position, targetPosition, Stats.MoveSpeed, deltaTime);
-            return;
+            return false;
         }
 
-        Attacker.TryAttack(Stats, Position, target, targetPosition, deltaTime, ref _cooldownTimer);
+        // Le pasamos attackPoint (no targetPosition) al atacante: MeleeAttack y
+        // RangedAttack vuelven a chequear rango puertas adentro contra el punto
+        // que reciben acá, así que tiene que ser el mismo contra el que ya
+        // decidimos que estábamos en rango — si no, un enemigo que vuela nunca
+        // pasaría ese segundo chequeo (ver hallazgo C2).
+        return Attacker.TryAttack(Stats, Position, target, attackPoint, deltaTime, ref _cooldownTimer);
     }
 }
