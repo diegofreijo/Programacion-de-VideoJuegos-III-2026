@@ -1,18 +1,20 @@
 using NUnit.Framework;
 using MessagePipe;
 using VContainer;
+using Clase07.MessageBroker.MessagePipeExample;
 using Clase07.MessageBroker.Shared;
 
 namespace Clase07.MessageBroker.Tests
 {
+    // El test llama al mismo MessagePipeLifetimeScope.RegisterMessaging que usa la
+    // escena: si alguien rompe ese cableado, este test lo detecta.
     public class MessagePipeWiringTests
     {
         [Test]
-        public void RegisteredContainer_DeliversPublishedMessageToSubscriber()
+        public void LifetimeScopeRegistrations_DeliverPublishedMessageToSubscriber()
         {
             var builder = new ContainerBuilder();
-            var options = builder.RegisterMessagePipe();
-            builder.RegisterMessageBroker<ScorePickedUpEvent>(options);
+            MessagePipeLifetimeScope.RegisterMessaging(builder);
 
             using var container = builder.Build();
 

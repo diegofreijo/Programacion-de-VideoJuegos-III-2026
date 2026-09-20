@@ -2500,13 +2500,26 @@ namespace Clase07.DI.VContainerExample
     {
         protected override void Configure(IContainerBuilder builder)
         {
+            RegisterServices(builder);
+
+            // RegisterComponentInHierarchy necesita la escena del LifetimeScope, así que
+            // queda afuera de RegisterServices: los tests de EditMode no tienen jerarquía
+            // que recorrer, pero sí pueden verificar los registros de servicios.
+            builder.RegisterComponentInHierarchy<CoinPickupVContainer>();
+        }
+
+        // Los registros que no dependen de la escena viven acá para que los tests
+        // ejerciten exactamente el mismo cableado que usa la escena, en vez de duplicarlo.
+        public static void RegisterServices(IContainerBuilder builder)
+        {
             builder.Register<IScoreService, ScoreService>(Lifetime.Singleton);
             builder.Register<IAudioService, AudioService>(Lifetime.Singleton);
-            builder.RegisterComponentInHierarchy<CoinPickupVContainer>();
         }
     }
 }
 ```
+
+Nota: `RegisterComponentInHierarchy` hace `(LifetimeScope)builder.ApplicationOrigin` y le pide la escena, así que estalla con un `ContainerBuilder` pelado. Por eso el método estático expone sólo los registros independientes de la escena — es la parte que los tests pueden ejercitar.
 
 - [ ] **Step 2: Component receiving dependencies by constructor (method) injection**
 
@@ -2565,23 +2578,25 @@ Append to `DiSceneScaffolding.cs` (add `using Clase07.DI.VContainerExample;`):
 
 Run it the same way, with `-executeMethod Clase07.DI.EditorTools.DiSceneScaffolding.CreateVContainerScene`.
 
-- [ ] **Step 4: Wiring test — build the container directly, no scene needed**
+- [ ] **Step 4: Wiring test — build the container directly, no scene needed, reusing the LifetimeScope's own registrations**
 
 ```csharp
 using NUnit.Framework;
 using VContainer;
 using Clase07.DI.Shared;
+using Clase07.DI.VContainerExample;
 
 namespace Clase07.DI.Tests
 {
+    // Los tests llaman al mismo DiVContainerLifetimeScope.RegisterServices que usa la
+    // escena: si alguien rompe ese cableado, estos tests lo detectan.
     public class DiVContainerWiringTests
     {
         [Test]
-        public void ContainerBuilder_ResolvesScoreAndAudioServices()
+        public void LifetimeScopeRegistrations_ResolveScoreAndAudioServices()
         {
             var builder = new ContainerBuilder();
-            builder.Register<IScoreService, ScoreService>(Lifetime.Singleton);
-            builder.Register<IAudioService, AudioService>(Lifetime.Singleton);
+            DiVContainerLifetimeScope.RegisterServices(builder);
 
             using var container = builder.Build();
 
@@ -2590,14 +2605,15 @@ namespace Clase07.DI.Tests
         }
 
         [Test]
-        public void ContainerBuilder_SingletonLifetime_ReturnsSameInstance()
+        public void LifetimeScopeRegistrations_SingletonLifetime_ReturnsSameInstance()
         {
             var builder = new ContainerBuilder();
-            builder.Register<IScoreService, ScoreService>(Lifetime.Singleton);
+            DiVContainerLifetimeScope.RegisterServices(builder);
 
             using var container = builder.Build();
 
             Assert.AreSame(container.Resolve<IScoreService>(), container.Resolve<IScoreService>());
+            Assert.AreSame(container.Resolve<IAudioService>(), container.Resolve<IAudioService>());
         }
     }
 }
@@ -3128,13 +3144,26 @@ namespace Clase07.MessageBroker.MessagePipeExample
     {
         protected override void Configure(IContainerBuilder builder)
         {
+            RegisterMessaging(builder);
+
+            // RegisterComponentInHierarchy necesita la escena del LifetimeScope, así que
+            // queda afuera de RegisterMessaging: los tests de EditMode no tienen jerarquía
+            // que recorrer, pero sí pueden verificar el registro del broker.
+            builder.RegisterComponentInHierarchy<MessagePipeDemoView>();
+        }
+
+        // Los registros que no dependen de la escena viven acá para que los tests
+        // ejerciten exactamente el mismo cableado que usa la escena, en vez de duplicarlo.
+        public static void RegisterMessaging(IContainerBuilder builder)
+        {
             var options = builder.RegisterMessagePipe();
             builder.RegisterMessageBroker<ScorePickedUpEvent>(options);
-            builder.RegisterComponentInHierarchy<MessagePipeDemoView>();
         }
     }
 }
 ```
+
+`MessagePipeOptions` no se expone: queda encapsulado en `RegisterMessaging`, que es lo único que el test necesita llamar.
 
 - [ ] **Step 2: Demo view — the "what a real game would actually reach for" version, same feature as Task 13's hand-rolled broker**
 
@@ -3201,18 +3230,20 @@ Append to `MessageBrokerSceneScaffolding.cs` (add `using Clase07.MessageBroker.M
 using NUnit.Framework;
 using MessagePipe;
 using VContainer;
+using Clase07.MessageBroker.MessagePipeExample;
 using Clase07.MessageBroker.Shared;
 
 namespace Clase07.MessageBroker.Tests
 {
+    // El test llama al mismo MessagePipeLifetimeScope.RegisterMessaging que usa la
+    // escena: si alguien rompe ese cableado, este test lo detecta.
     public class MessagePipeWiringTests
     {
         [Test]
-        public void RegisteredContainer_DeliversPublishedMessageToSubscriber()
+        public void LifetimeScopeRegistrations_DeliverPublishedMessageToSubscriber()
         {
             var builder = new ContainerBuilder();
-            var options = builder.RegisterMessagePipe();
-            builder.RegisterMessageBroker<ScorePickedUpEvent>(options);
+            MessagePipeLifetimeScope.RegisterMessaging(builder);
 
             using var container = builder.Build();
 
