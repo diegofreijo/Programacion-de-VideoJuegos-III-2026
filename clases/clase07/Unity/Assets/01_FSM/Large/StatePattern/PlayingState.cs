@@ -26,22 +26,22 @@ namespace Clase07.FSM.Large.StatePattern
 
         public void Pause()
         {
-            if (_substateMachine.CurrentState == UserPlaying) _substateMachine.ChangeState(PauseMenu);
+            if (_substateMachine != null && _substateMachine.CurrentState == UserPlaying) _substateMachine.ChangeState(PauseMenu);
         }
 
         public void Resume()
         {
-            if (_substateMachine.CurrentState == PauseMenu) _substateMachine.ChangeState(UserPlaying);
+            if (_substateMachine != null && _substateMachine.CurrentState == PauseMenu) _substateMachine.ChangeState(UserPlaying);
         }
 
         public void OpenSettings()
         {
-            if (_substateMachine.CurrentState == PauseMenu) _substateMachine.ChangeState(SettingsMenu);
+            if (_substateMachine != null && _substateMachine.CurrentState == PauseMenu) _substateMachine.ChangeState(SettingsMenu);
         }
 
         public void CloseSettings()
         {
-            if (_substateMachine.CurrentState == SettingsMenu) _substateMachine.ChangeState(PauseMenu);
+            if (_substateMachine != null && _substateMachine.CurrentState == SettingsMenu) _substateMachine.ChangeState(PauseMenu);
         }
     }
 }
