@@ -2,6 +2,7 @@ using UnityEngine;
 using Clase07.EditorTools;
 using Clase07.DI.Singleton;
 using Clase07.DI.ServiceLocatorPattern;
+using Clase07.DI.VContainerExample;
 
 namespace Clase07.DI.EditorTools
 {
@@ -19,6 +20,14 @@ namespace Clase07.DI.EditorTools
             var scene = SceneScaffolding.CreateEmptyScene();
             new GameObject("Bootstrapper", typeof(DiServiceLocatorDemoBootstrapper));
             SceneScaffolding.SaveScene(scene, "Assets/02_DependencyInjection/02_ServiceLocator/02_DI_ServiceLocator.unity");
+        }
+
+        public static void CreateVContainerScene()
+        {
+            var scene = SceneScaffolding.CreateEmptyScene();
+            new GameObject("LifetimeScope", typeof(DiVContainerLifetimeScope));
+            new GameObject("CoinPickup", typeof(CoinPickupVContainer));
+            SceneScaffolding.SaveScene(scene, "Assets/02_DependencyInjection/03_VContainer/03_DI_VContainer.unity");
         }
     }
 }
