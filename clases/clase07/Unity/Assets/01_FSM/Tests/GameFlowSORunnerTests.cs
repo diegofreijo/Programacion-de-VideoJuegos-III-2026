@@ -27,6 +27,16 @@ namespace Clase07.FSM.Tests
         }
 
         [Test]
+        public void CurrentSubstateName_IsNoneOutsidePlaying()
+        {
+            var runner = BuildRunner();
+            Assert.AreEqual("None", runner.CurrentSubstateName);
+
+            runner.FinishLoading();
+            Assert.AreEqual("None", runner.CurrentSubstateName);
+        }
+
+        [Test]
         public void Play_EntersPlayingWithUserPlayingSubstate()
         {
             var runner = BuildRunner();
