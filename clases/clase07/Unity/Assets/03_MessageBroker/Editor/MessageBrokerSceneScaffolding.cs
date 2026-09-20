@@ -3,6 +3,7 @@ using UnityEditor;
 using Clase07.EditorTools;
 using Clase07.MessageBroker.DIBroker;
 using Clase07.MessageBroker.ScriptableObjectChannels;
+using Clase07.MessageBroker.MessagePipeExample;
 
 namespace Clase07.MessageBroker.EditorTools
 {
@@ -26,6 +27,13 @@ namespace Clase07.MessageBroker.EditorTools
             view.SetChannel(channel);
 
             SceneScaffolding.SaveScene(scene, "Assets/03_MessageBroker/02_ScriptableObjectChannels/02_MessageBroker_SOChannels.unity");
+        }
+
+        public static void CreateMessagePipeScene()
+        {
+            var scene = SceneScaffolding.CreateEmptyScene();
+            new GameObject("LifetimeScope", typeof(MessagePipeLifetimeScope), typeof(MessagePipeDemoView));
+            SceneScaffolding.SaveScene(scene, "Assets/03_MessageBroker/03_MessagePipe/03_MessageBroker_MessagePipe.unity");
         }
     }
 }

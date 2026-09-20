@@ -6,6 +6,7 @@
         "VContainer",
         "MessagePipe",
         "MessagePipe.VContainer",
+        "UniTask",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],
