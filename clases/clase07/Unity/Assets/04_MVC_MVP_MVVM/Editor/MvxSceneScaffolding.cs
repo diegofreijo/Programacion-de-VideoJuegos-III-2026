@@ -2,6 +2,7 @@ using UnityEngine;
 using Clase07.EditorTools;
 using Clase07.Mvx.Mvc;
 using Clase07.Mvx.Mvp;
+using Clase07.Mvx.Mvvm;
 
 namespace Clase07.Mvx.EditorTools
 {
@@ -19,6 +20,13 @@ namespace Clase07.Mvx.EditorTools
             var scene = SceneScaffolding.CreateEmptyScene();
             new GameObject("InventoryMvpView", typeof(InventoryMvpView));
             SceneScaffolding.SaveScene(scene, "Assets/04_MVC_MVP_MVVM/02_MVP/02_Mvx_MVP.unity");
+        }
+
+        public static void CreateMvvmScene()
+        {
+            var scene = SceneScaffolding.CreateEmptyScene();
+            new GameObject("InventoryMvvmView", typeof(InventoryMvvmView));
+            SceneScaffolding.SaveScene(scene, "Assets/04_MVC_MVP_MVVM/03_MVVM/03_Mvx_MVVM.unity");
         }
     }
 }
