@@ -56,9 +56,16 @@ indicada y entrar en Play mode.
 
 - **01 — FSM:** `Assets/01_FSM/01_FSM_Demo.unity` — botón "Fire" para las dos
   versiones del arma (baseline vs. motor de estados) montadas una al lado de la
-  otra, y botones para avanzar el game flow (`Load`, `Play`, `Pause`,
-  `Open Settings`, `Resume`, etc.) en sus dos variantes (estados por código vs. por
-  `ScriptableObject`), con texto de debug mostrando el estado activo de cada máquina.
+  otra, y botones para avanzar el game flow (`Finish Loading`, `Play`, `Pause`,
+  `Open Settings`, `Close Settings`, `Resume`), con texto de debug mostrando el
+  estado y el subestado activos de cada máquina. La escena muestra **sólo** la
+  variante OOP del game flow (estados definidos por código, `FsmGameFlowDemoView`);
+  la variante con estados como `ScriptableObject` se verifica por tests de EditMode
+  (`GameFlowSORunnerTests`) en vez de montarse también en la escena: es una decisión
+  de alcance deliberada (la escena compara las dos versiones **del arma**; para el
+  game flow alcanza con una variante interactiva y la otra cubierta por tests). El
+  contraste entre ambas variantes del game flow se lee en el código y en
+  [`SPEC.md`](SPEC.md).
 - **02 — Dependency Injection**, tres escenas casi idénticas (botón "Coin" + texto
   de score) que conviene correr una por vez, ya que alguna variante usa estado
   `static`:
@@ -128,6 +135,18 @@ decisión, qué testea cada suite) en [`SPEC.md`](SPEC.md).
   con `Resolve<T>()`, y constructor injection real vía VContainer (`[Inject]`) desde
   un `LifetimeScope`. Lo único que cambia entre las tres variantes es cómo el
   consumidor consigue la dependencia; el servicio en sí es idéntico.
+
+  Una asimetría a tener en cuenta al leer el código: en las variantes Singleton y
+  Service Locator, un único componente hace las dos cosas —
+  `DiSingletonDemoBootstrapper` / `DiServiceLocatorDemoBootstrapper` arman los
+  servicios *y* los consumen en el mismo `Build()`, por brevedad. La variante
+  VContainer, en cambio, las separa: `DiVContainerLifetimeScope` es el composition
+  root (sólo registra) y `CoinPickupVContainer` es el consumidor (sólo recibe lo
+  registrado, por `[Inject]`). Esa separación es justamente cómo se estructura un
+  proyecto real con VContainer — composition root aparte de los consumidores — y es
+  parte de lo que se gana al pasar del acceso global a la inyección: el consumidor
+  deja de saber de dónde salen sus dependencias, así que también se puede testear
+  con dobles sin tocar la escena.
 - **03 — Message Broker:** el mismo par de eventos publicado/escuchado con un
   broker hecho a mano (`IMessageBroker.Subscribe<T>/Publish<T>`, para entender el
   mecanismo interno), con event channels como `ScriptableObject` (patrón muy usado
