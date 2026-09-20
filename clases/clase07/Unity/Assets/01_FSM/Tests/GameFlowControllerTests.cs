@@ -84,5 +84,15 @@ namespace Clase07.FSM.Tests
 
             Assert.AreEqual("PauseMenu", flow.CurrentSubstateName);
         }
+
+        [Test]
+        public void CurrentSubstateName_IsNoneOutsidePlaying()
+        {
+            var flow = new GameFlowController();
+            Assert.AreEqual("None", flow.CurrentSubstateName);
+
+            flow.FinishLoading();
+            Assert.AreEqual("None", flow.CurrentSubstateName);
+        }
     }
 }
