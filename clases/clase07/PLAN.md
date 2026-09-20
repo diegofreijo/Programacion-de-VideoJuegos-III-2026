@@ -2988,21 +2988,23 @@ EOF
 - Test: `clases/clase07/Unity/Assets/03_MessageBroker/Tests/ScoreEventChannelSOTests.cs`
 
 **Interfaces:**
-- Produces: `ScoreEventChannelSO : ScriptableObject` (`event Action<int> OnRaised`, `Raise(int)`).
+- Consumes: `Clase07.MessageBroker.Shared.ScorePickedUpEvent` (el mismo payload que las otras dos variantes — lo único que cambia entre variantes es el cableado).
+- Produces: `ScoreEventChannelSO : ScriptableObject` (`event Action<ScorePickedUpEvent> OnRaised`, `Raise(ScorePickedUpEvent)`).
 
 - [ ] **Step 1: Channel asset type**
 
 ```csharp
 using System;
 using UnityEngine;
+using Clase07.MessageBroker.Shared;
 
 namespace Clase07.MessageBroker.ScriptableObjectChannels
 {
     [CreateAssetMenu(fileName = "ScoreEventChannel", menuName = "Clase07/MessageBroker/Score Event Channel")]
     public class ScoreEventChannelSO : ScriptableObject
     {
-        public event Action<int> OnRaised;
-        public void Raise(int amount) => OnRaised?.Invoke(amount);
+        public event Action<ScorePickedUpEvent> OnRaised;
+        public void Raise(ScorePickedUpEvent evt) => OnRaised?.Invoke(evt);
     }
 }
 ```
@@ -3012,6 +3014,7 @@ namespace Clase07.MessageBroker.ScriptableObjectChannels
 ```csharp
 using UnityEngine;
 using UnityEngine.UI;
+using Clase07.MessageBroker.Shared;
 using Clase07.Shared.UI;
 
 namespace Clase07.MessageBroker.ScriptableObjectChannels
@@ -3032,13 +3035,13 @@ namespace Clase07.MessageBroker.ScriptableObjectChannels
 
             var canvas = DemoUiFactory.CreateCanvas();
             var button = DemoUiFactory.CreateButton(canvas.transform, "Publish Score+10 (SO Channel)", new Vector2(0, 150));
-            button.onClick.AddListener(() => _channel.Raise(10));
+            button.onClick.AddListener(() => _channel.Raise(new ScorePickedUpEvent(10)));
             _label = DemoUiFactory.CreateLabel(canvas.transform, "Score: 0", new Vector2(0, 110));
         }
 
-        private void OnRaised(int amount)
+        private void OnRaised(ScorePickedUpEvent evt)
         {
-            _total += amount;
+            _total += evt.Amount;
             if (_label != null) _label.text = $"Score: {_total}";
         }
 
@@ -3074,9 +3077,11 @@ Note: `SetChannel` is called here (assigns the serialized field before saving), 
 - [ ] **Step 4: ScoreEventChannelSOTests**
 
 ```csharp
+using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using Clase07.MessageBroker.ScriptableObjectChannels;
+using Clase07.MessageBroker.Shared;
 
 namespace Clase07.MessageBroker.Tests
 {
@@ -3086,11 +3091,11 @@ namespace Clase07.MessageBroker.Tests
         public void Raise_NotifiesAllListeners()
         {
             var channel = ScriptableObject.CreateInstance<ScoreEventChannelSO>();
-            var received = new System.Collections.Generic.List<int>();
-            channel.OnRaised += amount => received.Add(amount);
-            channel.OnRaised += amount => received.Add(amount * 10);
+            var received = new List<int>();
+            channel.OnRaised += evt => received.Add(evt.Amount);
+            channel.OnRaised += evt => received.Add(evt.Amount * 10);
 
-            channel.Raise(5);
+            channel.Raise(new ScorePickedUpEvent(5));
 
             CollectionAssert.AreEqual(new[] { 5, 50 }, received);
         }
@@ -3099,7 +3104,7 @@ namespace Clase07.MessageBroker.Tests
         public void Raise_WithNoListeners_DoesNotThrow()
         {
             var channel = ScriptableObject.CreateInstance<ScoreEventChannelSO>();
-            Assert.DoesNotThrow(() => channel.Raise(5));
+            Assert.DoesNotThrow(() => channel.Raise(new ScorePickedUpEvent(5)));
         }
     }
 }

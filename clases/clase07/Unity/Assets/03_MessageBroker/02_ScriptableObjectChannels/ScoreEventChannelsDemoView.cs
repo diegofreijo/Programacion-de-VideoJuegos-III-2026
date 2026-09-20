@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Clase07.MessageBroker.Shared;
 using Clase07.Shared.UI;
 
 namespace Clase07.MessageBroker.ScriptableObjectChannels
@@ -20,13 +21,13 @@ namespace Clase07.MessageBroker.ScriptableObjectChannels
 
             var canvas = DemoUiFactory.CreateCanvas();
             var button = DemoUiFactory.CreateButton(canvas.transform, "Publish Score+10 (SO Channel)", new Vector2(0, 150));
-            button.onClick.AddListener(() => _channel.Raise(10));
+            button.onClick.AddListener(() => _channel.Raise(new ScorePickedUpEvent(10)));
             _label = DemoUiFactory.CreateLabel(canvas.transform, "Score: 0", new Vector2(0, 110));
         }
 
-        private void OnRaised(int amount)
+        private void OnRaised(ScorePickedUpEvent evt)
         {
-            _total += amount;
+            _total += evt.Amount;
             if (_label != null) _label.text = $"Score: {_total}";
         }
 
