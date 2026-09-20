@@ -1,0 +1,20 @@
+{
+    "name": "Clase07.MessageBroker",
+    "rootNamespace": "",
+    "references": [
+        "Clase07.Shared",
+        "VContainer",
+        "MessagePipe",
+        "MessagePipe.VContainer",
+        "UnityEngine.UI"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
