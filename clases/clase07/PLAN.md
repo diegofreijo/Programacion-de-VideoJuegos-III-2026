@@ -57,10 +57,10 @@ Expected: `no errors` (or only unrelated warnings), and `clases/clase07/Unity/As
 
 - [ ] **Step 3: Force text serialization**
 
-Open `clases/clase07/Unity/ProjectSettings/EditorSettings.asset`. It's YAML. Find the line `m_SerializationMode:` and set its value to `0` (Force Text):
+Open `clases/clase07/Unity/ProjectSettings/EditorSettings.asset`. It's YAML. Find the line `m_SerializationMode:` and set its value to `2` (Force Text). Careful: the enum is `UnityEditor.SerializationMode` — `Mixed = 0`, `ForceBinary = 1`, `ForceText = 2` — so `0` would leave the project in Mixed mode and scenes would still be written as binary blobs:
 
 ```yaml
-  m_SerializationMode: 0
+  m_SerializationMode: 2
 ```
 
 This keeps every scene/asset/prefab we generate as diffable, readable YAML.
