@@ -3478,7 +3478,6 @@ EOF
 - [ ] **Step 1: Controller — intentionally couples Model and concrete View (this is the lesson: no clean seam to unit-test presentation logic)**
 
 ```csharp
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Clase07.Mvx.Shared;
@@ -3491,7 +3490,6 @@ namespace Clase07.Mvx.Mvc
         private readonly InventoryModel _model = new InventoryModel();
         private InputField _nameInput;
         private Transform _listRoot;
-        private readonly List<GameObject> _rows = new List<GameObject>();
 
         private void Awake() => Build();
 
@@ -3517,8 +3515,7 @@ namespace Clase07.Mvx.Mvc
 
         private void RenderList()
         {
-            foreach (var row in _rows) Destroy(row);
-            _rows.Clear();
+            for (var i = _listRoot.childCount - 1; i >= 0; i--) Destroy(_listRoot.GetChild(i).gameObject);
 
             var y = 150;
             foreach (var item in _model.Items)
@@ -3680,7 +3677,6 @@ namespace Clase07.Mvx.Mvp
 
         private InputField _nameInput;
         private Transform _listRoot;
-        private readonly List<GameObject> _rows = new List<GameObject>();
 
         private void Awake() => Build();
 
@@ -3703,8 +3699,7 @@ namespace Clase07.Mvx.Mvp
 
         public void ShowItems(IReadOnlyList<InventoryItem> items)
         {
-            foreach (var row in _rows) Destroy(row);
-            _rows.Clear();
+            for (var i = _listRoot.childCount - 1; i >= 0; i--) Destroy(_listRoot.GetChild(i).gameObject);
 
             var y = 150;
             foreach (var item in items)
@@ -3917,7 +3912,6 @@ namespace Clase07.Mvx.Mvvm
 - [ ] **Step 3: View — binds to `Items.CollectionChanged` and executes commands, no other logic**
 
 ```csharp
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Clase07.Mvx.Shared;
@@ -3929,7 +3923,6 @@ namespace Clase07.Mvx.Mvvm
     {
         private InputField _nameInput;
         private Transform _listRoot;
-        private readonly List<GameObject> _rows = new List<GameObject>();
         private InventoryViewModel _viewModel;
 
         private void Awake() => Build();
@@ -3957,8 +3950,7 @@ namespace Clase07.Mvx.Mvvm
 
         private void Render()
         {
-            foreach (var row in _rows) Destroy(row);
-            _rows.Clear();
+            for (var i = _listRoot.childCount - 1; i >= 0; i--) Destroy(_listRoot.GetChild(i).gameObject);
 
             var y = 150;
             foreach (var itemVm in _viewModel.Items)

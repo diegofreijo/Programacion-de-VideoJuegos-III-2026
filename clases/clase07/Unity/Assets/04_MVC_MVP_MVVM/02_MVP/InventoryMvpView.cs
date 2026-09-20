@@ -14,7 +14,6 @@ namespace Clase07.Mvx.Mvp
 
         private InputField _nameInput;
         private Transform _listRoot;
-        private readonly List<GameObject> _rows = new List<GameObject>();
 
         private void Awake() => Build();
 
@@ -37,8 +36,7 @@ namespace Clase07.Mvx.Mvp
 
         public void ShowItems(IReadOnlyList<InventoryItem> items)
         {
-            foreach (var row in _rows) Destroy(row);
-            _rows.Clear();
+            for (var i = _listRoot.childCount - 1; i >= 0; i--) Destroy(_listRoot.GetChild(i).gameObject);
 
             var y = 150;
             foreach (var item in items)

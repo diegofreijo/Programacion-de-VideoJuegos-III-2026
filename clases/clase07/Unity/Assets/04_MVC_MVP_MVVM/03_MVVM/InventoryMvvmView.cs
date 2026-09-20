@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Clase07.Mvx.Shared;
@@ -10,7 +9,6 @@ namespace Clase07.Mvx.Mvvm
     {
         private InputField _nameInput;
         private Transform _listRoot;
-        private readonly List<GameObject> _rows = new List<GameObject>();
         private InventoryViewModel _viewModel;
 
         private void Awake() => Build();
@@ -38,8 +36,7 @@ namespace Clase07.Mvx.Mvvm
 
         private void Render()
         {
-            foreach (var row in _rows) Destroy(row);
-            _rows.Clear();
+            for (var i = _listRoot.childCount - 1; i >= 0; i--) Destroy(_listRoot.GetChild(i).gameObject);
 
             var y = 150;
             foreach (var itemVm in _viewModel.Items)
