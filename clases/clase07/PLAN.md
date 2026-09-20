@@ -21,6 +21,9 @@
 - `UnityEngine.UI` (from `com.unity.ugui`) is a package assembly, not an auto-referenced engine module — any asmdef whose code uses `UnityEngine.UI.*` or `UnityEngine.EventSystems.*` types (both ship in the same `UnityEngine.UI` assembly) must list `"UnityEngine.UI"` in its `references` explicitly, even if it also references another module that already lists it (asmdef references are not transitive). The plan's asmdef JSON blocks already include this where needed — do not drop it if regenerating one.
 - Every `MonoBehaviour` with setup logic: `Awake()` calls a public `Initialize()` or `Build()` method; nothing but that method touches setup state, so tests can call it directly without Play mode.
 - Verification for every task that touches Unity: run batchmode compile and/or `-runTests -testPlatform EditMode` (and `PlayMode` where noted) and confirm the log shows no `error CS` and the test summary shows `Failed: 0`.
+- `com.unity.test-framework` (built-in, version `1.6.0` — matches what ships with Unity 6000.3.21f1) must be present in `Packages/manifest.json` before any `.Tests.asmdef` can compile. `-createProject` does not add it automatically (unlike a Hub-template project). It was added in Task 3's commit, alongside the first test asmdef in this plan — if working from a checkout where Task 3 hasn't run yet, add it manually first.
+- **Never combine `-quit` with `-runTests`** in a batchmode invocation — verified in Task 3: the two raced and Unity exited before the test runner engaged, silently producing exit code 0 with no results file. `-runTests` owns its own exit once the run completes; every batchmode command below that includes `-runTests` omits `-quit` for this reason.
+- `-testResults`/`-logFile` paths passed to batchmode resolve against Unity's internal working directory after it changes into `-projectPath`, not the shell's cwd — a plain relative path like `clases/clase07/Unity_x.xml` silently lands at `clases/clase07/Unity/clases/clase07/Unity_x.xml`. Every batchmode command below wraps these paths in `$(pwd)/...` so they resolve as absolute paths from wherever the command is actually run (the repo root).
 - Commit after every task, following the existing repo convention (Spanish, imperative, short body if useful) with the standard `Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>` trailer.
 
 ---
@@ -417,12 +420,14 @@ namespace Clase07.Shared.Tests
 
 ```bash
 /Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/MacOS/Unity \
-  -batchmode -nographic -quit \
+  -batchmode -nographic \
   -projectPath clases/clase07/Unity \
   -runTests -testPlatform EditMode \
-  -testResults clases/clase07/Unity_shared_tests.xml \
-  -logFile clases/clase07/Unity_shared_tests.log
+  -testResults "$(pwd)/clases/clase07/Unity_shared_tests.xml" \
+  -logFile "$(pwd)/clases/clase07/Unity_shared_tests.log"
 ```
+
+(No `-quit` — see Global Constraints. Run this from the repo root so `$(pwd)` resolves correctly.)
 
 Run: `grep -E "result=\"Passed\"|result=\"Failed\"" clases/clase07/Unity_shared_tests.xml | grep -c "Failed"`
 Expected: `0`.
@@ -1853,12 +1858,16 @@ Re-run Step 4 after adding this so the scene is registered.
 
 ```bash
 /Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/MacOS/Unity \
-  -batchmode -nographic -quit -projectPath clases/clase07/Unity \
-  -runTests -testPlatform EditMode -testResults clases/clase07/Unity_fsm_edit.xml -logFile clases/clase07/Unity_fsm_edit.log
+  -batchmode -nographic -projectPath clases/clase07/Unity \
+  -runTests -testPlatform EditMode \
+  -testResults "$(pwd)/clases/clase07/Unity_fsm_edit.xml" -logFile "$(pwd)/clases/clase07/Unity_fsm_edit.log"
 /Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/MacOS/Unity \
-  -batchmode -nographic -quit -projectPath clases/clase07/Unity \
-  -runTests -testPlatform PlayMode -testResults clases/clase07/Unity_fsm_play.xml -logFile clases/clase07/Unity_fsm_play.log
+  -batchmode -nographic -projectPath clases/clase07/Unity \
+  -runTests -testPlatform PlayMode \
+  -testResults "$(pwd)/clases/clase07/Unity_fsm_play.xml" -logFile "$(pwd)/clases/clase07/Unity_fsm_play.log"
 ```
+
+(No `-quit` on either — see Global Constraints. Run from the repo root.)
 
 Expected: both result files show `Failed: 0`.
 
