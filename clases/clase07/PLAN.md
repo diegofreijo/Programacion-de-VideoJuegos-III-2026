@@ -3041,14 +3041,15 @@ EOF
 - Test: `clases/clase07/Unity/Assets/03_MessageBroker/Tests/MessagePipeWiringTests.cs`
 
 **Interfaces:**
-- Consumes: `MessagePipe.IPublisher<T>`, `MessagePipe.ISubscriber<T>`, `VContainer` extension `RegisterMessagePipe()` from `com.cysharp.messagepipe.vcontainer`.
+- Consumes: `MessagePipe.IPublisher<T>`, `MessagePipe.ISubscriber<T>`, `VContainer` extensions `RegisterMessagePipe()` and `RegisterMessageBroker<TMessage>(MessagePipeOptions)` from `com.cysharp.messagepipe.vcontainer`.
 
-- [ ] **Step 1: LifetimeScope — `RegisterMessagePipe()` makes `IPublisher<T>`/`ISubscriber<T>` resolvable for any `T` without per-type registration**
+- [ ] **Step 1: LifetimeScope — MessagePipe's VContainer integration does NOT register open generics (its source literally says "trimed open-generics register"), so `IPublisher<T>`/`ISubscriber<T>` are only resolvable for message types you explicitly register with `RegisterMessageBroker<TMessage>`**
 
 ```csharp
 using MessagePipe;
 using VContainer;
 using VContainer.Unity;
+using Clase07.MessageBroker.Shared;
 
 namespace Clase07.MessageBroker.MessagePipeExample
 {
@@ -3056,7 +3057,8 @@ namespace Clase07.MessageBroker.MessagePipeExample
     {
         protected override void Configure(IContainerBuilder builder)
         {
-            builder.RegisterMessagePipe();
+            var options = builder.RegisterMessagePipe();
+            builder.RegisterMessageBroker<ScorePickedUpEvent>(options);
             builder.RegisterComponentInHierarchy<MessagePipeDemoView>();
         }
     }
@@ -3138,7 +3140,8 @@ namespace Clase07.MessageBroker.Tests
         public void RegisteredContainer_DeliversPublishedMessageToSubscriber()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterMessagePipe();
+            var options = builder.RegisterMessagePipe();
+            builder.RegisterMessageBroker<ScorePickedUpEvent>(options);
 
             using var container = builder.Build();
 
