@@ -17,6 +17,7 @@
 - Package versions are pinned exactly (verified against the upstream repos' actual tags at plan-writing time): `jp.hadashikick.vcontainer` 1.19.0, `com.cysharp.messagepipe` 1.8.2, `com.cysharp.messagepipe.vcontainer` 1.8.2, `com.unity.ugui` 2.0.0.
 - No `[SerializeField]` value is ever assigned via the Editor GUI — Editor scaffolding scripts assign such fields directly in C# before saving the scene/asset.
 - Every module folder `Assets/0N_Module/` gets exactly two asmdefs: `Clase07.<Module>` (runtime) and `Clase07.<Module>.Tests` (Editor-only, NUnit).
+- `UnityEngine.UI` (from `com.unity.ugui`) is a package assembly, not an auto-referenced engine module — any asmdef whose code uses `UnityEngine.UI.*` or `UnityEngine.EventSystems.*` types (both ship in the same `UnityEngine.UI` assembly) must list `"UnityEngine.UI"` in its `references` explicitly, even if it also references another module that already lists it (asmdef references are not transitive). The plan's asmdef JSON blocks already include this where needed — do not drop it if regenerating one.
 - Every `MonoBehaviour` with setup logic: `Awake()` calls a public `Initialize()` or `Build()` method; nothing but that method touches setup state, so tests can call it directly without Play mode.
 - Verification for every task that touches Unity: run batchmode compile and/or `-runTests -testPlatform EditMode` (and `PlayMode` where noted) and confirm the log shows no `error CS` and the test summary shows `Failed: 0`.
 - Commit after every task, following the existing repo convention (Spanish, imperative, short body if useful) with the standard `Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>` trailer.
@@ -164,7 +165,9 @@ Create `clases/clase07/Unity/Assets/Shared/Clase07.Shared.asmdef`:
 {
     "name": "Clase07.Shared",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "UnityEngine.UI"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
@@ -330,6 +333,7 @@ Create `clases/clase07/Unity/Assets/Shared/Tests/Clase07.Shared.Tests.asmdef`:
     "rootNamespace": "",
     "references": [
         "Clase07.Shared",
+        "UnityEngine.UI",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],
@@ -457,7 +461,8 @@ EOF
     "name": "Clase07.FSM",
     "rootNamespace": "",
     "references": [
-        "Clase07.Shared"
+        "Clase07.Shared",
+        "UnityEngine.UI"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -530,6 +535,7 @@ namespace Clase07.FSM.Core
     "rootNamespace": "",
     "references": [
         "Clase07.FSM",
+        "UnityEngine.UI",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],
@@ -1891,7 +1897,8 @@ EOF
     "rootNamespace": "",
     "references": [
         "Clase07.Shared",
-        "VContainer"
+        "VContainer",
+        "UnityEngine.UI"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -1967,7 +1974,37 @@ namespace Clase07.DI.Shared
 }
 ```
 
-- [ ] **Step 4: Tests asmdef (same shape as Task 4 Step 4, name `Clase07.DI.Tests`, reference `Clase07.DI`)**
+- [ ] **Step 4: Tests asmdef**
+
+`clases/clase07/Unity/Assets/02_DependencyInjection/Tests/Clase07.DI.Tests.asmdef`:
+
+```json
+{
+    "name": "Clase07.DI.Tests",
+    "rootNamespace": "",
+    "references": [
+        "Clase07.DI",
+        "VContainer",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
+```
 
 - [ ] **Step 5: ScoreServiceTests**
 
@@ -2535,7 +2572,32 @@ EOF
 **Interfaces:**
 - Produces: `IMessageBroker` (`IDisposable Subscribe<T>(Action<T>)`, `void Publish<T>(T)`).
 
-- [ ] **Step 1: asmdef (references `Clase07.Shared` and `VContainer`)**
+- [ ] **Step 1: asmdef**
+
+`clases/clase07/Unity/Assets/03_MessageBroker/Clase07.MessageBroker.asmdef` — references `MessagePipe` and `MessagePipe.VContainer` even though they're only used by Task 15's code, because Task 15's files live in this same assembly (`Assets/03_MessageBroker/03_MessagePipe/`) and there is no separate asmdef per sub-variant within a module:
+
+```json
+{
+    "name": "Clase07.MessageBroker",
+    "rootNamespace": "",
+    "references": [
+        "Clase07.Shared",
+        "VContainer",
+        "MessagePipe",
+        "MessagePipe.VContainer",
+        "UnityEngine.UI"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
+```
 
 - [ ] **Step 2: Shared events**
 
@@ -2675,7 +2737,39 @@ namespace Clase07.MessageBroker.DIBroker
 }
 ```
 
-- [ ] **Step 5: Tests asmdef (same shape as before, name `Clase07.MessageBroker.Tests`) + MessageBrokerTests**
+- [ ] **Step 5: Tests asmdef + MessageBrokerTests**
+
+`clases/clase07/Unity/Assets/03_MessageBroker/Tests/Clase07.MessageBroker.Tests.asmdef` — references `VContainer` and `MessagePipe.VContainer` (not just `MessagePipe`) because Task 15's `MessagePipeWiringTests.cs` calls `builder.RegisterMessagePipe()`, an extension method defined in the VContainer-integration package, and constructs a `VContainer.ContainerBuilder` directly:
+
+```json
+{
+    "name": "Clase07.MessageBroker.Tests",
+    "rootNamespace": "",
+    "references": [
+        "Clase07.MessageBroker",
+        "VContainer",
+        "MessagePipe",
+        "MessagePipe.VContainer",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
+```
 
 ```csharp
 using NUnit.Framework;
@@ -3092,7 +3186,29 @@ EOF
 **Interfaces:**
 - Produces: `InventoryItem` (`Name`, `Quantity`), `InventoryModel` (`Items : IReadOnlyList<InventoryItem>`, `event Action Changed`, `AddItem(string)`, `RemoveItem(string)`).
 
-- [ ] **Step 1: asmdef (references `Clase07.Shared`)**
+- [ ] **Step 1: asmdef**
+
+`clases/clase07/Unity/Assets/04_MVC_MVP_MVVM/Clase07.Mvx.asmdef`:
+
+```json
+{
+    "name": "Clase07.Mvx",
+    "rootNamespace": "",
+    "references": [
+        "Clase07.Shared",
+        "UnityEngine.UI"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
+```
 
 - [ ] **Step 2: InventoryItem**
 
@@ -3156,7 +3272,36 @@ namespace Clase07.Mvx.Shared
 }
 ```
 
-- [ ] **Step 4: Tests asmdef (same shape as before, name `Clase07.Mvx.Tests`) + InventoryModelTests**
+- [ ] **Step 4: Tests asmdef + InventoryModelTests**
+
+`clases/clase07/Unity/Assets/04_MVC_MVP_MVVM/Tests/Clase07.Mvx.Tests.asmdef`:
+
+```json
+{
+    "name": "Clase07.Mvx.Tests",
+    "rootNamespace": "",
+    "references": [
+        "Clase07.Mvx",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
+```
 
 ```csharp
 using NUnit.Framework;
