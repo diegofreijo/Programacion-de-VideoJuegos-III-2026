@@ -2838,6 +2838,8 @@ namespace Clase07.MessageBroker.DIBroker
 }
 ```
 
+`new MessageBroker()` must be fully qualified as `new Clase07.MessageBroker.DIBroker.MessageBroker()` below — the module's root namespace (`Clase07.MessageBroker`) collides with the class name (`MessageBroker`), and C# resolves an unqualified name by searching enclosing namespaces before consulting `using` directives, so the bare name would otherwise resolve to the namespace itself (`error CS0118: 'MessageBroker' is a namespace but is used like a type`).
+
 ```csharp
 using NUnit.Framework;
 using Clase07.MessageBroker.DIBroker;
@@ -2850,7 +2852,7 @@ namespace Clase07.MessageBroker.Tests
         [Test]
         public void Publish_DeliversToSubscriber()
         {
-            var broker = new MessageBroker();
+            var broker = new Clase07.MessageBroker.DIBroker.MessageBroker();
             ScorePickedUpEvent? received = null;
             broker.Subscribe<ScorePickedUpEvent>(e => received = e);
 
@@ -2862,7 +2864,7 @@ namespace Clase07.MessageBroker.Tests
         [Test]
         public void Publish_DeliversToMultipleSubscribers()
         {
-            var broker = new MessageBroker();
+            var broker = new Clase07.MessageBroker.DIBroker.MessageBroker();
             var count = 0;
             broker.Subscribe<ScorePickedUpEvent>(_ => count++);
             broker.Subscribe<ScorePickedUpEvent>(_ => count++);
@@ -2875,7 +2877,7 @@ namespace Clase07.MessageBroker.Tests
         [Test]
         public void Dispose_CancelsSubscription()
         {
-            var broker = new MessageBroker();
+            var broker = new Clase07.MessageBroker.DIBroker.MessageBroker();
             var count = 0;
             var subscription = broker.Subscribe<ScorePickedUpEvent>(_ => count++);
 
@@ -2888,7 +2890,7 @@ namespace Clase07.MessageBroker.Tests
         [Test]
         public void Publish_WithNoSubscribers_DoesNotThrow()
         {
-            var broker = new MessageBroker();
+            var broker = new Clase07.MessageBroker.DIBroker.MessageBroker();
             Assert.DoesNotThrow(() => broker.Publish(new PlayerDamagedEvent(5)));
         }
     }
