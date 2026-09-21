@@ -1,0 +1,12 @@
+namespace Clase07.FSM.Large.StatePattern
+{
+    public class LoadingState : IGameFlowState
+    {
+        public string Name => "Loading";
+        private readonly GameFlowController _controller;
+        public LoadingState(GameFlowController controller) => _controller = controller;
+        public void OnEnter() { }
+        public void OnUpdate(float deltaTime) { }
+        public void OnExit() { }
+    }
+}
