@@ -1,3 +1,13 @@
 {
-    "explorer.excludeGitIgnore": true
+    "explorer.excludeGitIgnore": true,
+
+    // Saco los archivos .meta y .asmdef del Explorer y Search
+    "files.exclude": {
+        "**/*.meta": true,
+        "**/*.asmdef": true
+    },
+    "search.exclude": {
+        "**/*.meta": true,
+        "**/*.asmdef": true
+    }
 }
