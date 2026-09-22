@@ -3,7 +3,8 @@
     "rootNamespace": "",
     "references": [
         "Clase07.FSM",
-        "UnityEngine.UI"
+        "UnityEngine.UI",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
