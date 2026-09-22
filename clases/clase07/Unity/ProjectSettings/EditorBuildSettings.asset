@@ -8,5 +8,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/01_FSM/01_FSM_Demo.unity
     guid: ad99a993002bf431e9a223b5321aed14
+  - enabled: 1
+    path: Assets/01_FSM/01_FSM_WeaponBaseline.unity
+    guid: 2f0f3230acc1d490e9bbc9834da78e77
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
