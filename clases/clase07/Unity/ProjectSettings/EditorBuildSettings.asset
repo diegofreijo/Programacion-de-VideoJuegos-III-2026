@@ -20,5 +20,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/02_DependencyInjection/01_Singleton/01_DI_Singleton.unity
     guid: 86babef5b55b442ddae57439fff75305
+  - enabled: 1
+    path: Assets/02_DependencyInjection/02_ServiceLocator/02_DI_ServiceLocator.unity
+    guid: 20f3a92136b534aad8759b64d2044ebb
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
