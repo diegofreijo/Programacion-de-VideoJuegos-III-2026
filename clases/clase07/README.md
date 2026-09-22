@@ -78,7 +78,7 @@ indicada y entrar en Play mode.
   - `Assets/03_MessageBroker/01_DIBroker/01_MessageBroker_DIBroker.unity`
   - `Assets/03_MessageBroker/02_ScriptableObjectChannels/02_MessageBroker_SOChannels.unity`
   - `Assets/03_MessageBroker/03_MessagePipe/03_MessageBroker_MessagePipe.unity`
-- **04 — MVC / MVP / MVVM**, tres escenas casi idénticas (`InputField` + botón "Add"
+- **04 — MVC / MVP / MVVM**, tres escenas casi idénticas (`TMP_InputField` + botón "Add"
   + lista con botón "Remove" por fila):
   - `Assets/04_MVC_MVP_MVVM/01_MVC/01_Mvx_MVC.unity`
   - `Assets/04_MVC_MVP_MVVM/02_MVP/02_Mvx_MVP.unity`

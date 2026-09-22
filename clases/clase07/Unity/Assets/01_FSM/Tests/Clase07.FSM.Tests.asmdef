@@ -3,7 +3,6 @@
     "rootNamespace": "",
     "references": [
         "Clase07.FSM",
-        "UnityEngine.UI",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],

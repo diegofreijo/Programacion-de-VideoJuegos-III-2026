@@ -1,3 +1,5 @@
+> **Nota histórica:** este documento describe el plan de build ORIGINAL del proyecto y ya no refleja el estado actual. La UI de las escenas de demo se migró de "construida por código" a "armada en el Inspector"; `DemoUiFactory` y los scaffolders de `Editor/` por módulo que describe este plan ya no existen. Para la arquitectura ACTUAL, ver `SPEC.md`/`README.md` — cualquier agente que extienda este proyecto debe seguir esos documentos, no los pasos de build de este archivo.
+
 # Clase 07 — Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.

@@ -224,11 +224,14 @@ original del enunciado.
 - `Shared/InventoryItem.cs` (`Name`, `Quantity`).
 - `Shared/InventoryModel.cs`: plain C#, `AddItem(name)`, `RemoveItem(name)`,
   `IReadOnlyList<InventoryItem> Items`, evento de cambio. Igual en las tres variantes.
+- `Shared/InventoryItemRow.prefab` + `Shared/InventoryItemRowView.cs`: fila de lista reutilizada
+  por las tres escenas — `SetLabel(string)` actualiza el texto, `SetRemoveAction(UnityAction)`
+  conecta el botón "Remove" de esa fila específica.
 
 ### Tres implementaciones
 
 - `01_MVC/`: `InventoryController` (`MonoBehaviour`) escucha directamente los eventos de
-  UI (botón Add con un `InputField`, botón Remove por fila), llama al `InventoryModel`, y
+  UI (botón Add con un `TMP_InputField`, botón Remove por fila), llama al `InventoryModel`, y
   manipula directamente los elementos concretos de la vista (instancia/destruye filas en
   un `Transform` de contenido). A propósito es la variante más acoplada y menos
   testeable — el README explica por qué eso es parte de la lección, no un descuido.
@@ -242,7 +245,7 @@ original del enunciado.
   simple tipo `Action`/`Func<bool>`); `InventoryView` (`MonoBehaviour`) solo se suscribe a
   los cambios de la colección para sincronizar filas y bindea los botones a los comandos
   — nunca llama directamente al modelo ni conoce un presenter.
-- Tres escenas mínimas, cada una con un `InputField` + botón "Add" + lista con botón
+- Tres escenas mínimas, cada una con un `TMP_InputField` + botón "Add" + lista con botón
   "Remove" por fila.
 
 ### Tests

@@ -2,12 +2,10 @@
     "name": "Clase07.MessageBroker",
     "rootNamespace": "",
     "references": [
-        "Clase07.Shared",
         "VContainer",
         "MessagePipe",
         "MessagePipe.VContainer",
         "UniTask",
-        "UnityEngine.UI",
         "Unity.TextMeshPro"
     ],
     "includePlatforms": [],

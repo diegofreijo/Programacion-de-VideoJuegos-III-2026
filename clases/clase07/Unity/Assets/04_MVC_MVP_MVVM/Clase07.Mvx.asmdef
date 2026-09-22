@@ -2,7 +2,6 @@
     "name": "Clase07.Mvx",
     "rootNamespace": "",
     "references": [
-        "Clase07.Shared",
         "UnityEngine.UI",
         "Unity.TextMeshPro"
     ],

@@ -2,9 +2,7 @@
     "name": "Clase07.DI",
     "rootNamespace": "",
     "references": [
-        "Clase07.Shared",
         "VContainer",
-        "UnityEngine.UI",
         "Unity.TextMeshPro"
     ],
     "includePlatforms": [],

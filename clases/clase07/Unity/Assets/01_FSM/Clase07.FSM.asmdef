@@ -2,8 +2,6 @@
     "name": "Clase07.FSM",
     "rootNamespace": "",
     "references": [
-        "Clase07.Shared",
-        "UnityEngine.UI",
         "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
