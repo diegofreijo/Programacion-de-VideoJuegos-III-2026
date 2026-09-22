@@ -1,32 +1,24 @@
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 using Clase07.Mvx.Shared;
-using Clase07.Shared.UI;
 
 namespace Clase07.Mvx.Mvc
 {
     public class InventoryController : MonoBehaviour
     {
+        [SerializeField] private TMP_InputField _nameInput;
+        [SerializeField] private Transform _listContent;
+        [SerializeField] private InventoryItemRowView _rowPrefab;
+
         private readonly InventoryModel _model = new InventoryModel();
-        private InputField _nameInput;
-        private Transform _listRoot;
 
-        private void Awake() => Build();
-
-        public void Build()
+        private void Awake()
         {
-            var canvas = DemoUiFactory.CreateCanvas();
-            _nameInput = DemoUiFactory.CreateInputField(canvas.transform, new Vector2(-100, 200));
-            var addButton = DemoUiFactory.CreateButton(canvas.transform, "Add", new Vector2(120, 200));
-            addButton.onClick.AddListener(OnAddClicked);
-
-            _listRoot = new GameObject("List").transform;
-            _listRoot.SetParent(canvas.transform, false);
-
             _model.Changed += RenderList;
+            RenderList();
         }
 
-        private void OnAddClicked()
+        public void OnAddClicked()
         {
             if (string.IsNullOrWhiteSpace(_nameInput.text)) return;
             _model.AddItem(_nameInput.text);
@@ -35,16 +27,17 @@ namespace Clase07.Mvx.Mvc
 
         private void RenderList()
         {
-            for (var i = _listRoot.childCount - 1; i >= 0; i--) Destroy(_listRoot.GetChild(i).gameObject);
+            for (var i = _listContent.childCount - 1; i >= 0; i--)
+            {
+                Destroy(_listContent.GetChild(i).gameObject);
+            }
 
-            var y = 150;
             foreach (var item in _model.Items)
             {
-                DemoUiFactory.CreateLabel(_listRoot, $"{item.Name} x{item.Quantity}", new Vector2(-100, y));
-                var removeButton = DemoUiFactory.CreateButton(_listRoot, "Remove", new Vector2(120, y));
+                var row = Instantiate(_rowPrefab, _listContent);
+                row.SetLabel($"{item.Name} x{item.Quantity}");
                 var itemName = item.Name;
-                removeButton.onClick.AddListener(() => _model.RemoveItem(itemName));
-                y -= 40;
+                row.SetRemoveAction(() => _model.RemoveItem(itemName));
             }
         }
     }

@@ -35,5 +35,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/03_MessageBroker/03_MessagePipe/03_MessageBroker_MessagePipe.unity
     guid: 3975b27985c8b452391e18130e243d89
+  - enabled: 1
+    path: Assets/04_MVC_MVP_MVVM/01_MVC/01_Mvx_MVC.unity
+    guid: 885514e2777b444ab8d030f5957dae90
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
