@@ -1,18 +1,18 @@
 using System;
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 using VContainer;
 using MessagePipe;
 using Clase07.MessageBroker.Shared;
-using Clase07.Shared.UI;
 
 namespace Clase07.MessageBroker.MessagePipeExample
 {
     public class MessagePipeDemoView : MonoBehaviour
     {
+        [SerializeField] private TMP_Text _scoreLabel;
+
         private IPublisher<ScorePickedUpEvent> _publisher;
         private IDisposable _subscription;
-        private Text _label;
         private int _total;
 
         [Inject]
@@ -22,18 +22,14 @@ namespace Clase07.MessageBroker.MessagePipeExample
             _subscription = subscriber.Subscribe(OnScorePickedUp);
         }
 
-        private void Start()
-        {
-            var canvas = DemoUiFactory.CreateCanvas();
-            var button = DemoUiFactory.CreateButton(canvas.transform, "Publish Score+10 (MessagePipe)", new Vector2(0, 150));
-            button.onClick.AddListener(() => _publisher.Publish(new ScorePickedUpEvent(10)));
-            _label = DemoUiFactory.CreateLabel(canvas.transform, "Score: 0", new Vector2(0, 110));
-        }
+        private void Start() => _scoreLabel.text = "Score: 0";
+
+        public void OnPublishClicked() => _publisher.Publish(new ScorePickedUpEvent(10));
 
         private void OnScorePickedUp(ScorePickedUpEvent evt)
         {
             _total += evt.Amount;
-            if (_label != null) _label.text = $"Score: {_total}";
+            if (_scoreLabel != null) _scoreLabel.text = $"Score: {_total}";
         }
 
         private void OnDestroy() => _subscription?.Dispose();
