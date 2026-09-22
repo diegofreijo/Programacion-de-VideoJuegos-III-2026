@@ -41,5 +41,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/04_MVC_MVP_MVVM/02_MVP/02_Mvx_MVP.unity
     guid: c78b21676ed7a4b73b3d07060875974b
+  - enabled: 1
+    path: Assets/04_MVC_MVP_MVVM/03_MVVM/03_Mvx_MVVM.unity
+    guid: 5db7e0dacad3d46009e5a3e9ac3ea184
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
