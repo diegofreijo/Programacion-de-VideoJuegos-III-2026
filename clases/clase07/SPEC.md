@@ -78,10 +78,11 @@ clases/clase07/
 - Cada implementación alternativa de un mismo patrón vive en su propia subcarpeta
   numerada (`01_...`, `02_...`, `03_...`) dentro del módulo, para que el orden de lectura
   sugerido sea obvio.
-- Las escenas de demo son mínimas: UI de uGUI (botones, texto), sin arte. Cuando dos
-  implementaciones del mismo patrón podrían pisarse en runtime (por ejemplo estado
-  `static` de un Singleton), van en escenas separadas para poder abrirse y correrse de
-  forma aislada.
+- Las escenas de demo son mínimas: UI de uGUI + TextMeshPro armada en el Inspector
+  (Canvas, `Layout Group`, botones/texto reales, sin posiciones absolutas por pixel ni
+  UI generada por código), sin arte. Cada implementación vive en su propia escena —
+  tanto por necesitar estado separado (ej: `static` de un Singleton) como para poder
+  compartimentalizar cada demo de forma independiente.
 - La lógica que no necesita depender de `UnityEngine` se escribe en clases C# puras
   (POCOs) aunque vivan dentro del proyecto de Unity, tanto para que sean más fáciles de
   testear como para reforzar la lección de separar lógica de infraestructura ya vista en
@@ -126,10 +127,10 @@ clases/clase07/
 
 ### Demo y tests
 
-- Una escena `01_FSM_Demo.unity`: botón "Fire" para el arma (ambas versiones montadas
-  una al lado de la otra) y botones para avanzar el game flow (`Load`, `Play`, `Pause`,
-  `Open Settings`, `Resume`, etc.), con texto de debug mostrando el estado activo de cada
-  máquina.
+- Tres escenas independientes: `01_FSM_WeaponBaseline.unity` y
+  `02_FSM_WeaponStatePattern.unity` (una por versión del arma, cada una con su botón
+  "Fire" y su texto de debug) y `03_FSM_GameFlow.unity` (botones para el game flow,
+  variante OOP únicamente — ver más abajo).
 - Tests EditMode: transiciones del `StateMachine<TState>` genérico (se llaman
   `OnEnter`/`OnExit` en el orden correcto, no se permite una transición al mismo estado
   actual sin querer, etc.), equivalencia de comportamiento entre `WeaponBaseline` y

@@ -51,21 +51,22 @@ verlos correr en el Editor).
 
 ## Cómo correr cada módulo
 
-Todas las escenas son mínimas (botones y texto de debug, sin arte): abrir la escena
+Todas las escenas están armadas en el Inspector (Canvas + TextMeshPro + `Layout Group`,
+sin posiciones absolutas por pixel), con la UI mínima pero prolija: abrir la escena
 indicada y entrar en Play mode.
 
-- **01 — FSM:** `Assets/01_FSM/01_FSM_Demo.unity` — botón "Fire" para las dos
-  versiones del arma (baseline vs. motor de estados) montadas una al lado de la
-  otra, y botones para avanzar el game flow (`Finish Loading`, `Play`, `Pause`,
-  `Open Settings`, `Close Settings`, `Resume`), con texto de debug mostrando el
-  estado y el subestado activos de cada máquina. La escena muestra **sólo** la
-  variante OOP del game flow (estados definidos por código, `FsmGameFlowDemoView`);
-  la variante con estados como `ScriptableObject` se verifica por tests de EditMode
-  (`GameFlowSORunnerTests`) en vez de montarse también en la escena: es una decisión
-  de alcance deliberada (la escena compara las dos versiones **del arma**; para el
-  game flow alcanza con una variante interactiva y la otra cubierta por tests). El
-  contraste entre ambas variantes del game flow se lee en el código y en
-  [`SPEC.md`](SPEC.md).
+- **01 — FSM**, tres escenas independientes:
+  - `Assets/01_FSM/01_FSM_WeaponBaseline.unity` — botón "Fire" para la versión del
+    arma con `enum` + `switch`, con texto de debug mostrando estado y munición.
+  - `Assets/01_FSM/02_FSM_WeaponStatePattern.unity` — el mismo arma sobre el motor
+    genérico de estados (`IState` + `StateMachine<TState>`), en su propia escena.
+  - `Assets/01_FSM/03_FSM_GameFlow.unity` — botones para avanzar el game flow
+    (`Finish Loading`, `Play`, `Pause`, `Open Settings`, `Close Settings`, `Resume`),
+    con texto de debug mostrando el estado y el subestado activos. La escena muestra
+    **sólo** la variante OOP del game flow (`FsmGameFlowDemoView`); la variante con
+    estados como `ScriptableObject` se verifica por tests de EditMode
+    (`GameFlowSORunnerTests`) en vez de montarse también en una escena — sigue siendo
+    una decisión de alcance deliberada, ver [`SPEC.md`](SPEC.md).
 - **02 — Dependency Injection**, tres escenas casi idénticas (botón "Coin" + texto
   de score) que conviene correr una por vez, ya que alguna variante usa estado
   `static`:
