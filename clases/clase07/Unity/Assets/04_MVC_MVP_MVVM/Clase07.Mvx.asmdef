@@ -3,7 +3,8 @@
     "rootNamespace": "",
     "references": [
         "Clase07.Shared",
-        "UnityEngine.UI"
+        "UnityEngine.UI",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
