@@ -24,7 +24,9 @@ namespace Clase07.MessageBroker.EditorTools
 
             var scene = SceneScaffolding.CreateEmptyScene();
             var view = new GameObject("DemoView", typeof(ScoreEventChannelsDemoView)).GetComponent<ScoreEventChannelsDemoView>();
-            view.SetChannel(channel);
+            var serializedView = new SerializedObject(view);
+            serializedView.FindProperty("_channel").objectReferenceValue = channel;
+            serializedView.ApplyModifiedPropertiesWithoutUndo();
 
             SceneScaffolding.SaveScene(scene, "Assets/03_MessageBroker/02_ScriptableObjectChannels/02_MessageBroker_SOChannels.unity");
         }
