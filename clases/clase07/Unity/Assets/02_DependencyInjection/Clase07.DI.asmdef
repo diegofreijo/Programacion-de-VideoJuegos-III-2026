@@ -4,7 +4,8 @@
     "references": [
         "Clase07.Shared",
         "VContainer",
-        "UnityEngine.UI"
+        "UnityEngine.UI",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

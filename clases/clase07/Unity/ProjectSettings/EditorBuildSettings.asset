@@ -17,5 +17,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/01_FSM/03_FSM_GameFlow.unity
     guid: 24fa6a5a3a37f495bad8de009fc5a507
+  - enabled: 1
+    path: Assets/02_DependencyInjection/01_Singleton/01_DI_Singleton.unity
+    guid: 86babef5b55b442ddae57439fff75305
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
