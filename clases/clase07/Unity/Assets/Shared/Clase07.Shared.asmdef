@@ -1,9 +1,7 @@
 {
     "name": "Clase07.Shared",
     "rootNamespace": "",
-    "references": [
-        "UnityEngine.UI"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

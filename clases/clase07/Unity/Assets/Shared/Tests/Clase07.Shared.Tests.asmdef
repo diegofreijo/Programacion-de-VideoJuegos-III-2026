@@ -3,7 +3,6 @@
     "rootNamespace": "",
     "references": [
         "Clase07.Shared",
-        "UnityEngine.UI",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],
