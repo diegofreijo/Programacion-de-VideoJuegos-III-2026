@@ -2,7 +2,7 @@ using UnityEngine;
 using TMPro;
 using Clase07.FSM.SmallBaseline;
 
-namespace Clase07.FSM.Demo
+namespace Clase07.FSM.SmallBaseline
 {
     public class FsmWeaponBaselineDemoView : MonoBehaviour
     {
