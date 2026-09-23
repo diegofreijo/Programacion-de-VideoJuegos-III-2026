@@ -42,7 +42,11 @@ Assembly Definition, su propia copia de cualquier clase de dominio que antes era
 compartida dentro del módulo, y su propia carpeta `Tests/` — se puede copiar cualquiera
 de esas carpetas a otro proyecto Unity y compila sola, salvo por los paquetes de
 terceros (VContainer, MessagePipe, UniTask, uGUI), que sí es correcto que se
-compartan.
+compartan (con la salvedad de que los tests PlayMode de FSM en `a_SmallBaseline`,
+`b_SmallStatePattern` y `c_LargeStatePattern` tienen hardcodeada internamente la ruta
+completa `Assets/...` de su escena, así que tras copiar la carpeta esos tests puntuales
+necesitarían actualizar esa ruta para volver a pasar, aunque la carpeta siga
+compilando).
 
 - Cada implementación tiene su propio Assembly Definition (ej. `Clase07.DI.Singleton`,
   `Clase07.MessageBroker.MessagePipeExample`, `Clase07.Mvx.Mvvm`) y su propia carpeta

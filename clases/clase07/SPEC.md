@@ -147,9 +147,12 @@ clases/clase07/
   variante OOP únicamente — ver más abajo).
 - Tests EditMode: transiciones del `StateMachine<TState>` genérico (se llaman
   `OnEnter`/`OnExit` en el orden correcto, no se permite una transición al mismo estado
-  actual sin querer, etc.), equivalencia de comportamiento entre `WeaponBaseline` y
-  `WeaponStatePattern` ante la misma secuencia de inputs, y transiciones del game flow
-  (incluidas las substates) para ambas variantes (código vs. SO).
+  actual sin querer, etc.), dos suites independientes que corren la misma secuencia de
+  inputs contra los mismos valores esperados hardcodeados
+  (`WeaponBaselineExpectedSequenceTests`, `WeaponStatePatternExpectedSequenceTests`) —
+  la comparación en runtime entre ambas implementaciones se eliminó a cambio de que cada
+  carpeta sea autocontenida —, y transiciones del game flow (incluidas las substates)
+  para ambas variantes (código vs. SO).
 
 ## Módulo 2 — Dependency Injection (`Assets/02_DependencyInjection/`)
 
@@ -242,10 +245,9 @@ original del enunciado.
 - `InventoryModel.cs`: plain C#, `AddItem(name)`, `RemoveItem(name)`,
   `IReadOnlyList<InventoryItem> Items`, evento de cambio. Equivalente en las tres
   variantes.
-- `InventoryItemRow.prefab` + `InventoryItemRowView.cs`: fila de lista reutilizada
-  por las tres escenas — `SetLabel(string)` actualiza el texto, `SetRemoveAction(UnityAction)`
-  conecta el botón "Remove" de esa fila específica. Cada implementación tiene su
-  propia copia del modelo y del prefab de fila.
+- `InventoryItemRow.prefab` + `InventoryItemRowView.cs`: fila de lista de la que cada
+  implementación tiene su propia copia — `SetLabel(string)` actualiza el texto,
+  `SetRemoveAction(UnityAction)` conecta el botón "Remove" de esa fila específica.
 
 ### Tres implementaciones
 
@@ -269,7 +271,8 @@ original del enunciado.
 
 ### Tests
 
-- Tests EditMode sobre `InventoryModel` (compartidos por las tres variantes).
+- Tests EditMode sobre `InventoryModel` (una copia por variante, igual que el modelo
+  que testean).
 - Tests EditMode sobre `InventoryPresenter` usando un `IInventoryView` fake (agregar,
   quitar, casos de nombre vacío/duplicado).
 - Tests EditMode sobre `InventoryViewModel` (los comandos mutan el modelo y disparan las

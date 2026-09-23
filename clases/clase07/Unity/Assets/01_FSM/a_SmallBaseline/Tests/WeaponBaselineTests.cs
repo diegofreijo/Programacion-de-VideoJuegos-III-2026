@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using Clase07.FSM.SmallBaseline;
 
-namespace Clase07.FSM.Tests
+namespace Clase07.FSM.SmallBaseline.Tests
 {
     public class WeaponBaselineTests
     {

@@ -6,7 +6,7 @@ using UnityEngine.TestTools;
 using UnityEngine.UI;
 using TMPro;
 
-namespace Clase07.FSM.Tests
+namespace Clase07.FSM.SmallStatePattern.Tests
 {
     public class WeaponStatePatternDemoViewPlayModeTests
     {

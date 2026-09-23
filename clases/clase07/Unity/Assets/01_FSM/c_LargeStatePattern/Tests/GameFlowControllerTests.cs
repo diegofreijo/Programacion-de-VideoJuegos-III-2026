@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using Clase07.FSM.LargeStatePattern;
 
-namespace Clase07.FSM.Tests
+namespace Clase07.FSM.LargeStatePattern.Tests
 {
     public class GameFlowControllerTests
     {

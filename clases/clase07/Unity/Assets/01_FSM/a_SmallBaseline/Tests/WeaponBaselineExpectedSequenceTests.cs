@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using Clase07.FSM.SmallBaseline;
 
-namespace Clase07.FSM.Tests
+namespace Clase07.FSM.SmallBaseline.Tests
 {
     // Corre la misma secuencia de inputs que WeaponStatePatternExpectedSequenceTests
     // en b_SmallStatePattern/Tests/ — a propósito NO referencia ese tipo: cada

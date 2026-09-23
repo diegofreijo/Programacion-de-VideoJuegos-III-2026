@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using Clase07.FSM.LargeScriptableObjectStates;
 
-namespace Clase07.FSM.Tests
+namespace Clase07.FSM.LargeScriptableObjectStates.Tests
 {
     public class GameFlowSORunnerTests
     {
