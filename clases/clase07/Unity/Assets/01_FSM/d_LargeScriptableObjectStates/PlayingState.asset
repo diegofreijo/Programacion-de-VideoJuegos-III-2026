@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d281c94e85e664eb99f232d4d475d21b, type: 3}
+  m_Name: PlayingState
+  m_EditorClassIdentifier: Clase07.FSM.LargeScriptableObjectStates::Clase07.FSM.LargeScriptableObjectStates.PlayingStateSO
+  _userPlaying: {fileID: 11400000, guid: d83e27cf5bb7427986b71aaa9465b9ef, type: 2}
+  _pauseMenu: {fileID: 11400000, guid: 9b67b348ea3040848b1ec7e2610d8145, type: 2}
+  _settingsMenu: {fileID: 11400000, guid: f683e454083c40e7b487042612eded90, type: 2}
