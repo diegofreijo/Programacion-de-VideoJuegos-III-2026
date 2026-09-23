@@ -1,6 +1,5 @@
 using UnityEngine;
 using TMPro;
-using Clase07.MessageBroker.Shared;
 
 namespace Clase07.MessageBroker.ScriptableObjectChannels
 {

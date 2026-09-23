@@ -1,10 +1,8 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
-using Clase07.MessageBroker.ScriptableObjectChannels;
-using Clase07.MessageBroker.Shared;
 
-namespace Clase07.MessageBroker.Tests
+namespace Clase07.MessageBroker.ScriptableObjectChannels.Tests
 {
     public class ScoreEventChannelSOTests
     {
