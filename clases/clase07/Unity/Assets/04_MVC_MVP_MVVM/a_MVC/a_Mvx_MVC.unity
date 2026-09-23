@@ -358,7 +358,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Clase07.Mvx::Clase07.Mvx.Mvc.InventoryController
   _nameInput: {fileID: 619465255}
   _listContent: {fileID: 1586509677}
-  _rowPrefab: {fileID: 7364430613386400147, guid: 08977158906c24954b98e5bc03b912d1, type: 3}
+  _rowPrefab: {fileID: 7364430613386400147, guid: 563950b5156ec40eaad30a2fb3b501b7, type: 3}
 --- !u!4 &543044022
 Transform:
   m_ObjectHideFlags: 0
@@ -1394,7 +1394,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: "\u200B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

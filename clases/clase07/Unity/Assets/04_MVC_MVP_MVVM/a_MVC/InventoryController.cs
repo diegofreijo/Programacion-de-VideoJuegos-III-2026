@@ -1,6 +1,5 @@
 using UnityEngine;
 using TMPro;
-using Clase07.Mvx.Shared;
 
 namespace Clase07.Mvx.Mvc
 {
@@ -25,6 +24,11 @@ namespace Clase07.Mvx.Mvc
             _nameInput.text = string.Empty;
         }
 
+        // A propósito el controller toca directamente los elementos concretos de la
+        // vista (instancia/destruye filas acá adentro) — no hay una interfaz de vista
+        // de por medio. Es lo que hace que este patrón sea difícil de testear sin
+        // Unity: no existe una "lógica de presentación" separable de la manipulación
+        // de GameObjects (comparar con b_MVP/IInventoryView y c_MVVM).
         private void RenderList()
         {
             for (var i = _listContent.childCount - 1; i >= 0; i--)
