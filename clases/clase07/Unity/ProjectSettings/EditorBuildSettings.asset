@@ -6,40 +6,40 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/01_FSM/01_FSM_WeaponBaseline.unity
+    path: Assets/01_FSM/a_SmallBaseline/a_FSM_WeaponBaseline.unity
     guid: 2f0f3230acc1d490e9bbc9834da78e77
   - enabled: 1
-    path: Assets/01_FSM/02_FSM_WeaponStatePattern.unity
+    path: Assets/01_FSM/b_SmallStatePattern/b_FSM_WeaponStatePattern.unity
     guid: 693031e94e46448e891e3ce56c94a8e9
   - enabled: 1
-    path: Assets/01_FSM/03_FSM_GameFlow.unity
+    path: Assets/01_FSM/c_LargeStatePattern/c_FSM_GameFlow.unity
     guid: 24fa6a5a3a37f495bad8de009fc5a507
   - enabled: 1
-    path: Assets/02_DependencyInjection/01_Singleton/01_DI_Singleton.unity
+    path: Assets/02_DependencyInjection/a_Singleton/a_DI_Singleton.unity
     guid: 86babef5b55b442ddae57439fff75305
   - enabled: 1
-    path: Assets/02_DependencyInjection/02_ServiceLocator/02_DI_ServiceLocator.unity
+    path: Assets/02_DependencyInjection/b_ServiceLocator/b_DI_ServiceLocator.unity
     guid: 20f3a92136b534aad8759b64d2044ebb
   - enabled: 1
-    path: Assets/02_DependencyInjection/03_VContainer/03_DI_VContainer.unity
+    path: Assets/02_DependencyInjection/c_VContainer/c_DI_VContainer.unity
     guid: 74da540c1c1da4be08a26482806b73a4
   - enabled: 1
-    path: Assets/03_MessageBroker/01_DIBroker/01_MessageBroker_DIBroker.unity
+    path: Assets/03_MessageBroker/a_DIBroker/a_MessageBroker_DIBroker.unity
     guid: 3ac48babef1a649b0a8dc6b6b0cb7fb3
   - enabled: 1
-    path: Assets/03_MessageBroker/02_ScriptableObjectChannels/02_MessageBroker_SOChannels.unity
+    path: Assets/03_MessageBroker/b_ScriptableObjectChannels/b_MessageBroker_SOChannels.unity
     guid: 0f1c064a0a9964186adeb8f8d8f29834
   - enabled: 1
-    path: Assets/03_MessageBroker/03_MessagePipe/03_MessageBroker_MessagePipe.unity
+    path: Assets/03_MessageBroker/c_MessagePipe/c_MessageBroker_MessagePipe.unity
     guid: 3975b27985c8b452391e18130e243d89
   - enabled: 1
-    path: Assets/04_MVC_MVP_MVVM/01_MVC/01_Mvx_MVC.unity
+    path: Assets/04_MVC_MVP_MVVM/a_MVC/a_Mvx_MVC.unity
     guid: 885514e2777b444ab8d030f5957dae90
   - enabled: 1
-    path: Assets/04_MVC_MVP_MVVM/02_MVP/02_Mvx_MVP.unity
+    path: Assets/04_MVC_MVP_MVVM/b_MVP/b_Mvx_MVP.unity
     guid: c78b21676ed7a4b73b3d07060875974b
   - enabled: 1
-    path: Assets/04_MVC_MVP_MVVM/03_MVVM/03_Mvx_MVVM.unity
+    path: Assets/04_MVC_MVP_MVVM/c_MVVM/c_Mvx_MVVM.unity
     guid: 5db7e0dacad3d46009e5a3e9ac3ea184
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

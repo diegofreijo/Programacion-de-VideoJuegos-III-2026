@@ -19,22 +19,39 @@ verlos correr en el Editor).
 - `Unity/Packages/manifest.json`: dependencias de terceros vía git URL — VContainer,
   MessagePipe, MessagePipe.VContainer y UniTask.
 - `Unity/Assets/01_FSM/`: máquina de estados finitos, a escala chica (un arma) y
-  grande (game flow con submáquinas anidadas), cada una en `Baseline`/`StatePattern`
-  o `StatePattern`/`ScriptableObjectStates`, más un `Core/` con el motor genérico
-  reusable.
+  grande (game flow con submáquinas anidadas), en cuatro carpetas de implementación —
+  `a_SmallBaseline/`, `b_SmallStatePattern/`, `c_LargeStatePattern/`,
+  `d_LargeScriptableObjectStates/`.
 - `Unity/Assets/02_DependencyInjection/`: mismo par de servicios (`IScoreService`,
-  `IAudioService`) resuelto de tres formas — `01_Singleton/`, `02_ServiceLocator/`,
-  `03_VContainer/` — con el dominio compartido en `Shared/`.
+  `IAudioService`) resuelto de tres formas — `a_Singleton/`, `b_ServiceLocator/`,
+  `c_VContainer/`.
 - `Unity/Assets/03_MessageBroker/`: mismos eventos de dominio publicados/escuchados
-  de tres formas — `01_DIBroker/` (broker hecho a mano), `02_ScriptableObjectChannels/`
-  (event channels como asset), `03_MessagePipe/` (librería madura del mismo
-  ecosistema que VContainer) — con `Shared/` para los eventos.
+  de tres formas — `a_DIBroker/` (broker hecho a mano), `b_ScriptableObjectChannels/`
+  (event channels como asset), `c_MessagePipe/` (librería madura del mismo
+  ecosistema que VContainer).
 - `Unity/Assets/04_MVC_MVP_MVVM/`: la misma feature de inventario (agregar/quitar
-  ítems) implementada en `01_MVC/`, `02_MVP/`, `03_MVVM/`, en orden de menor a mayor
-  desacoplamiento, con el modelo compartido en `Shared/`.
-- Cada módulo tiene su propio Assembly Definition (`Clase07.FSM`, `Clase07.DI`,
-  `Clase07.MessageBroker`, `Clase07.Mvx`) y su propia carpeta `Tests/`
-  (EditMode y, donde hace falta, PlayMode).
+  ítems) implementada en `a_MVC/`, `b_MVP/`, `c_MVVM/`, en orden de menor a mayor
+  desacoplamiento.
+
+Dentro de cada módulo, cada implementación alternativa vive en su propia carpeta con
+prefijo de **letra** (`a_`, `b_`, `c_`, ...), en orden de lectura sugerido de la más
+simple/ingenua a la más sofisticada — a diferencia del prefijo **numérico** de las
+carpetas de módulo (`01_FSM`, `02_DependencyInjection`, ...), que ordena entre
+patrones distintos. Cada carpeta de implementación es autocontenida: tiene su propio
+Assembly Definition, su propia copia de cualquier clase de dominio que antes era
+compartida dentro del módulo, y su propia carpeta `Tests/` — se puede copiar cualquiera
+de esas carpetas a otro proyecto Unity y compila sola, salvo por los paquetes de
+terceros (VContainer, MessagePipe, UniTask, uGUI), que sí es correcto que se
+compartan (con la salvedad de que los tests PlayMode de FSM en `a_SmallBaseline`,
+`b_SmallStatePattern` y `c_LargeStatePattern` tienen hardcodeada internamente la ruta
+completa `Assets/...` de su escena, así que tras copiar la carpeta esos tests puntuales
+necesitarían actualizar esa ruta para volver a pasar, aunque la carpeta siga
+compilando).
+
+- Cada implementación tiene su propio Assembly Definition (ej. `Clase07.DI.Singleton`,
+  `Clase07.MessageBroker.MessagePipeExample`, `Clase07.Mvx.Mvvm`) y su propia carpeta
+  `Tests/` (EditMode y, donde hace falta, PlayMode) — ya no hay un asmdef ni una
+  carpeta `Shared/`/`Core/` a nivel de módulo.
 
 ## Cómo abrir el proyecto
 
@@ -56,40 +73,45 @@ sin posiciones absolutas por pixel), con la UI mínima pero prolija: abrir la es
 indicada y entrar en Play mode.
 
 - **01 — FSM**, tres escenas independientes:
-  - `Assets/01_FSM/01_FSM_WeaponBaseline.unity` — botón "Fire" para la versión del
-    arma con `enum` + `switch`, con texto de debug mostrando estado y munición.
-  - `Assets/01_FSM/02_FSM_WeaponStatePattern.unity` — el mismo arma sobre el motor
-    genérico de estados (`IState` + `StateMachine<TState>`), en su propia escena.
-  - `Assets/01_FSM/03_FSM_GameFlow.unity` — botones para avanzar el game flow
-    (`Finish Loading`, `Play`, `Pause`, `Open Settings`, `Close Settings`, `Resume`),
-    con texto de debug mostrando el estado y el subestado activos. La escena muestra
-    **sólo** la variante OOP del game flow (`FsmGameFlowDemoView`); la variante con
-    estados como `ScriptableObject` se verifica por tests de EditMode
-    (`GameFlowSORunnerTests`) en vez de montarse también en una escena — sigue siendo
-    una decisión de alcance deliberada, ver [`SPEC.md`](SPEC.md).
+  - `Assets/01_FSM/a_SmallBaseline/a_FSM_WeaponBaseline.unity` — botón "Fire" para la
+    versión del arma con `enum` + `switch`, con texto de debug mostrando estado y
+    munición.
+  - `Assets/01_FSM/b_SmallStatePattern/b_FSM_WeaponStatePattern.unity` — el mismo
+    arma sobre el motor genérico de estados (`IState` + `StateMachine<TState>`, copia
+    local de esta carpeta), en su propia escena.
+  - `Assets/01_FSM/c_LargeStatePattern/c_FSM_GameFlow.unity` — botones para avanzar
+    el game flow (`Finish Loading`, `Play`, `Pause`, `Open Settings`, `Close
+    Settings`, `Resume`), con texto de debug mostrando el estado y el subestado
+    activos. La escena muestra **sólo** la variante OOP del game flow; la variante con
+    estados como `ScriptableObject`
+    (`Assets/01_FSM/d_LargeScriptableObjectStates/`) se verifica por tests de
+    EditMode en vez de montarse también en una escena — sigue siendo una decisión de
+    alcance deliberada, ver [`SPEC.md`](SPEC.md).
 - **02 — Dependency Injection**, tres escenas casi idénticas (botón "Coin" + texto
   de score) que conviene correr una por vez, ya que alguna variante usa estado
   `static`:
-  - `Assets/02_DependencyInjection/01_Singleton/01_DI_Singleton.unity`
-  - `Assets/02_DependencyInjection/02_ServiceLocator/02_DI_ServiceLocator.unity`
-  - `Assets/02_DependencyInjection/03_VContainer/03_DI_VContainer.unity`
+  - `Assets/02_DependencyInjection/a_Singleton/a_DI_Singleton.unity`
+  - `Assets/02_DependencyInjection/b_ServiceLocator/b_DI_ServiceLocator.unity`
+  - `Assets/02_DependencyInjection/c_VContainer/c_DI_VContainer.unity`
 - **03 — Message Broker**, tres escenas casi idénticas (botón que publica un evento
   + texto que se actualiza al recibirlo):
-  - `Assets/03_MessageBroker/01_DIBroker/01_MessageBroker_DIBroker.unity`
-  - `Assets/03_MessageBroker/02_ScriptableObjectChannels/02_MessageBroker_SOChannels.unity`
-  - `Assets/03_MessageBroker/03_MessagePipe/03_MessageBroker_MessagePipe.unity`
+  - `Assets/03_MessageBroker/a_DIBroker/a_MessageBroker_DIBroker.unity`
+  - `Assets/03_MessageBroker/b_ScriptableObjectChannels/b_MessageBroker_SOChannels.unity`
+  - `Assets/03_MessageBroker/c_MessagePipe/c_MessageBroker_MessagePipe.unity`
 - **04 — MVC / MVP / MVVM**, tres escenas casi idénticas (`TMP_InputField` + botón "Add"
   + lista con botón "Remove" por fila):
-  - `Assets/04_MVC_MVP_MVVM/01_MVC/01_Mvx_MVC.unity`
-  - `Assets/04_MVC_MVP_MVVM/02_MVP/02_Mvx_MVP.unity`
-  - `Assets/04_MVC_MVP_MVVM/03_MVVM/03_Mvx_MVVM.unity`
+  - `Assets/04_MVC_MVP_MVVM/a_MVC/a_Mvx_MVC.unity`
+  - `Assets/04_MVC_MVP_MVVM/b_MVP/b_Mvx_MVP.unity`
+  - `Assets/04_MVC_MVP_MVVM/c_MVVM/c_Mvx_MVVM.unity`
 
 ## Cómo correr los tests
 
 **Desde el Editor:** `Window > General > Test Runner`, pestañas `EditMode` y
 `PlayMode`, "Run All". La mayoría de los tests de este proyecto son EditMode; hay
-PlayMode donde el módulo necesita ejecutar dentro de una escena (por ejemplo el
-motor de FSM en `01_FSM/Tests/PlayMode`).
+PlayMode donde la implementación necesita ejecutar dentro de una escena, por ejemplo
+en el motor de FSM: `01_FSM/a_SmallBaseline/Tests/PlayMode/`,
+`01_FSM/b_SmallStatePattern/Tests/PlayMode/` y
+`01_FSM/c_LargeStatePattern/Tests/PlayMode/`.
 
 **Desde línea de comandos (batchmode)**, sin abrir el Editor de forma interactiva —
 parado en la raíz del monorepo del curso. Importante: **no combinar `-runTests` con
