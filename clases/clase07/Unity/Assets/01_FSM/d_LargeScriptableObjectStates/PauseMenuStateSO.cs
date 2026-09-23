@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Clase07.FSM.Large.ScriptableObjectStates
+namespace Clase07.FSM.LargeScriptableObjectStates
 {
     [CreateAssetMenu(fileName = "PauseMenuState", menuName = "Clase07/FSM/Pause Menu State")]
     public class PauseMenuStateSO : GameFlowStateSO

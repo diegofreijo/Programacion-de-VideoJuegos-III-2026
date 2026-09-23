@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Clase07.FSM.Large.ScriptableObjectStates
+namespace Clase07.FSM.LargeScriptableObjectStates
 {
     [CreateAssetMenu(fileName = "UserPlayingState", menuName = "Clase07/FSM/User Playing State")]
     public class UserPlayingStateSO : GameFlowStateSO

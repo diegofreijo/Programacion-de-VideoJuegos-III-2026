@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using Clase07.FSM.Large.ScriptableObjectStates;
+using Clase07.FSM.LargeScriptableObjectStates;
 
 namespace Clase07.FSM.Tests
 {

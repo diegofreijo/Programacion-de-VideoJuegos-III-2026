@@ -1,4 +1,4 @@
-namespace Clase07.FSM.Large.ScriptableObjectStates
+namespace Clase07.FSM.LargeScriptableObjectStates
 {
     public class GameFlowSORunner
     {

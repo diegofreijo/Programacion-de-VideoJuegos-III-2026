@@ -1,12 +1,15 @@
 using UnityEngine;
 
-namespace Clase07.FSM.Large.ScriptableObjectStates
+namespace Clase07.FSM.LargeScriptableObjectStates
 {
     [CreateAssetMenu(fileName = "PlayingState", menuName = "Clase07/FSM/Playing State")]
     public class PlayingStateSO : GameFlowStateSO
     {
         public override string Name => "Playing";
 
+        // A diferencia de c_LargeStatePattern, acá "a qué estado puedo ir" no es
+        // código — son tres referencias serializadas, arrastrables desde el
+        // Inspector sin tocar PlayingStateSO.cs.
         [SerializeField] private UserPlayingStateSO _userPlaying;
         [SerializeField] private PauseMenuStateSO _pauseMenu;
         [SerializeField] private SettingsMenuStateSO _settingsMenu;

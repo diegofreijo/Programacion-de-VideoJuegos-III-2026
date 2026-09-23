@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Clase07.FSM.Large.ScriptableObjectStates
+namespace Clase07.FSM.LargeScriptableObjectStates
 {
     // Cada estado es un asset: se puede crear, nombrar y (en un juego real)
     // configurar desde el Inspector sin tocar código.
