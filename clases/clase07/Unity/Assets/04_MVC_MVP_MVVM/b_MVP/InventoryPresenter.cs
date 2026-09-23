@@ -1,7 +1,8 @@
-using Clase07.Mvx.Shared;
-
 namespace Clase07.Mvx.Mvp
 {
+    // Ninguna línea de esta clase importa UnityEngine: solo conoce InventoryModel
+    // (dominio) e IInventoryView (interfaz pasiva). Por eso es la primera de las tres
+    // variantes testeable con un fake, sin levantar Unity.
     public class InventoryPresenter
     {
         private readonly InventoryModel _model;

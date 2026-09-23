@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using Clase07.Mvx.Shared;
 using Clase07.Mvx.Mvp;
 
-namespace Clase07.Mvx.Tests
+namespace Clase07.Mvx.Mvp.Tests
 {
     public class FakeInventoryView : IInventoryView
     {

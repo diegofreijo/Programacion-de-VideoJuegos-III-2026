@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using Clase07.Mvx.Shared;
 
 namespace Clase07.Mvx.Mvp
 {
