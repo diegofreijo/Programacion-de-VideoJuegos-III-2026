@@ -97,8 +97,9 @@ clases/clase07/
   (POCOs) aunque vivan dentro del proyecto de Unity, tanto para que sean más fáciles de
   testear como para reforzar la lección de separar lógica de infraestructura ya vista en
   `clase05`.
-- Tests: un `.asmdef` de test por módulo (referenciando el asmdef del módulo), corridos
-  vía Unity Test Framework. El agente los corre en batchmode
+- Tests: los asmdefs de test descriptos arriba (uno de EditMode por carpeta de
+  implementación, y uno de PlayMode adicional en las que lo necesitan) se corren vía
+  Unity Test Framework. El agente los corre en batchmode
   (`-runTests -testPlatform EditMode|PlayMode`) como verificación; el usuario puede
   además correrlos desde el Test Runner del Editor.
 

@@ -104,8 +104,10 @@ indicada y entrar en Play mode.
 
 **Desde el Editor:** `Window > General > Test Runner`, pestañas `EditMode` y
 `PlayMode`, "Run All". La mayoría de los tests de este proyecto son EditMode; hay
-PlayMode donde el módulo necesita ejecutar dentro de una escena (por ejemplo el
-motor de FSM en `01_FSM/Tests/PlayMode`).
+PlayMode donde la implementación necesita ejecutar dentro de una escena, por ejemplo
+en el motor de FSM: `01_FSM/a_SmallBaseline/Tests/PlayMode/`,
+`01_FSM/b_SmallStatePattern/Tests/PlayMode/` y
+`01_FSM/c_LargeStatePattern/Tests/PlayMode/`.
 
 **Desde línea de comandos (batchmode)**, sin abrir el Editor de forma interactiva —
 parado en la raíz del monorepo del curso. Importante: **no combinar `-runTests` con
