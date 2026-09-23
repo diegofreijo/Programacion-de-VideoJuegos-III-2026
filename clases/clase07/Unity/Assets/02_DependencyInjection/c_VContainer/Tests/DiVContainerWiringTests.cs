@@ -1,9 +1,8 @@
 using NUnit.Framework;
 using VContainer;
-using Clase07.DI.Shared;
 using Clase07.DI.VContainerExample;
 
-namespace Clase07.DI.Tests
+namespace Clase07.DI.VContainerExample.Tests
 {
     // Los tests llaman al mismo DiVContainerLifetimeScope.RegisterServices que usa la
     // escena: si alguien rompe ese cableado, estos tests lo detectan.

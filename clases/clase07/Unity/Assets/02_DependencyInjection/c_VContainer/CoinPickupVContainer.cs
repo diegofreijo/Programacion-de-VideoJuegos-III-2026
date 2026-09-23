@@ -1,7 +1,6 @@
 using UnityEngine;
 using TMPro;
 using VContainer;
-using Clase07.DI.Shared;
 
 namespace Clase07.DI.VContainerExample
 {
@@ -12,6 +11,10 @@ namespace Clase07.DI.VContainerExample
         private IScoreService _scoreService;
         private IAudioService _audioService;
 
+        // La dependencia se DECLARA acá, no se busca (Instance estático) ni se
+        // pide bajo demanda (ServiceLocator.Resolve<T>()) — VContainer la
+        // resuelve y la pasa antes de que el objeto se use, así que además
+        // queda trivial de testear con un fake, sin tocar el contenedor.
         [Inject]
         public void Construct(IScoreService scoreService, IAudioService audioService)
         {

@@ -1,0 +1,17 @@
+{
+    "name": "Clase07.DI.VContainerExample",
+    "rootNamespace": "",
+    "references": [
+        "VContainer",
+        "Unity.TextMeshPro"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

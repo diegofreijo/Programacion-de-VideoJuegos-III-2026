@@ -1,6 +1,5 @@
 using VContainer;
 using VContainer.Unity;
-using Clase07.DI.Shared;
 
 namespace Clase07.DI.VContainerExample
 {
