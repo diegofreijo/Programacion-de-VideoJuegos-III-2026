@@ -29,6 +29,8 @@ namespace Clase07.MessageBroker.DIBroker
         public void Publish<T>(T message)
         {
             if (!_handlers.TryGetValue(typeof(T), out var list)) return;
+            // ToArray() copia la lista antes de iterar: si un handler se desuscribe
+            // (Dispose) durante su propio callback, no rompe la iteración en curso.
             foreach (var handler in list.ToArray())
             {
                 ((Action<T>)handler).Invoke(message);

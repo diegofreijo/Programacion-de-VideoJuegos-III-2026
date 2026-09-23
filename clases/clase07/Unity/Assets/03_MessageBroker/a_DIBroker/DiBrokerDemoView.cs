@@ -1,7 +1,6 @@
 using UnityEngine;
 using TMPro;
 using VContainer;
-using Clase07.MessageBroker.Shared;
 
 namespace Clase07.MessageBroker.DIBroker
 {

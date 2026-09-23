@@ -1,15 +1,14 @@
 using NUnit.Framework;
 using Clase07.MessageBroker.DIBroker;
-using Clase07.MessageBroker.Shared;
 
-namespace Clase07.MessageBroker.Tests
+namespace Clase07.MessageBroker.DIBroker.Tests
 {
     public class MessageBrokerTests
     {
         [Test]
         public void Publish_DeliversToSubscriber()
         {
-            var broker = new Clase07.MessageBroker.DIBroker.MessageBroker();
+            var broker = new MessageBroker();
             ScorePickedUpEvent? received = null;
             broker.Subscribe<ScorePickedUpEvent>(e => received = e);
 
@@ -21,7 +20,7 @@ namespace Clase07.MessageBroker.Tests
         [Test]
         public void Publish_DeliversToMultipleSubscribers()
         {
-            var broker = new Clase07.MessageBroker.DIBroker.MessageBroker();
+            var broker = new MessageBroker();
             var count = 0;
             broker.Subscribe<ScorePickedUpEvent>(_ => count++);
             broker.Subscribe<ScorePickedUpEvent>(_ => count++);
@@ -34,7 +33,7 @@ namespace Clase07.MessageBroker.Tests
         [Test]
         public void Dispose_CancelsSubscription()
         {
-            var broker = new Clase07.MessageBroker.DIBroker.MessageBroker();
+            var broker = new MessageBroker();
             var count = 0;
             var subscription = broker.Subscribe<ScorePickedUpEvent>(_ => count++);
 
@@ -47,7 +46,7 @@ namespace Clase07.MessageBroker.Tests
         [Test]
         public void Publish_WithNoSubscribers_DoesNotThrow()
         {
-            var broker = new Clase07.MessageBroker.DIBroker.MessageBroker();
+            var broker = new MessageBroker();
             Assert.DoesNotThrow(() => broker.Publish(new PlayerDamagedEvent(5)));
         }
     }
