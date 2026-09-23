@@ -1,6 +1,4 @@
-using Clase07.FSM.Core;
-
-namespace Clase07.FSM.Small.StatePattern
+namespace Clase07.FSM.SmallStatePattern
 {
     public class WeaponFiringState : IState
     {
@@ -25,6 +23,7 @@ namespace Clase07.FSM.Small.StatePattern
             _context.Timer += deltaTime;
             if (_context.Timer >= WeaponContext.FireDuration)
             {
+                // Mismo mecanismo: este estado decide sólo su propia salida.
                 _controller.ChangeState(_controller.IdleState);
             }
         }

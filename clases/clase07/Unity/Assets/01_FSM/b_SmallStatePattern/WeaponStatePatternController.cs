@@ -1,6 +1,4 @@
-using Clase07.FSM.Core;
-
-namespace Clase07.FSM.Small.StatePattern
+namespace Clase07.FSM.SmallStatePattern
 {
     public class WeaponStatePatternController
     {

@@ -8,19 +8,14 @@ using TMPro;
 
 namespace Clase07.FSM.Tests
 {
-    public class FsmDemoViewsPlayModeTests
+    public class WeaponStatePatternDemoViewPlayModeTests
     {
         [UnityTest]
-        public IEnumerator GameFlowScene_LoadsAndRespondsToButtons()
+        public IEnumerator WeaponStatePatternScene_LoadsAndRespondsToButtons()
         {
-            SceneManager.LoadScene("Assets/01_FSM/03_FSM_GameFlow.unity", LoadSceneMode.Single);
+            SceneManager.LoadScene("Assets/01_FSM/b_SmallStatePattern/b_FSM_WeaponStatePattern.unity", LoadSceneMode.Single);
             yield return null;
 
-            yield return ClickAllButtonsAndAssertLabelsUpdated();
-        }
-
-        private static IEnumerator ClickAllButtonsAndAssertLabelsUpdated()
-        {
             var buttons = Object.FindObjectsOfType<Button>();
             Assert.Greater(buttons.Length, 0);
 

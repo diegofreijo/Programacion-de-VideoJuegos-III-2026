@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using Clase07.FSM.SmallBaseline;
-using Clase07.FSM.Small.StatePattern;
+using Clase07.FSM.SmallStatePattern;
 
 namespace Clase07.FSM.Tests
 {

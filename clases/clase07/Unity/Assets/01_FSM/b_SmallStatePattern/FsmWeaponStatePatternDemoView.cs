@@ -1,8 +1,7 @@
 using UnityEngine;
 using TMPro;
-using Clase07.FSM.Small.StatePattern;
 
-namespace Clase07.FSM.Demo
+namespace Clase07.FSM.SmallStatePattern
 {
     public class FsmWeaponStatePatternDemoView : MonoBehaviour
     {

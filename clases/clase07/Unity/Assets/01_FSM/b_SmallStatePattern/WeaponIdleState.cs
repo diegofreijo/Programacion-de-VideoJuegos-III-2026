@@ -1,6 +1,4 @@
-using Clase07.FSM.Core;
-
-namespace Clase07.FSM.Small.StatePattern
+namespace Clase07.FSM.SmallStatePattern
 {
     public class WeaponIdleState : IState
     {
@@ -20,6 +18,9 @@ namespace Clase07.FSM.Small.StatePattern
             if (!_context.TriggerPressedThisFrame) return;
             _context.TriggerPressedThisFrame = false;
 
+            // La transición vive acá, en el estado que la dispara — no hay un
+            // switch central que decida "si estoy en Idle y aprietan, ¿a dónde
+            // voy?": cada IState sabe a qué otro estado puede pasar.
             _controller.ChangeState(_context.AmmoInMagazine > 0
                 ? _controller.FiringState
                 : _controller.ReloadingState);

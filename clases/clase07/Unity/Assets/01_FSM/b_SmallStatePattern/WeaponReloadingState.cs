@@ -1,6 +1,4 @@
-using Clase07.FSM.Core;
-
-namespace Clase07.FSM.Small.StatePattern
+namespace Clase07.FSM.SmallStatePattern
 {
     public class WeaponReloadingState : IState
     {
@@ -21,6 +19,7 @@ namespace Clase07.FSM.Small.StatePattern
             if (_context.Timer >= WeaponContext.ReloadDuration)
             {
                 _context.AmmoInMagazine = WeaponContext.MagazineSize;
+                // Mismo mecanismo: este estado decide sólo su propia salida.
                 _controller.ChangeState(_controller.IdleState);
             }
         }

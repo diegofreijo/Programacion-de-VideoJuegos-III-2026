@@ -1,9 +1,7 @@
 {
-    "name": "Clase07.FSM.Tests",
+    "name": "Clase07.FSM.SmallStatePattern.Tests",
     "rootNamespace": "",
     "references": [
-        "Clase07.FSM",
-        "Clase07.FSM.SmallBaseline",
         "Clase07.FSM.SmallStatePattern",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
