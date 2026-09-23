@@ -43,10 +43,10 @@ compartida dentro del módulo, y su propia carpeta `Tests/` — se puede copiar 
 de esas carpetas a otro proyecto Unity y compila sola, salvo por los paquetes de
 terceros (VContainer, MessagePipe, UniTask, uGUI), que sí es correcto que se
 compartan (con la salvedad de que los tests PlayMode de FSM en `a_SmallBaseline`,
-`b_SmallStatePattern` y `c_LargeStatePattern` tienen hardcodeada internamente la ruta
-completa `Assets/...` de su escena, así que tras copiar la carpeta esos tests puntuales
-necesitarían actualizar esa ruta para volver a pasar, aunque la carpeta siga
-compilando).
+`b_SmallStatePattern`, `c_LargeStatePattern` y `d_LargeScriptableObjectStates` tienen
+hardcodeada internamente la ruta completa `Assets/...` de su escena, así que tras
+copiar la carpeta esos tests puntuales necesitarían actualizar esa ruta para volver
+a pasar, aunque la carpeta siga compilando).
 
 - Cada implementación tiene su propio Assembly Definition (ej. `Clase07.DI.Singleton`,
   `Clase07.MessageBroker.MessagePipeExample`, `Clase07.Mvx.Mvvm`) y su propia carpeta
@@ -72,7 +72,7 @@ Todas las escenas están armadas en el Inspector (Canvas + TextMeshPro + `Layout
 sin posiciones absolutas por pixel), con la UI mínima pero prolija: abrir la escena
 indicada y entrar en Play mode.
 
-- **01 — FSM**, tres escenas independientes:
+- **01 — FSM**, cuatro escenas independientes:
   - `Assets/01_FSM/a_SmallBaseline/a_FSM_WeaponBaseline.unity` — botón "Fire" para la
     versión del arma con `enum` + `switch`, con texto de debug mostrando estado y
     munición.
@@ -82,11 +82,15 @@ indicada y entrar en Play mode.
   - `Assets/01_FSM/c_LargeStatePattern/c_FSM_GameFlow.unity` — botones para avanzar
     el game flow (`Finish Loading`, `Play`, `Pause`, `Open Settings`, `Close
     Settings`, `Resume`), con texto de debug mostrando el estado y el subestado
-    activos. La escena muestra **sólo** la variante OOP del game flow; la variante con
-    estados como `ScriptableObject`
-    (`Assets/01_FSM/d_LargeScriptableObjectStates/`) se verifica por tests de
-    EditMode en vez de montarse también en una escena — sigue siendo una decisión de
-    alcance deliberada, ver [`SPEC.md`](SPEC.md).
+    activos. Variante OOP del game flow: los estados son clases de código.
+  - `Assets/01_FSM/d_LargeScriptableObjectStates/d_FSM_GameFlow.unity` — los mismos
+    botones y el mismo texto de debug que `c_LargeStatePattern` (para poder comparar
+    ambas escenas lado a lado), pero cada estado es un asset de `ScriptableObject`
+    (`LoadingState.asset`, `MainMenuState.asset`, `PlayingState.asset`,
+    `UserPlayingState.asset`, `PauseMenuState.asset`, `SettingsMenuState.asset`); las
+    transiciones de `PlayingState.asset` hacia sus substates están arrastradas en el
+    Inspector (campos `_userPlaying`/`_pauseMenu`/`_settingsMenu`), no hardcodeadas en
+    código.
 - **02 — Dependency Injection**, tres escenas casi idénticas (botón "Coin" + texto
   de score) que conviene correr una por vez, ya que alguna variante usa estado
   `static`:
@@ -110,8 +114,9 @@ indicada y entrar en Play mode.
 `PlayMode`, "Run All". La mayoría de los tests de este proyecto son EditMode; hay
 PlayMode donde la implementación necesita ejecutar dentro de una escena, por ejemplo
 en el motor de FSM: `01_FSM/a_SmallBaseline/Tests/PlayMode/`,
-`01_FSM/b_SmallStatePattern/Tests/PlayMode/` y
-`01_FSM/c_LargeStatePattern/Tests/PlayMode/`.
+`01_FSM/b_SmallStatePattern/Tests/PlayMode/`,
+`01_FSM/c_LargeStatePattern/Tests/PlayMode/` y
+`01_FSM/d_LargeScriptableObjectStates/Tests/PlayMode/`.
 
 **Desde línea de comandos (batchmode)**, sin abrir el Editor de forma interactiva —
 parado en la raíz del monorepo del curso. Importante: **no combinar `-runTests` con

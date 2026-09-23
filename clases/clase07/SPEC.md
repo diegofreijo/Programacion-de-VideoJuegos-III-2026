@@ -141,10 +141,16 @@ clases/clase07/
 
 ### Demo y tests
 
-- Tres escenas independientes: `a_FSM_WeaponBaseline.unity` y
+- Cuatro escenas independientes: `a_FSM_WeaponBaseline.unity` y
   `b_FSM_WeaponStatePattern.unity` (una por versión del arma, cada una con su botón
-  "Fire" y su texto de debug) y `c_FSM_GameFlow.unity` (botones para el game flow,
-  variante OOP únicamente — ver más abajo).
+  "Fire" y su texto de debug), y `c_FSM_GameFlow.unity` / `d_FSM_GameFlow.unity` (los
+  mismos botones y el mismo texto de debug del game flow en ambas — variante OOP y
+  variante `ScriptableObject` respectivamente —, para que se puedan comparar lado a
+  lado). En `d_FSM_GameFlow.unity`, el `GameObject` de la vista referencia los seis
+  assets de estado (`LoadingState.asset`, `MainMenuState.asset`, `PlayingState.asset`,
+  `UserPlayingState.asset`, `PauseMenuState.asset`, `SettingsMenuState.asset`); las
+  transiciones de `PlayingState.asset` hacia sus substates están arrastradas en el
+  Inspector, no hardcodeadas en código.
 - Tests EditMode: transiciones del `StateMachine<TState>` genérico (se llaman
   `OnEnter`/`OnExit` en el orden correcto, no se permite una transición al mismo estado
   actual sin querer, etc.), dos suites independientes que corren la misma secuencia de
