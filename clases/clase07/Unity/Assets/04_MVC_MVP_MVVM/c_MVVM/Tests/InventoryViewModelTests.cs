@@ -1,9 +1,8 @@
 using System.Linq;
 using NUnit.Framework;
-using Clase07.Mvx.Shared;
 using Clase07.Mvx.Mvvm;
 
-namespace Clase07.Mvx.Tests
+namespace Clase07.Mvx.Mvvm.Tests
 {
     public class InventoryViewModelTests
     {

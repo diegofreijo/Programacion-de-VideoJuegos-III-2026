@@ -1,6 +1,5 @@
 using UnityEngine;
 using TMPro;
-using Clase07.Mvx.Shared;
 
 namespace Clase07.Mvx.Mvvm
 {
@@ -16,6 +15,12 @@ namespace Clase07.Mvx.Mvvm
         {
             _viewModel = new InventoryViewModel(new InventoryModel());
             _nameInput.onValueChanged.AddListener(value => _viewModel.PendingName = value);
+            // La vista nunca llama a _model.AddItem/RemoveItem directamente: solo
+            // escribe PendingName y ejecuta AddCommand/RemoveCommand (ver OnAddClicked
+            // y SetRemoveAction más abajo), y solo redibuja cuando Items.CollectionChanged
+            // avisa. Toda la lógica de cuándo se puede agregar o quitar un ítem vive en
+            // InventoryViewModel/RelayCommand, no acá — a diferencia de a_MVC, que llama
+            // al modelo directamente.
             _viewModel.Items.CollectionChanged += (_, __) => Render();
             Render();
         }

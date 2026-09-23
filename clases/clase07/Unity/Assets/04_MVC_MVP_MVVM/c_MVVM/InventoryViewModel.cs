@@ -1,5 +1,4 @@
 using System.Collections.ObjectModel;
-using Clase07.Mvx.Shared;
 
 namespace Clase07.Mvx.Mvvm
 {
