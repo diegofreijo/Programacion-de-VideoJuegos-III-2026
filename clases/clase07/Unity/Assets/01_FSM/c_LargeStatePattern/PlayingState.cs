@@ -1,6 +1,4 @@
-using Clase07.FSM.Core;
-
-namespace Clase07.FSM.Large.StatePattern
+namespace Clase07.FSM.LargeStatePattern
 {
     public class PlayingState : IGameFlowState
     {
@@ -11,6 +9,14 @@ namespace Clase07.FSM.Large.StatePattern
         public PauseMenuState PauseMenu { get; }
         public SettingsMenuState SettingsMenu { get; }
 
+        // Una StateMachine adentro de un estado: Playing es, para la máquina de
+        // arriba, un único estado — pero puertas adentro tiene su propia
+        // sub-máquina (UserPlaying → PauseMenu → SettingsMenu) que arranca en
+        // OnEnter() y se tickea desde OnUpdate(). Los guards "!= null" de Pause/
+        // Resume/OpenSettings/CloseSettings existen porque GameFlowController
+        // expone esos métodos incondicionalmente y una escena con botones
+        // independientes los puede disparar antes de que Play() haya creado esta
+        // sub-máquina.
         private StateMachine<IGameFlowState> _substateMachine;
 
         public PlayingState(GameFlowController controller)

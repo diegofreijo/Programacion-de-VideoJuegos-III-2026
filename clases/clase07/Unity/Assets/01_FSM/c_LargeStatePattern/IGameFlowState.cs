@@ -1,6 +1,4 @@
-using Clase07.FSM.Core;
-
-namespace Clase07.FSM.Large.StatePattern
+namespace Clase07.FSM.LargeStatePattern
 {
     public interface IGameFlowState : IState
     {

@@ -1,8 +1,7 @@
 using UnityEngine;
 using TMPro;
-using Clase07.FSM.Large.StatePattern;
 
-namespace Clase07.FSM.Demo
+namespace Clase07.FSM.LargeStatePattern
 {
     public class FsmGameFlowDemoView : MonoBehaviour
     {

@@ -1,4 +1,4 @@
-namespace Clase07.FSM.Large.StatePattern
+namespace Clase07.FSM.LargeStatePattern
 {
     public class UserPlayingState : IGameFlowState
     {

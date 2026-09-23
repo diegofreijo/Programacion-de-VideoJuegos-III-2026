@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using Clase07.FSM.Large.StatePattern;
+using Clase07.FSM.LargeStatePattern;
 
 namespace Clase07.FSM.Tests
 {
