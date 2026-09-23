@@ -62,12 +62,13 @@ clases/clase07/
 
 - Unity **6000.3.21f1** (versión ya instalada localmente; el proyecto se crea con
   `Unity -batchmode -createProject`).
-- Cada carpeta de módulo bajo `Assets/` tiene su propio **Assembly Definition** (asmdef),
-  para mantener límites de compilación claros y namespaces separados:
-  `Clase07.FSM`, `Clase07.DI`, `Clase07.MessageBroker`, `Clase07.Mvx`.
-- Cada módulo trae su propio `Tests/` (EditMode, y PlayMode donde haga falta ejecutar
-  dentro de una escena) y su propia sección de README explicando qué mirar y en qué
-  orden.
+- Cada carpeta de implementación (dentro de cada módulo, ver la convención de letras en
+  "Convenciones compartidas" más abajo) tiene su propio **Assembly Definition** (asmdef),
+  para mantener límites de compilación claros y namespaces separados — no hay un asmdef
+  a nivel de módulo.
+- Cada carpeta de implementación trae su propio `Tests/` (EditMode, y PlayMode donde
+  haga falta ejecutar dentro de una escena); el README explica qué mirar y en qué orden
+  para cada módulo.
 - Paquetes de terceros vía `Packages/manifest.json`:
   - **VContainer** (git URL de `hadashiA/VContainer`).
   - **MessagePipe**, incluyendo su paquete de integración con VContainer (git URL de
@@ -75,9 +76,18 @@ clases/clase07/
 
 ## Convenciones compartidas
 
-- Cada implementación alternativa de un mismo patrón vive en su propia subcarpeta
-  numerada (`01_...`, `02_...`, `03_...`) dentro del módulo, para que el orden de lectura
-  sugerido sea obvio.
+- Cada implementación alternativa de un mismo patrón vive en su propia subcarpeta con
+  prefijo de **letra** (`a_...`, `b_...`, `c_...`) dentro del módulo, en orden de
+  lectura sugerido de la más simple/ingenua a la más sofisticada — el prefijo
+  **numérico** (`01_...`, `02_...`) queda reservado para las carpetas de módulo, que
+  ordenan entre patrones distintos.
+- Cada carpeta de implementación es **autocontenida**: tiene su propio Assembly
+  Definition (runtime + test, y PlayMode donde aplica), y su propia copia de
+  cualquier clase de dominio que en otra implementación hermana sea idéntica — no hay
+  ninguna carpeta `Shared/`/`Core/` ni asmdef a nivel de módulo. Se puede copiar
+  cualquiera de estas carpetas a otro proyecto Unity y compila sola, salvo por los
+  paquetes de terceros (VContainer, MessagePipe, MessagePipe.VContainer, UniTask,
+  uGUI), que sí es correcto que se compartan.
 - Las escenas de demo son mínimas: UI de uGUI + TextMeshPro armada en el Inspector
   (Canvas, `Layout Group`, botones/texto reales, sin posiciones absolutas por pixel ni
   UI generada por código), sin arte. Cada implementación vive en su propia escena —
@@ -96,30 +106,33 @@ clases/clase07/
 
 ### Escala chica: arma con estados
 
-- `Small/Baseline/WeaponBaseline.cs`: controlador de arma con **enum + switch**
+- `a_SmallBaseline/WeaponBaseline.cs`: controlador de arma con **enum + switch**
   (`Idle`, `Firing`, `Reloading`). Implementación deliberadamente corta y "sucia" —
   sirve de disparador para mostrar qué pasa cuando el número de estados/transiciones
   crece (código spaghetti, fácil de dejar un caso sin manejar).
-- `Small/StatePattern/`: el mismo arma reconstruida sobre el motor genérico de FSM
+- `b_SmallStatePattern/`: el mismo arma reconstruida sobre el motor genérico de FSM
   (ver abajo): `WeaponIdleState`, `WeaponFiringState`, `WeaponReloadingState`,
   implementando `IState`.
 
-### Motor genérico reusable
+### Motor genérico de estados
 
-- `Core/IState.cs`: `OnEnter()`, `OnUpdate(float deltaTime)`, `OnExit()`.
-- `Core/StateMachine.cs`: clase C# pura (sin `UnityEngine`) parametrizada en `TState :
+- `IState.cs` (`OnEnter()`, `OnUpdate(float deltaTime)`, `OnExit()`) y
+  `StateMachine.cs` (clase C# pura, sin `UnityEngine`, parametrizada en `TState :
   IState`, con `ChangeState(TState next)`, `Tick(float deltaTime)`, evento
-  `StateChanged`. Reusada tanto por el ejemplo chico (arma) como por el grande (game
-  flow), incluyendo de forma anidada para las substates.
+  `StateChanged`): cada una de las dos implementaciones State Pattern (chica y
+  grande, `b_SmallStatePattern/` y `c_LargeStatePattern/`) tiene su propia copia de
+  `IState`/`StateMachine<TState>` — no hay un motor compartido a nivel de módulo. En
+  `c_LargeStatePattern/`, el mismo `StateMachine<TState>` se reusa además de forma
+  anidada para las substates del game flow.
 
 ### Escala grande: game flow con substates
 
-- `Large/StatePattern/`: estados de alto nivel `LoadingState`, `MainMenuState`,
+- `c_LargeStatePattern/`: estados de alto nivel `LoadingState`, `MainMenuState`,
   `PlayingState`, cada uno `IState`, manejados por un `StateMachine<IGameFlowState>` en
   un `GameFlowController` (`MonoBehaviour`). `PlayingState` posee su **propio**
   `StateMachine` hijo para las substates pedidas en el enunciado:
   `UserPlayingState` → `PauseMenuState` → `SettingsMenuState`.
-- `Large/ScriptableObjectStates/`: la misma máquina de game flow, pero cada estado es un
+- `d_LargeScriptableObjectStates/`: la misma máquina de game flow, pero cada estado es un
   asset `ScriptableObject` (`GameFlowStateSO`, con `Enter/Exit/Tick` y referencias a los
   próximos estados posibles configurables desde el Inspector), incluyendo las mismas
   substates de `Playing`. Contraste: estados definidos por código vs. estados definidos
@@ -127,9 +140,9 @@ clases/clase07/
 
 ### Demo y tests
 
-- Tres escenas independientes: `01_FSM_WeaponBaseline.unity` y
-  `02_FSM_WeaponStatePattern.unity` (una por versión del arma, cada una con su botón
-  "Fire" y su texto de debug) y `03_FSM_GameFlow.unity` (botones para el game flow,
+- Tres escenas independientes: `a_FSM_WeaponBaseline.unity` y
+  `b_FSM_WeaponStatePattern.unity` (una por versión del arma, cada una con su botón
+  "Fire" y su texto de debug) y `c_FSM_GameFlow.unity` (botones para el game flow,
   variante OOP únicamente — ver más abajo).
 - Tests EditMode: transiciones del `StateMachine<TState>` genérico (se llaman
   `OnEnter`/`OnExit` en el orden correcto, no se permite una transición al mismo estado
@@ -139,29 +152,30 @@ clases/clase07/
 
 ## Módulo 2 — Dependency Injection (`Assets/02_DependencyInjection/`)
 
-### Dominio compartido
+### Servicios de dominio
 
-- `Shared/IScoreService.cs` (`AddScore(int)`, `CurrentScore`, `event Action<int>
-  OnScoreChanged`) y `Shared/IAudioService.cs` (`PlayCoinSound()`, implementación real
+- `IScoreService.cs` (`AddScore(int)`, `CurrentScore`, `event Action<int>
+  OnScoreChanged`) e `IAudioService.cs` (`PlayCoinSound()`, implementación real
   hace `Debug.Log` en vez de sonido real, para no depender de assets de audio).
-- `Shared/ScoreService.cs` / `Shared/AudioService.cs`: implementaciones plain C# de esas
-  interfaces, **las mismas en las tres variantes** — lo único que cambia entre
-  implementaciones es cómo el consumidor las obtiene, para aislar el patrón de DI como
-  única variable.
+- `ScoreService.cs` / `AudioService.cs`: implementaciones plain C# de esas
+  interfaces, **equivalentes en las tres variantes** (cada implementación tiene su
+  propia copia de `IScoreService`/`IAudioService`/`ScoreService`/`AudioService`) — lo
+  único que cambia entre implementaciones es cómo el consumidor las obtiene, para
+  aislar el patrón de DI como única variable.
 
 ### Tres formas de resolver las dependencias
 
-- `01_Singleton/`: `ScoreServiceSingleton`/`AudioServiceSingleton` como
+- `a_Singleton/`: `ScoreServiceSingleton`/`AudioServiceSingleton` como
   `MonoBehaviour` con `Instance` estático; `CoinPickupSingleton` accede vía
   `ScoreServiceSingleton.Instance`.
-- `02_ServiceLocator/`: `ServiceLocator` estático genérico (`Register<T>`,
+- `b_ServiceLocator/`: `ServiceLocator` estático genérico (`Register<T>`,
   `Resolve<T>`), un `CompositionRoot` que registra las implementaciones al arrancar la
   escena, y `CoinPickupServiceLocator` resolviendo vía `ServiceLocator.Resolve<T>()`.
-- `03_VContainer/`: un `LifetimeScope` que registra `IScoreService`/`IAudioService`, y
+- `c_VContainer/`: un `LifetimeScope` que registra `IScoreService`/`IAudioService`, y
   `CoinPickupVContainer` recibiendo ambas dependencias por **constructor injection**
   (`[Inject]`).
-- Tres escenas mínimas casi idénticas (`02_DI_Singleton.unity`,
-  `02_DI_ServiceLocator.unity`, `02_DI_VContainer.unity`), cada una con un botón "Coin"
+- Tres escenas mínimas casi idénticas (`a_DI_Singleton.unity`,
+  `b_DI_ServiceLocator.unity`, `c_DI_VContainer.unity`), cada una con un botón "Coin"
   y un texto de score, para poder compararlas una al lado de la otra sin que el estado
   estático de una variante contamine a otra.
 
@@ -176,27 +190,29 @@ clases/clase07/
 
 ## Módulo 3 — Message Broker (`Assets/03_MessageBroker/`)
 
-### Eventos compartidos
+### Eventos de dominio
 
-- `Shared/ScorePickedUpEvent.cs` (`int Amount`), `Shared/PlayerDamagedEvent.cs`
-  (`int Amount`) — records/structs simples usados como payload en las tres variantes.
+- `ScorePickedUpEvent.cs` (`int Amount`), `PlayerDamagedEvent.cs`
+  (`int Amount`) — records/structs simples usados como payload. Cada implementación
+  tiene su propia copia de los eventos que usa (`b_ScriptableObjectChannels` y
+  `c_MessagePipe` solo usan `ScorePickedUpEvent`; `a_DIBroker` usa ambos).
 
 ### Tres implementaciones
 
-- `01_DIBroker/`: broker genérico hecho a mano (`IMessageBroker` con
+- `a_DIBroker/`: broker genérico hecho a mano (`IMessageBroker` con
   `Subscribe<T>(Action<T>)` / `Publish<T>(T)` / `IDisposable` de suscripción),
   registrado como singleton en un `LifetimeScope` de VContainer e inyectado por
   constructor en un `Publisher` y un `Subscriber`. Enseña el mecanismo interno de un
   broker.
-- `02_ScriptableObjectChannels/`: patrón de **event channels como asset**, muy usado en
+- `b_ScriptableObjectChannels/`: patrón de **event channels como asset**, muy usado en
   Unity — `ScoreEventChannelSO` / `PlayerDamagedEventChannelSO` (`ScriptableObject` con
   `event Action<int> OnRaised` y `Raise(int amount)`); `Publisher`/`Listener`
   (`MonoBehaviour`) referencian el asset desde el Inspector, sin código de por medio para
   conectar un nuevo listener.
-- `03_MessagePipe/`: **MessagePipe** (Cysharp) registrado sobre el mismo `LifetimeScope`
+- `c_MessagePipe/`: **MessagePipe** (Cysharp) registrado sobre el mismo `LifetimeScope`
   de VContainer (`builder.RegisterMessagePipe()`), con `Publisher`/`Subscriber` usando
   `IPublisher<T>`/`ISubscriber<T>` inyectados. Este es el ejemplo de "qué se usa en un
-  juego real": mismo problema que `01_DIBroker`, resuelto con una librería madura del
+  juego real": mismo problema que `a_DIBroker`, resuelto con una librería madura del
   mismo ecosistema que VContainer (mejor rendimiento, filtros, soporte async/keyed
   pub-sub) en vez de reinventar el broker.
 - Tres escenas mínimas, cada una con un botón que publica un evento y un texto que se
@@ -219,28 +235,30 @@ poder compararse directamente. Se presentan en orden **MVC → MVP → MVVM** (d
 acoplado a más desacoplado), aunque el nombre de la carpeta del módulo mantenga el orden
 original del enunciado.
 
-### Dominio compartido
+### Modelo y fila de lista
 
-- `Shared/InventoryItem.cs` (`Name`, `Quantity`).
-- `Shared/InventoryModel.cs`: plain C#, `AddItem(name)`, `RemoveItem(name)`,
-  `IReadOnlyList<InventoryItem> Items`, evento de cambio. Igual en las tres variantes.
-- `Shared/InventoryItemRow.prefab` + `Shared/InventoryItemRowView.cs`: fila de lista reutilizada
+- `InventoryItem.cs` (`Name`, `Quantity`).
+- `InventoryModel.cs`: plain C#, `AddItem(name)`, `RemoveItem(name)`,
+  `IReadOnlyList<InventoryItem> Items`, evento de cambio. Equivalente en las tres
+  variantes.
+- `InventoryItemRow.prefab` + `InventoryItemRowView.cs`: fila de lista reutilizada
   por las tres escenas — `SetLabel(string)` actualiza el texto, `SetRemoveAction(UnityAction)`
-  conecta el botón "Remove" de esa fila específica.
+  conecta el botón "Remove" de esa fila específica. Cada implementación tiene su
+  propia copia del modelo y del prefab de fila.
 
 ### Tres implementaciones
 
-- `01_MVC/`: `InventoryController` (`MonoBehaviour`) escucha directamente los eventos de
+- `a_MVC/`: `InventoryController` (`MonoBehaviour`) escucha directamente los eventos de
   UI (botón Add con un `TMP_InputField`, botón Remove por fila), llama al `InventoryModel`, y
   manipula directamente los elementos concretos de la vista (instancia/destruye filas en
   un `Transform` de contenido). A propósito es la variante más acoplada y menos
   testeable — el README explica por qué eso es parte de la lección, no un descuido.
-- `02_MVP/`: `IInventoryView` (interfaz pasiva: `ShowItems(...)`, eventos
+- `b_MVP/`: `IInventoryView` (interfaz pasiva: `ShowItems(...)`, eventos
   `AddRequested`/`RemoveRequested`), `InventoryPresenter` (plain C#) mediando entre el
   `InventoryModel` y `IInventoryView`, e `InventoryView` (`MonoBehaviour`) implementando
   la interfaz sin lógica propia. El presenter se testea con un `IInventoryView` fake, sin
   Unity.
-- `03_MVVM/`: `InventoryViewModel` (plain C#) exponiendo una colección observable de
+- `c_MVVM/`: `InventoryViewModel` (plain C#) exponiendo una colección observable de
   `InventoryItemViewModel` y comandos (`AddCommand`/`RemoveCommand`, un `RelayCommand`
   simple tipo `Action`/`Func<bool>`); `InventoryView` (`MonoBehaviour`) solo se suscribe a
   los cambios de la colección para sincronizar filas y bindea los botones a los comandos
