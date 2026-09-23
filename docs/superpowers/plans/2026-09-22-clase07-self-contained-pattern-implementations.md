@@ -6,15 +6,16 @@
 
 **Architecture:** Por cada módulo, se trabaja implementación por implementación: mover su carpeta y escena a un nombre con prefijo de letra (`a_`, `b_`, `c_`, ...), copiar (no referenciar) las clases que hoy viven en `Shared/`/`Core/` del módulo con el namespace fusionado al de esa implementación, crear un asmdef runtime + uno de test propios, mover o duplicar sus tests existentes (duplicando con valores hardcodeados los pocos casos que hoy comparan dos implementaciones en el mismo archivo), y agregar comentarios pedagógicos en el punto exacto que es la razón de mostrar esa variante. Recién cuando las implementaciones de un módulo ya no referencian su `Shared/`/`Core/` ni su asmdef de módulo, se borran esos remanentes. Al final se actualiza la documentación del proyecto (README.md, SPEC.md) con las rutas y la convención nuevas.
 
-**Tech Stack:** Unity 6000.3.21f1, VContainer 1.19.0, MessagePipe 1.8.2 + MessagePipe.VContainer 1.8.2, UniTask 2.5.11, com.unity.ugui 2.0.0, Unity Test Framework (NUnit) vía `-runTests` batchmode. Sin cambios de versión de ningún paquete — este plan solo reorganiza código y assets existentes.
+**Tech Stack:** Unity 6000.3.21f1, VContainer 1.19.0, MessagePipe 1.8.2 + MessagePipe.VContainer 1.8.2, UniTask 2.5.11, com.unity.ugui 2.0.0, Unity Test Framework (NUnit) vía el Unity CLI (`unity test`/`unity run`, ver más abajo). Sin cambios de versión de ningún paquete — este plan solo reorganiza código y assets existentes.
 
 **Spec:** `docs/superpowers/specs/2026-09-22-clase07-self-contained-pattern-implementations-design.md`
 
 ## Global Constraints
 
-- Todos los comandos de batchmode se corren desde la raíz del monorepo (`/Users/giga/code/Programacion-de-VideoJuegos-III-2026`), con `-projectPath clases/clase07/Unity`, usando el binario `/Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/MacOS/Unity`.
-- **Nunca combinar `-quit` con `-runTests`** en la misma invocación de batchmode — compiten por cerrar el Editor y el run puede no llegar a ejecutarse (regla ya documentada en el README del proyecto).
-- Las rutas pasadas a `-testResults`/`-logFile` van siempre como `"$(pwd)/clases/clase07/Unity_<algo>.xml"` — Unity las resuelve contra su propio `-projectPath` interno, no contra el directorio desde el que se invoca.
+- Toda verificación en batchmode usa el **Unity CLI** (`unity test` / `unity run`, comando `unity`, instalado y en el PATH — confirmar con `unity --version`) en vez de invocar el binario del Editor directamente. `unity test`/`unity run` resuelven el editor pinneado en `ProjectVersion.txt` del proyecto automáticamente, así que no hace falta pasar `--editor-version` ni la ruta del binario. Todos los comandos se corren desde la raíz del monorepo (`/Users/giga/code/Programacion-de-VideoJuegos-III-2026`), pasando `clases/clase07/Unity` como path del proyecto.
+- `unity test` ya resuelve internamente el problema de no combinar `-quit` con `-runTests` (lo maneja el propio comando) — no hace falta pensarlo al escribir un comando nuevo. Devuelve exit code `0` (todo pasó), `8` (corrió y algún test falló — no reintentar, revisar el `.xml`) o cualquier otro valor, típicamente `6` (no llegó a producir veredicto: no compiló, timeout, licencia — revisar el `.log`). Cada invocación de este plan usa `--timeout` para no colgarse indefinidamente y redirige su salida a un `.log` propio (`> "$(pwd)/clases/clase07/Unity_<algo>.log" 2>&1`) para poder revisarlo si el exit code no es `0`.
+- Las rutas pasadas a `--output`/`-logFile` van siempre como `"$(pwd)/clases/clase07/Unity_<algo>.xml"` — se resuelven contra el `-projectPath` interno del Editor, no contra el directorio desde el que se invoca.
+- El exit code de `unity run` (usado para el chequeo de compilación puro y para la herramienta `RepointRowPrefabReference`) no distingue de forma confiable un error de compilación real — igual que con el binario directo, hace falta el `grep -i "error CS"` sobre el log para confirmarlo; no confiar solo en el exit code ahí.
 - Cada implementación termina con exactamente un asmdef runtime propio (más uno de test, y uno de test PlayMode donde la implementación tenga escena y ya lo tuviera hoy) — nunca comparte asmdef con otra implementación del mismo módulo.
 - El namespace de cualquier clase copiada desde `Shared/`/`Core/` de un módulo se funde con el namespace propio de la implementación que la recibe — nunca queda un sub-namespace `.Shared`/`.Core` dentro de una carpeta de implementación.
 - Convención de nombres: número de carpeta de módulo (`01_FSM`, `02_DependencyInjection`, ...) ordena entre patrones distintos y no cambia; letra de carpeta de implementación (`a_`, `b_`, `c_`, ...) ordena de más simple/ingenua a más sofisticada dentro del mismo patrón, y es nueva en este plan. El archivo `.unity` de cada implementación lleva el mismo prefijo de letra que su carpeta.
@@ -249,30 +250,28 @@ namespace Clase07.FSM.Tests
 Correr desde la raíz del monorepo (`/Users/giga/code/Programacion-de-VideoJuegos-III-2026`):
 
 ```bash
-/Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/MacOS/Unity \
-  -batchmode -nographic \
-  -projectPath clases/clase07/Unity \
-  -runTests -testPlatform EditMode \
-  -testResults "$(pwd)/clases/clase07/Unity_fsm_a_baseline_editmode.xml" \
-  -logFile "$(pwd)/clases/clase07/Unity_fsm_a_baseline_editmode.log"
+unity test clases/clase07/Unity \
+  --mode EditMode \
+  --output "$(pwd)/clases/clase07/Unity_fsm_a_baseline_editmode.xml" \
+  --timeout 300 \
+  > "$(pwd)/clases/clase07/Unity_fsm_a_baseline_editmode.log" 2>&1
+echo "exit code: $?"
 ```
 
-Run: `grep -c 'result="Failed"' clases/clase07/Unity_fsm_a_baseline_editmode.xml`
-Expected: `0`. También confirmar `grep -i "error CS" clases/clase07/Unity_fsm_a_baseline_editmode.log` sin resultados.
+Expected: La línea `exit code: 0` significa que corrió y todo pasó. `exit code: 8` significa que corrió y algún test falló (revisar `Unity_fsm_a_baseline_editmode.xml`). Cualquier otro valor (típicamente `6`) significa que no llegó a producir un veredicto — no compiló, timeout, o problema de licencia (revisar `Unity_fsm_a_baseline_editmode.log`).
 
 - [ ] **Step 10: Verificar PlayMode**
 
 ```bash
-/Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/MacOS/Unity \
-  -batchmode -nographic \
-  -projectPath clases/clase07/Unity \
-  -runTests -testPlatform PlayMode \
-  -testResults "$(pwd)/clases/clase07/Unity_fsm_a_baseline_playmode.xml" \
-  -logFile "$(pwd)/clases/clase07/Unity_fsm_a_baseline_playmode.log"
+unity test clases/clase07/Unity \
+  --mode PlayMode \
+  --output "$(pwd)/clases/clase07/Unity_fsm_a_baseline_playmode.xml" \
+  --timeout 300 \
+  > "$(pwd)/clases/clase07/Unity_fsm_a_baseline_playmode.log" 2>&1
+echo "exit code: $?"
 ```
 
-Run: `grep -c 'result="Failed"' clases/clase07/Unity_fsm_a_baseline_playmode.xml`
-Expected: `0`.
+Expected: La línea `exit code: 0` significa que corrió y todo pasó. `exit code: 8` significa que corrió y algún test falló (revisar `Unity_fsm_a_baseline_playmode.xml`). Cualquier otro valor (típicamente `6`) significa que no llegó a producir un veredicto — no compiló, timeout, o problema de licencia (revisar `Unity_fsm_a_baseline_playmode.log`).
 
 - [ ] **Step 11: Limpiar logs y commitear**
 
@@ -664,30 +663,28 @@ namespace Clase07.FSM.Tests
 - [ ] **Step 11: Verificar EditMode**
 
 ```bash
-/Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/MacOS/Unity \
-  -batchmode -nographic \
-  -projectPath clases/clase07/Unity \
-  -runTests -testPlatform EditMode \
-  -testResults "$(pwd)/clases/clase07/Unity_fsm_b_statepattern_editmode.xml" \
-  -logFile "$(pwd)/clases/clase07/Unity_fsm_b_statepattern_editmode.log"
+unity test clases/clase07/Unity \
+  --mode EditMode \
+  --output "$(pwd)/clases/clase07/Unity_fsm_b_statepattern_editmode.xml" \
+  --timeout 300 \
+  > "$(pwd)/clases/clase07/Unity_fsm_b_statepattern_editmode.log" 2>&1
+echo "exit code: $?"
 ```
 
-Run: `grep -c 'result="Failed"' clases/clase07/Unity_fsm_b_statepattern_editmode.xml`
-Expected: `0`.
+Expected: La línea `exit code: 0` significa que corrió y todo pasó. `exit code: 8` significa que corrió y algún test falló (revisar `Unity_fsm_b_statepattern_editmode.xml`). Cualquier otro valor (típicamente `6`) significa que no llegó a producir un veredicto — no compiló, timeout, o problema de licencia (revisar `Unity_fsm_b_statepattern_editmode.log`).
 
 - [ ] **Step 12: Verificar PlayMode**
 
 ```bash
-/Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/MacOS/Unity \
-  -batchmode -nographic \
-  -projectPath clases/clase07/Unity \
-  -runTests -testPlatform PlayMode \
-  -testResults "$(pwd)/clases/clase07/Unity_fsm_b_statepattern_playmode.xml" \
-  -logFile "$(pwd)/clases/clase07/Unity_fsm_b_statepattern_playmode.log"
+unity test clases/clase07/Unity \
+  --mode PlayMode \
+  --output "$(pwd)/clases/clase07/Unity_fsm_b_statepattern_playmode.xml" \
+  --timeout 300 \
+  > "$(pwd)/clases/clase07/Unity_fsm_b_statepattern_playmode.log" 2>&1
+echo "exit code: $?"
 ```
 
-Run: `grep -c 'result="Failed"' clases/clase07/Unity_fsm_b_statepattern_playmode.xml`
-Expected: `0`.
+Expected: La línea `exit code: 0` significa que corrió y todo pasó. `exit code: 8` significa que corrió y algún test falló (revisar `Unity_fsm_b_statepattern_playmode.xml`). Cualquier otro valor (típicamente `6`) significa que no llegó a producir un veredicto — no compiló, timeout, o problema de licencia (revisar `Unity_fsm_b_statepattern_playmode.log`).
 
 - [ ] **Step 13: Limpiar logs y commitear**
 
@@ -1029,30 +1026,28 @@ namespace Clase07.FSM.Tests
 - [ ] **Step 11: Verificar EditMode**
 
 ```bash
-/Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/MacOS/Unity \
-  -batchmode -nographic \
-  -projectPath clases/clase07/Unity \
-  -runTests -testPlatform EditMode \
-  -testResults "$(pwd)/clases/clase07/Unity_fsm_a_gameflow_statepattern_editmode.xml" \
-  -logFile "$(pwd)/clases/clase07/Unity_fsm_a_gameflow_statepattern_editmode.log"
+unity test clases/clase07/Unity \
+  --mode EditMode \
+  --output "$(pwd)/clases/clase07/Unity_fsm_a_gameflow_statepattern_editmode.xml" \
+  --timeout 300 \
+  > "$(pwd)/clases/clase07/Unity_fsm_a_gameflow_statepattern_editmode.log" 2>&1
+echo "exit code: $?"
 ```
 
-Run: `grep -c 'result="Failed"' clases/clase07/Unity_fsm_a_gameflow_statepattern_editmode.xml`
-Expected: `0`.
+Expected: La línea `exit code: 0` significa que corrió y todo pasó. `exit code: 8` significa que corrió y algún test falló (revisar `Unity_fsm_a_gameflow_statepattern_editmode.xml`). Cualquier otro valor (típicamente `6`) significa que no llegó a producir un veredicto — no compiló, timeout, o problema de licencia (revisar `Unity_fsm_a_gameflow_statepattern_editmode.log`).
 
 - [ ] **Step 12: Verificar PlayMode**
 
 ```bash
-/Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/MacOS/Unity \
-  -batchmode -nographic \
-  -projectPath clases/clase07/Unity \
-  -runTests -testPlatform PlayMode \
-  -testResults "$(pwd)/clases/clase07/Unity_fsm_a_gameflow_statepattern_playmode.xml" \
-  -logFile "$(pwd)/clases/clase07/Unity_fsm_a_gameflow_statepattern_playmode.log"
+unity test clases/clase07/Unity \
+  --mode PlayMode \
+  --output "$(pwd)/clases/clase07/Unity_fsm_a_gameflow_statepattern_playmode.xml" \
+  --timeout 300 \
+  > "$(pwd)/clases/clase07/Unity_fsm_a_gameflow_statepattern_playmode.log" 2>&1
+echo "exit code: $?"
 ```
 
-Run: `grep -c 'result="Failed"' clases/clase07/Unity_fsm_a_gameflow_statepattern_playmode.xml`
-Expected: `0`.
+Expected: La línea `exit code: 0` significa que corrió y todo pasó. `exit code: 8` significa que corrió y algún test falló (revisar `Unity_fsm_a_gameflow_statepattern_playmode.xml`). Cualquier otro valor (típicamente `6`) significa que no llegó a producir un veredicto — no compiló, timeout, o problema de licencia (revisar `Unity_fsm_a_gameflow_statepattern_playmode.log`).
 
 - [ ] **Step 13: Limpiar logs y commitear**
 
@@ -1167,16 +1162,15 @@ Ya es autocontenido — no requiere cambios de contenido.
 - [ ] **Step 6: Verificar EditMode**
 
 ```bash
-/Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/MacOS/Unity \
-  -batchmode -nographic \
-  -projectPath clases/clase07/Unity \
-  -runTests -testPlatform EditMode \
-  -testResults "$(pwd)/clases/clase07/Unity_fsm_b_so_states_editmode.xml" \
-  -logFile "$(pwd)/clases/clase07/Unity_fsm_b_so_states_editmode.log"
+unity test clases/clase07/Unity \
+  --mode EditMode \
+  --output "$(pwd)/clases/clase07/Unity_fsm_b_so_states_editmode.xml" \
+  --timeout 300 \
+  > "$(pwd)/clases/clase07/Unity_fsm_b_so_states_editmode.log" 2>&1
+echo "exit code: $?"
 ```
 
-Run: `grep -c 'result="Failed"' clases/clase07/Unity_fsm_b_so_states_editmode.xml`
-Expected: `0`.
+Expected: La línea `exit code: 0` significa que corrió y todo pasó. `exit code: 8` significa que corrió y algún test falló (revisar `Unity_fsm_b_so_states_editmode.xml`). Cualquier otro valor (típicamente `6`) significa que no llegó a producir un veredicto — no compiló, timeout, o problema de licencia (revisar `Unity_fsm_b_so_states_editmode.log`).
 
 - [ ] **Step 7: Limpiar logs y commitear**
 
@@ -1235,29 +1229,29 @@ Nota: `WeaponBaselineTests.cs`, `GameFlowControllerTests.cs` y `GameFlowSORunner
 - [ ] **Step 4: Verificación final — compilar y correr el módulo completo**
 
 ```bash
-/Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/MacOS/Unity \
-  -batchmode -nographic -quit \
-  -projectPath clases/clase07/Unity \
-  -logFile "$(pwd)/clases/clase07/Unity_fsm_final_compile.log"
+unity run clases/clase07/Unity --timeout 180 \
+  > "$(pwd)/clases/clase07/Unity_fsm_final_compile.log" 2>&1
 grep -i "error CS" clases/clase07/Unity_fsm_final_compile.log || echo "sin errores de compilación"
 
-/Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/MacOS/Unity \
-  -batchmode -nographic \
-  -projectPath clases/clase07/Unity \
-  -runTests -testPlatform EditMode \
-  -testResults "$(pwd)/clases/clase07/Unity_fsm_final_editmode.xml" \
-  -logFile "$(pwd)/clases/clase07/Unity_fsm_final_editmode.log"
+unity test clases/clase07/Unity \
+  --mode EditMode \
+  --output "$(pwd)/clases/clase07/Unity_fsm_final_editmode.xml" \
+  --timeout 300 \
+  > "$(pwd)/clases/clase07/Unity_fsm_final_editmode.log" 2>&1
+echo "exit code editmode: $?"
 
-/Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/MacOS/Unity \
-  -batchmode -nographic \
-  -projectPath clases/clase07/Unity \
-  -runTests -testPlatform PlayMode \
-  -testResults "$(pwd)/clases/clase07/Unity_fsm_final_playmode.xml" \
-  -logFile "$(pwd)/clases/clase07/Unity_fsm_final_playmode.log"
+unity test clases/clase07/Unity \
+  --mode PlayMode \
+  --output "$(pwd)/clases/clase07/Unity_fsm_final_playmode.xml" \
+  --timeout 300 \
+  > "$(pwd)/clases/clase07/Unity_fsm_final_playmode.log" 2>&1
+echo "exit code playmode: $?"
 ```
 
-Run: `grep -c 'result="Failed"' clases/clase07/Unity_fsm_final_editmode.xml clases/clase07/Unity_fsm_final_playmode.xml`
-Expected: `0` en ambos.
+Expected: ambas líneas `exit code ...: 0`. `8` significa que corrió y algún test
+falló (revisar el `.xml` correspondiente); cualquier otro valor (típicamente `6`)
+significa que no llegó a producir un veredicto — no compiló, timeout, o problema
+de licencia (revisar el `.log` correspondiente).
 
 - [ ] **Step 5: Limpiar logs y commitear**
 
@@ -1537,16 +1531,15 @@ No hay ningún test de wiring específico de Singleton en `02_DependencyInjectio
 Desde la raíz del repo:
 
 ```bash
-/Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/MacOS/Unity \
-  -batchmode -nographic \
-  -projectPath clases/clase07/Unity \
-  -runTests -testPlatform EditMode \
-  -testResults "$(pwd)/clases/clase07/Unity_di_a_singleton_editmode.xml" \
-  -logFile "$(pwd)/clases/clase07/Unity_di_a_singleton_editmode.log"
+unity test clases/clase07/Unity \
+  --mode EditMode \
+  --output "$(pwd)/clases/clase07/Unity_di_a_singleton_editmode.xml" \
+  --timeout 300 \
+  > "$(pwd)/clases/clase07/Unity_di_a_singleton_editmode.log" 2>&1
+echo "exit code: $?"
 ```
 
-Run: `grep -c 'result="Failed"' clases/clase07/Unity_di_a_singleton_editmode.xml; grep -i "error CS" clases/clase07/Unity_di_a_singleton_editmode.log || echo "sin errores"`
-Expected: el conteo de `Failed` en `0` y `sin errores`. (En este punto `02_DependencyInjection/Shared/` y `Clase07.DI.asmdef` todavía existen y siguen compilando — Task 9 los borra recién cuando las tres implementaciones ya no los necesitan.)
+Expected: La línea `exit code: 0` significa que corrió y todo pasó. `exit code: 8` significa que corrió y algún test falló (revisar `Unity_di_a_singleton_editmode.xml`). Cualquier otro valor (típicamente `6`) significa que no llegó a producir un veredicto — no compiló, timeout, o problema de licencia (revisar `Unity_di_a_singleton_editmode.log`). (En este punto `02_DependencyInjection/Shared/` y `Clase07.DI.asmdef` todavía existen y siguen compilando — Task 9 los borra recién cuando las tres implementaciones ya no los necesitan.)
 
 - [ ] **Step 7: Limpiar logs y commitear**
 
@@ -1853,16 +1846,15 @@ namespace Clase07.DI.ServiceLocatorPattern.Tests
 - [ ] **Step 6: Verificar**
 
 ```bash
-/Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/MacOS/Unity \
-  -batchmode -nographic \
-  -projectPath clases/clase07/Unity \
-  -runTests -testPlatform EditMode \
-  -testResults "$(pwd)/clases/clase07/Unity_di_b_servicelocator_editmode.xml" \
-  -logFile "$(pwd)/clases/clase07/Unity_di_b_servicelocator_editmode.log"
+unity test clases/clase07/Unity \
+  --mode EditMode \
+  --output "$(pwd)/clases/clase07/Unity_di_b_servicelocator_editmode.xml" \
+  --timeout 300 \
+  > "$(pwd)/clases/clase07/Unity_di_b_servicelocator_editmode.log" 2>&1
+echo "exit code: $?"
 ```
 
-Run: `grep -c 'result="Failed"' clases/clase07/Unity_di_b_servicelocator_editmode.xml; grep -i "error CS" clases/clase07/Unity_di_b_servicelocator_editmode.log || echo "sin errores"`
-Expected: `0` y `sin errores`.
+Expected: La línea `exit code: 0` significa que corrió y todo pasó. `exit code: 8` significa que corrió y algún test falló (revisar `Unity_di_b_servicelocator_editmode.xml`). Cualquier otro valor (típicamente `6`) significa que no llegó a producir un veredicto — no compiló, timeout, o problema de licencia (revisar `Unity_di_b_servicelocator_editmode.log`).
 
 - [ ] **Step 7: Limpiar logs y commitear**
 
@@ -2191,16 +2183,15 @@ namespace Clase07.DI.VContainerExample.Tests
 - [ ] **Step 6: Verificar**
 
 ```bash
-/Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/MacOS/Unity \
-  -batchmode -nographic \
-  -projectPath clases/clase07/Unity \
-  -runTests -testPlatform EditMode \
-  -testResults "$(pwd)/clases/clase07/Unity_di_c_vcontainer_editmode.xml" \
-  -logFile "$(pwd)/clases/clase07/Unity_di_c_vcontainer_editmode.log"
+unity test clases/clase07/Unity \
+  --mode EditMode \
+  --output "$(pwd)/clases/clase07/Unity_di_c_vcontainer_editmode.xml" \
+  --timeout 300 \
+  > "$(pwd)/clases/clase07/Unity_di_c_vcontainer_editmode.log" 2>&1
+echo "exit code: $?"
 ```
 
-Run: `grep -c 'result="Failed"' clases/clase07/Unity_di_c_vcontainer_editmode.xml; grep -i "error CS" clases/clase07/Unity_di_c_vcontainer_editmode.log || echo "sin errores"`
-Expected: `0` y `sin errores`.
+Expected: La línea `exit code: 0` significa que corrió y todo pasó. `exit code: 8` significa que corrió y algún test falló (revisar `Unity_di_c_vcontainer_editmode.xml`). Cualquier otro valor (típicamente `6`) significa que no llegó a producir un veredicto — no compiló, timeout, o problema de licencia (revisar `Unity_di_c_vcontainer_editmode.log`).
 
 - [ ] **Step 7: Limpiar logs y commitear**
 
@@ -2267,17 +2258,15 @@ git rm clases/clase07/Unity/Assets/02_DependencyInjection/Tests.meta 2>/dev/null
 - [ ] **Step 3: Verificación final del módulo completo**
 
 ```bash
-/Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/MacOS/Unity \
-  -batchmode -nographic \
-  -projectPath clases/clase07/Unity \
-  -runTests -testPlatform EditMode \
-  -testResults "$(pwd)/clases/clase07/Unity_di_final_editmode.xml" \
-  -logFile "$(pwd)/clases/clase07/Unity_di_final_editmode.log"
+unity test clases/clase07/Unity \
+  --mode EditMode \
+  --output "$(pwd)/clases/clase07/Unity_di_final_editmode.xml" \
+  --timeout 300 \
+  > "$(pwd)/clases/clase07/Unity_di_final_editmode.log" 2>&1
+echo "exit code: $?"
 ```
 
-Run: `grep -c 'result="Failed"' clases/clase07/Unity_di_final_editmode.xml; grep -i "error CS" clases/clase07/Unity_di_final_editmode.log || echo "sin errores"`
-Expected: `0` y `sin errores` (corre los tests de las tres implementaciones nuevas
-más cualquier otro test del proyecto, ya que no se filtra por carpeta).
+Expected: La línea `exit code: 0` significa que corrió y todo pasó. `exit code: 8` significa que corrió y algún test falló (revisar `Unity_di_final_editmode.xml`). Cualquier otro valor (típicamente `6`) significa que no llegó a producir un veredicto — no compiló, timeout, o problema de licencia (revisar `Unity_di_final_editmode.log`). (corre los tests de las tres implementaciones nuevas más cualquier otro test del proyecto, ya que no se filtra por carpeta)
 
 - [ ] **Step 4: Limpiar logs y commitear**
 
@@ -2539,21 +2528,15 @@ Crear `clases/clase07/Unity/Assets/03_MessageBroker/a_DIBroker/Tests/Clase07.Mes
 - [ ] **Step 7: Verificar compilación y tests EditMode**
 
 ```bash
-/Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/MacOS/Unity \
-  -batchmode -nographic \
-  -projectPath clases/clase07/Unity \
-  -runTests -testPlatform EditMode \
-  -testResults "$(pwd)/clases/clase07/Unity_mb_a_dibroker_editmode.xml" \
-  -logFile "$(pwd)/clases/clase07/Unity_mb_a_dibroker_editmode.log"
+unity test clases/clase07/Unity \
+  --mode EditMode \
+  --output "$(pwd)/clases/clase07/Unity_mb_a_dibroker_editmode.xml" \
+  --timeout 300 \
+  > "$(pwd)/clases/clase07/Unity_mb_a_dibroker_editmode.log" 2>&1
+echo "exit code: $?"
 ```
 
-(No combinar `-quit` con `-runTests`.)
-
-Run: `grep -iE "error CS" clases/clase07/Unity_mb_a_dibroker_editmode.log || echo "sin errores de compilación"`
-Expected: `sin errores de compilación`.
-
-Run: `grep -oE 'result="Failed"' clases/clase07/Unity_mb_a_dibroker_editmode.xml | wc -l`
-Expected: `0`.
+Expected: La línea `exit code: 0` significa que corrió y todo pasó. `exit code: 8` significa que corrió y algún test falló (revisar `Unity_mb_a_dibroker_editmode.xml`). Cualquier otro valor (típicamente `6`) significa que no llegó a producir un veredicto — no compiló, timeout, o problema de licencia (revisar `Unity_mb_a_dibroker_editmode.log`).
 
 - [ ] **Step 8: Limpiar logs y commitear**
 
@@ -2743,19 +2726,15 @@ Crear `clases/clase07/Unity/Assets/03_MessageBroker/b_ScriptableObjectChannels/T
 - [ ] **Step 6: Verificar compilación y tests EditMode**
 
 ```bash
-/Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/MacOS/Unity \
-  -batchmode -nographic \
-  -projectPath clases/clase07/Unity \
-  -runTests -testPlatform EditMode \
-  -testResults "$(pwd)/clases/clase07/Unity_mb_b_sochannels_editmode.xml" \
-  -logFile "$(pwd)/clases/clase07/Unity_mb_b_sochannels_editmode.log"
+unity test clases/clase07/Unity \
+  --mode EditMode \
+  --output "$(pwd)/clases/clase07/Unity_mb_b_sochannels_editmode.xml" \
+  --timeout 300 \
+  > "$(pwd)/clases/clase07/Unity_mb_b_sochannels_editmode.log" 2>&1
+echo "exit code: $?"
 ```
 
-Run: `grep -iE "error CS" clases/clase07/Unity_mb_b_sochannels_editmode.log || echo "sin errores de compilación"`
-Expected: `sin errores de compilación`.
-
-Run: `grep -oE 'result="Failed"' clases/clase07/Unity_mb_b_sochannels_editmode.xml | wc -l`
-Expected: `0`.
+Expected: La línea `exit code: 0` significa que corrió y todo pasó. `exit code: 8` significa que corrió y algún test falló (revisar `Unity_mb_b_sochannels_editmode.xml`). Cualquier otro valor (típicamente `6`) significa que no llegó a producir un veredicto — no compiló, timeout, o problema de licencia (revisar `Unity_mb_b_sochannels_editmode.log`).
 
 - [ ] **Step 7: Limpiar logs y commitear**
 
@@ -3000,19 +2979,15 @@ Crear `clases/clase07/Unity/Assets/03_MessageBroker/c_MessagePipe/Tests/Clase07.
 - [ ] **Step 6: Verificar compilación y tests EditMode**
 
 ```bash
-/Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/MacOS/Unity \
-  -batchmode -nographic \
-  -projectPath clases/clase07/Unity \
-  -runTests -testPlatform EditMode \
-  -testResults "$(pwd)/clases/clase07/Unity_mb_c_messagepipe_editmode.xml" \
-  -logFile "$(pwd)/clases/clase07/Unity_mb_c_messagepipe_editmode.log"
+unity test clases/clase07/Unity \
+  --mode EditMode \
+  --output "$(pwd)/clases/clase07/Unity_mb_c_messagepipe_editmode.xml" \
+  --timeout 300 \
+  > "$(pwd)/clases/clase07/Unity_mb_c_messagepipe_editmode.log" 2>&1
+echo "exit code: $?"
 ```
 
-Run: `grep -iE "error CS" clases/clase07/Unity_mb_c_messagepipe_editmode.log || echo "sin errores de compilación"`
-Expected: `sin errores de compilación`.
-
-Run: `grep -oE 'result="Failed"' clases/clase07/Unity_mb_c_messagepipe_editmode.xml | wc -l`
-Expected: `0`.
+Expected: La línea `exit code: 0` significa que corrió y todo pasó. `exit code: 8` significa que corrió y algún test falló (revisar `Unity_mb_c_messagepipe_editmode.xml`). Cualquier otro valor (típicamente `6`) significa que no llegó a producir un veredicto — no compiló, timeout, o problema de licencia (revisar `Unity_mb_c_messagepipe_editmode.log`).
 
 - [ ] **Step 7: Limpiar logs y commitear**
 
@@ -3077,19 +3052,15 @@ de test explícitamente con `git rm Unity/Assets/03_MessageBroker/Tests/Clase07.
 - [ ] **Step 4: Verificación final del módulo completo**
 
 ```bash
-/Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/MacOS/Unity \
-  -batchmode -nographic \
-  -projectPath clases/clase07/Unity \
-  -runTests -testPlatform EditMode \
-  -testResults "$(pwd)/clases/clase07/Unity_mb_final_editmode.xml" \
-  -logFile "$(pwd)/clases/clase07/Unity_mb_final_editmode.log"
+unity test clases/clase07/Unity \
+  --mode EditMode \
+  --output "$(pwd)/clases/clase07/Unity_mb_final_editmode.xml" \
+  --timeout 300 \
+  > "$(pwd)/clases/clase07/Unity_mb_final_editmode.log" 2>&1
+echo "exit code: $?"
 ```
 
-Run: `grep -iE "error CS" clases/clase07/Unity_mb_final_editmode.log || echo "sin errores de compilación"`
-Expected: `sin errores de compilación`.
-
-Run: `grep -oE 'result="Failed"' clases/clase07/Unity_mb_final_editmode.xml | wc -l`
-Expected: `0`.
+Expected: La línea `exit code: 0` significa que corrió y todo pasó. `exit code: 8` significa que corrió y algún test falló (revisar `Unity_mb_final_editmode.xml`). Cualquier otro valor (típicamente `6`) significa que no llegó a producir un veredicto — no compiló, timeout, o problema de licencia (revisar `Unity_mb_final_editmode.log`).
 
 - [ ] **Step 5: Limpiar logs y commitear**
 
@@ -3416,9 +3387,7 @@ namespace Clase07.EditorTools
 
 ```bash
 cd /Users/giga/code/Programacion-de-VideoJuegos-III-2026
-/Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/MacOS/Unity \
-  -batchmode -nographic \
-  -projectPath clases/clase07/Unity \
+unity run clases/clase07/Unity --timeout 120 -- \
   -executeMethod Clase07.EditorTools.RepointRowPrefabReference.Run \
   -scenePath "Assets/04_MVC_MVP_MVVM/a_MVC/a_Mvx_MVC.unity" \
   -componentType "Clase07.Mvx.Mvc.InventoryController, Clase07.Mvx.Mvc" \
@@ -3542,16 +3511,15 @@ namespace Clase07.Mvx.Mvc.Tests
 
 ```bash
 cd /Users/giga/code/Programacion-de-VideoJuegos-III-2026
-/Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/MacOS/Unity \
-  -batchmode -nographic \
-  -projectPath clases/clase07/Unity \
-  -runTests -testPlatform EditMode \
-  -testResults "$(pwd)/clases/clase07/Unity_mvx_a_mvc_editmode.xml" \
-  -logFile "$(pwd)/clases/clase07/Unity_mvx_a_mvc_editmode.log"
+unity test clases/clase07/Unity \
+  --mode EditMode \
+  --output "$(pwd)/clases/clase07/Unity_mvx_a_mvc_editmode.xml" \
+  --timeout 300 \
+  > "$(pwd)/clases/clase07/Unity_mvx_a_mvc_editmode.log" 2>&1
+echo "exit code: $?"
 ```
 
-Run: `grep -c 'result="Failed"' clases/clase07/Unity_mvx_a_mvc_editmode.xml || true`
-Expected: `0` (o el grep no encuentra matches, lo cual también es correcto).
+Expected: La línea `exit code: 0` significa que corrió y todo pasó. `exit code: 8` significa que corrió y algún test falló (revisar `Unity_mvx_a_mvc_editmode.xml`). Cualquier otro valor (típicamente `6`) significa que no llegó a producir un veredicto — no compiló, timeout, o problema de licencia (revisar `Unity_mvx_a_mvc_editmode.log`).
 
 ```bash
 rm clases/clase07/Unity_mvx_a_mvc_editmode.xml clases/clase07/Unity_mvx_a_mvc_editmode.log
@@ -3834,9 +3802,7 @@ namespace Clase07.Mvx.Mvp
 
 ```bash
 cd /Users/giga/code/Programacion-de-VideoJuegos-III-2026
-/Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/MacOS/Unity \
-  -batchmode -nographic \
-  -projectPath clases/clase07/Unity \
+unity run clases/clase07/Unity --timeout 120 -- \
   -executeMethod Clase07.EditorTools.RepointRowPrefabReference.Run \
   -scenePath "Assets/04_MVC_MVP_MVVM/b_MVP/b_Mvx_MVP.unity" \
   -componentType "Clase07.Mvx.Mvp.InventoryMvpView, Clase07.Mvx.Mvp" \
@@ -4037,16 +4003,15 @@ namespace Clase07.Mvx.Mvp.Tests
 
 ```bash
 cd /Users/giga/code/Programacion-de-VideoJuegos-III-2026
-/Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/MacOS/Unity \
-  -batchmode -nographic \
-  -projectPath clases/clase07/Unity \
-  -runTests -testPlatform EditMode \
-  -testResults "$(pwd)/clases/clase07/Unity_mvx_b_mvp_editmode.xml" \
-  -logFile "$(pwd)/clases/clase07/Unity_mvx_b_mvp_editmode.log"
+unity test clases/clase07/Unity \
+  --mode EditMode \
+  --output "$(pwd)/clases/clase07/Unity_mvx_b_mvp_editmode.xml" \
+  --timeout 300 \
+  > "$(pwd)/clases/clase07/Unity_mvx_b_mvp_editmode.log" 2>&1
+echo "exit code: $?"
 ```
 
-Run: `grep -c 'result="Failed"' clases/clase07/Unity_mvx_b_mvp_editmode.xml || true`
-Expected: `0`.
+Expected: La línea `exit code: 0` significa que corrió y todo pasó. `exit code: 8` significa que corrió y algún test falló (revisar `Unity_mvx_b_mvp_editmode.xml`). Cualquier otro valor (típicamente `6`) significa que no llegó a producir un veredicto — no compiló, timeout, o problema de licencia (revisar `Unity_mvx_b_mvp_editmode.log`).
 
 ```bash
 rm clases/clase07/Unity_mvx_b_mvp_editmode.xml clases/clase07/Unity_mvx_b_mvp_editmode.log
@@ -4315,9 +4280,7 @@ namespace Clase07.Mvx.Mvvm
 
 ```bash
 cd /Users/giga/code/Programacion-de-VideoJuegos-III-2026
-/Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/MacOS/Unity \
-  -batchmode -nographic \
-  -projectPath clases/clase07/Unity \
+unity run clases/clase07/Unity --timeout 120 -- \
   -executeMethod Clase07.EditorTools.RepointRowPrefabReference.Run \
   -scenePath "Assets/04_MVC_MVP_MVVM/c_MVVM/c_Mvx_MVVM.unity" \
   -componentType "Clase07.Mvx.Mvvm.InventoryMvvmView, Clase07.Mvx.Mvvm" \
@@ -4494,16 +4457,15 @@ namespace Clase07.Mvx.Mvvm.Tests
 
 ```bash
 cd /Users/giga/code/Programacion-de-VideoJuegos-III-2026
-/Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/MacOS/Unity \
-  -batchmode -nographic \
-  -projectPath clases/clase07/Unity \
-  -runTests -testPlatform EditMode \
-  -testResults "$(pwd)/clases/clase07/Unity_mvx_c_mvvm_editmode.xml" \
-  -logFile "$(pwd)/clases/clase07/Unity_mvx_c_mvvm_editmode.log"
+unity test clases/clase07/Unity \
+  --mode EditMode \
+  --output "$(pwd)/clases/clase07/Unity_mvx_c_mvvm_editmode.xml" \
+  --timeout 300 \
+  > "$(pwd)/clases/clase07/Unity_mvx_c_mvvm_editmode.log" 2>&1
+echo "exit code: $?"
 ```
 
-Run: `grep -c 'result="Failed"' clases/clase07/Unity_mvx_c_mvvm_editmode.xml || true`
-Expected: `0`.
+Expected: La línea `exit code: 0` significa que corrió y todo pasó. `exit code: 8` significa que corrió y algún test falló (revisar `Unity_mvx_c_mvvm_editmode.xml`). Cualquier otro valor (típicamente `6`) significa que no llegó a producir un veredicto — no compiló, timeout, o problema de licencia (revisar `Unity_mvx_c_mvvm_editmode.log`).
 
 ```bash
 rm clases/clase07/Unity_mvx_c_mvvm_editmode.xml clases/clase07/Unity_mvx_c_mvvm_editmode.log
@@ -4570,19 +4532,15 @@ git rm -r clases/clase07/Unity/Assets/04_MVC_MVP_MVVM/Tests
 - [ ] **Step 3: verificación final EditMode del módulo completo**
 
 ```bash
-/Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/MacOS/Unity \
-  -batchmode -nographic \
-  -projectPath clases/clase07/Unity \
-  -runTests -testPlatform EditMode \
-  -testResults "$(pwd)/clases/clase07/Unity_mvx_final_editmode.xml" \
-  -logFile "$(pwd)/clases/clase07/Unity_mvx_final_editmode.log"
+unity test clases/clase07/Unity \
+  --mode EditMode \
+  --output "$(pwd)/clases/clase07/Unity_mvx_final_editmode.xml" \
+  --timeout 300 \
+  > "$(pwd)/clases/clase07/Unity_mvx_final_editmode.log" 2>&1
+echo "exit code: $?"
 ```
 
-Run: `grep -iE "error CS" clases/clase07/Unity_mvx_final_editmode.log || echo "sin errores de compilación"`
-Expected: `sin errores de compilación`.
-
-Run: `grep -c 'result="Failed"' clases/clase07/Unity_mvx_final_editmode.xml || true`
-Expected: `0`.
+Expected: La línea `exit code: 0` significa que corrió y todo pasó. `exit code: 8` significa que corrió y algún test falló (revisar `Unity_mvx_final_editmode.xml`). Cualquier otro valor (típicamente `6`) significa que no llegó a producir un veredicto — no compiló, timeout, o problema de licencia (revisar `Unity_mvx_final_editmode.log`).
 
 ```bash
 rm clases/clase07/Unity_mvx_final_editmode.xml clases/clase07/Unity_mvx_final_editmode.log
