@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using Clase07.FSM.Small.Baseline;
+using Clase07.FSM.SmallBaseline;
 
 namespace Clase07.FSM.Tests
 {

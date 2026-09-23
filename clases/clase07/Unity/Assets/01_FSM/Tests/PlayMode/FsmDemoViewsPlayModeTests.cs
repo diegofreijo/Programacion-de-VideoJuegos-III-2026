@@ -11,15 +11,6 @@ namespace Clase07.FSM.Tests
     public class FsmDemoViewsPlayModeTests
     {
         [UnityTest]
-        public IEnumerator WeaponBaselineScene_LoadsAndRespondsToButtons()
-        {
-            SceneManager.LoadScene("Assets/01_FSM/01_FSM_WeaponBaseline.unity", LoadSceneMode.Single);
-            yield return null;
-
-            yield return ClickAllButtonsAndAssertLabelsUpdated();
-        }
-
-        [UnityTest]
         public IEnumerator WeaponStatePatternScene_LoadsAndRespondsToButtons()
         {
             SceneManager.LoadScene("Assets/01_FSM/02_FSM_WeaponStatePattern.unity", LoadSceneMode.Single);

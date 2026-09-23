@@ -1,4 +1,4 @@
-namespace Clase07.FSM.Small.Baseline
+namespace Clase07.FSM.SmallBaseline
 {
     public enum WeaponState { Idle, Firing, Reloading }
 
@@ -37,6 +37,10 @@ namespace Clase07.FSM.Small.Baseline
 
         public void Tick(float deltaTime)
         {
+            // Cada estado nuevo (ej. "Aiming", "Overheated") agrega un case acá
+            // y potencialmente en PressTrigger — nada obliga a cubrir todos los
+            // casos, a diferencia de un objeto de estado que implementa su propia
+            // interfaz.
             switch (State)
             {
                 case WeaponState.Idle:

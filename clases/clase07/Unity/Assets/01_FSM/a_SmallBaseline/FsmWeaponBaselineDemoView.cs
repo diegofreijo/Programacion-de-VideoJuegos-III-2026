@@ -1,6 +1,6 @@
 using UnityEngine;
 using TMPro;
-using Clase07.FSM.Small.Baseline;
+using Clase07.FSM.SmallBaseline;
 
 namespace Clase07.FSM.Demo
 {

@@ -1,0 +1,21 @@
+{
+    "name": "Clase07.FSM.SmallBaseline.Tests.PlayMode",
+    "rootNamespace": "",
+    "references": [
+        "Clase07.FSM.SmallBaseline",
+        "UnityEngine.UI",
+        "Unity.TextMeshPro"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false,
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ]
+}
