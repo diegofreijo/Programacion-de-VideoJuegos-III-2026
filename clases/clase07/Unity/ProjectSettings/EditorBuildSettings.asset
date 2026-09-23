@@ -27,10 +27,10 @@ EditorBuildSettings:
     path: Assets/03_MessageBroker/a_DIBroker/a_MessageBroker_DIBroker.unity
     guid: 3ac48babef1a649b0a8dc6b6b0cb7fb3
   - enabled: 1
-    path: Assets/03_MessageBroker/02_ScriptableObjectChannels/02_MessageBroker_SOChannels.unity
+    path: Assets/03_MessageBroker/b_ScriptableObjectChannels/b_MessageBroker_SOChannels.unity
     guid: 0f1c064a0a9964186adeb8f8d8f29834
   - enabled: 1
-    path: Assets/03_MessageBroker/03_MessagePipe/03_MessageBroker_MessagePipe.unity
+    path: Assets/03_MessageBroker/c_MessagePipe/c_MessageBroker_MessagePipe.unity
     guid: 3975b27985c8b452391e18130e243d89
   - enabled: 1
     path: Assets/04_MVC_MVP_MVVM/01_MVC/01_Mvx_MVC.unity

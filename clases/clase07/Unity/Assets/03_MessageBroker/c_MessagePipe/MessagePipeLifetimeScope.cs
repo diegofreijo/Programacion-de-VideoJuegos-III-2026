@@ -1,7 +1,6 @@
 using MessagePipe;
 using VContainer;
 using VContainer.Unity;
-using Clase07.MessageBroker.Shared;
 
 namespace Clase07.MessageBroker.MessagePipeExample
 {
@@ -19,6 +18,10 @@ namespace Clase07.MessageBroker.MessagePipeExample
 
         // Los registros que no dependen de la escena viven acá para que los tests
         // ejerciten exactamente el mismo cableado que usa la escena, en vez de duplicarlo.
+        // RegisterMessagePipe()/RegisterMessageBroker<T>() son lo único que cambia
+        // respecto a a_DIBroker: en vez de escribir el broker a mano, se registra el
+        // de una librería madura (con soporte async/keyed pub-sub, no usado acá pero
+        // disponible sin reescribir nada).
         public static void RegisterMessaging(IContainerBuilder builder)
         {
             var options = builder.RegisterMessagePipe();

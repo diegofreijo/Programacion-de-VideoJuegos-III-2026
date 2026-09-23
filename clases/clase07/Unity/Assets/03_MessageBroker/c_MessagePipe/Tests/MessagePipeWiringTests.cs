@@ -1,10 +1,8 @@
 using NUnit.Framework;
 using MessagePipe;
 using VContainer;
-using Clase07.MessageBroker.MessagePipeExample;
-using Clase07.MessageBroker.Shared;
 
-namespace Clase07.MessageBroker.Tests
+namespace Clase07.MessageBroker.MessagePipeExample.Tests
 {
     // El test llama al mismo MessagePipeLifetimeScope.RegisterMessaging que usa la
     // escena: si alguien rompe ese cableado, este test lo detecta.

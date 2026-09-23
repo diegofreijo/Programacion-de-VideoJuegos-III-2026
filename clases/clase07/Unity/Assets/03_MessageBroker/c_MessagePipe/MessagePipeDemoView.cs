@@ -3,7 +3,6 @@ using UnityEngine;
 using TMPro;
 using VContainer;
 using MessagePipe;
-using Clase07.MessageBroker.Shared;
 
 namespace Clase07.MessageBroker.MessagePipeExample
 {
@@ -15,6 +14,9 @@ namespace Clase07.MessageBroker.MessagePipeExample
         private IDisposable _subscription;
         private int _total;
 
+        // Mismo problema que a_DIBroker.IMessageBroker (Subscribe/Publish genéricos),
+        // pero resuelto por MessagePipe: se inyectan interfaces específicas por tipo de
+        // mensaje (IPublisher<T>/ISubscriber<T>) en vez de un broker genérico propio.
         [Inject]
         public void Construct(IPublisher<ScorePickedUpEvent> publisher, ISubscriber<ScorePickedUpEvent> subscriber)
         {
