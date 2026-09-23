@@ -1,10 +1,11 @@
 using UnityEngine;
-using Clase07.DI.Shared;
 
 namespace Clase07.DI.Singleton
 {
     public class AudioServiceSingleton : MonoBehaviour
     {
+        // Mismo problema que ScoreServiceSingleton.Instance: acceso global
+        // mutable, dependencia oculta del consumidor.
         public static AudioServiceSingleton Instance { get; private set; }
         public IAudioService Service { get; private set; }
 
