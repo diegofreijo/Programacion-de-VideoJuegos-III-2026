@@ -1,6 +1,5 @@
 using UnityEngine;
 using TMPro;
-using Clase07.DI.Shared;
 
 namespace Clase07.DI.ServiceLocatorPattern
 {
@@ -16,6 +15,9 @@ namespace Clase07.DI.ServiceLocatorPattern
 
         public void OnCoinClicked()
         {
+            // El consumidor pide el servicio por tipo en el momento en que lo
+            // necesita — a diferencia de VContainer (c_VContainer/), esta
+            // dependencia no aparece en ningún constructor ni firma pública.
             var scoreService = ServiceLocator.Resolve<IScoreService>();
             ServiceLocator.Resolve<IAudioService>().PlayCoinSound();
             scoreService.AddScore(10);

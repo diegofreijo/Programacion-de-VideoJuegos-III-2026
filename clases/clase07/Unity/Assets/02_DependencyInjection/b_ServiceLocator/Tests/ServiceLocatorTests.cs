@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using Clase07.DI.ServiceLocatorPattern;
 
-namespace Clase07.DI.Tests
+namespace Clase07.DI.ServiceLocatorPattern.Tests
 {
     public class ServiceLocatorTests
     {

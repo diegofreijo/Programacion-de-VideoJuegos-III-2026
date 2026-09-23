@@ -1,5 +1,3 @@
-using Clase07.DI.Shared;
-
 namespace Clase07.DI.ServiceLocatorPattern
 {
     public static class ServiceLocatorCompositionRoot
