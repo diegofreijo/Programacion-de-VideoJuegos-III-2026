@@ -46,7 +46,7 @@ del módulo.
 ## Fuera de alcance
 
 - No se cambia el comportamiento observable de ninguna implementación, ni se agregan
-  escenas nuevas (`Large/ScriptableObjectStates` de FSM sigue sin escena — sigue siendo
+  escenas nuevas (`d_LargeScriptableObjectStates` de FSM sigue sin escena — sigue siendo
   una decisión de alcance deliberada, ya documentada).
 - No se cambia la UI de las escenas (ya armada en el Inspector, ver
   `2026-09-21-clase07-demo-ui-inspector-migration-design.md`) más allá de lo que implica
@@ -66,11 +66,15 @@ del módulo.
   simple/ingenua a más sofisticada/productiva. Nueva.
 - El archivo `.unity` de cada implementación se renombra con el mismo prefijo de letra
   que su carpeta (vía `git mv`, preservando el `.meta`/GUID).
-- Dentro de FSM, la agrupación intermedia por escala (`Small/`, `Large/`) se mantiene
-  sin cambios — la letra se aplica dentro de cada grupo de escala, no a través de todo
-  el módulo, porque el orden de lectura "simple → sofisticado" solo tiene sentido
-  comparando implementaciones del mismo problema (arma chica entre sí, game flow grande
-  entre sí).
+- Dentro de FSM, la agrupación intermedia por escala (`Small/`, `Large/`) **se elimina**:
+  las cuatro implementaciones quedan directamente bajo `01_FSM/`, con una única
+  secuencia de letras `a_`/`b_`/`c_`/`d_` para todo el módulo (igual que en los otros
+  tres módulos), en vez de una secuencia de letras por grupo de escala anidada dos
+  niveles bajo `01_FSM/`. El nombre de cada carpeta conserva la escala en el propio
+  nombre (`a_SmallBaseline`, `b_SmallStatePattern`, `c_LargeStatePattern`,
+  `d_LargeScriptableObjectStates`) para no perder la comparación "arma chica entre sí,
+  game flow grande entre sí" que daba sentido a la agrupación original — solo cambia
+  dónde vive esa información (nombre de carpeta en vez de carpeta intermedia).
 
 ## Estructura final por módulo
 
@@ -82,15 +86,17 @@ está en `Shared/`/`Core/`.
 
 | Carpeta | Namespace / asmdef | Se copia adentro |
 |---|---|---|
-| `Small/a_Baseline/` (antes `Small/Baseline/`) | `Clase07.FSM.Small.Baseline` | nada (ya autocontenida) |
-| `Small/b_StatePattern/` (antes `Small/StatePattern/`) | `Clase07.FSM.Small.StatePattern` | `IState.cs`, `StateMachine.cs` (copia propia, mismo namespace que el resto del archivo) |
-| `Large/a_StatePattern/` (antes `Large/StatePattern/`) | `Clase07.FSM.Large.StatePattern` | `IState.cs`, `StateMachine.cs` (copia propia, independiente de la de `Small/b_StatePattern/`) |
-| `Large/b_ScriptableObjectStates/` (antes `Large/ScriptableObjectStates/`) | `Clase07.FSM.Large.ScriptableObjectStates` | nada (ya autocontenida) |
+| `a_SmallBaseline/` (antes `Small/Baseline/`) | `Clase07.FSM.SmallBaseline` | nada (ya autocontenida) |
+| `b_SmallStatePattern/` (antes `Small/StatePattern/`) | `Clase07.FSM.SmallStatePattern` | `IState.cs`, `StateMachine.cs` (copia propia, mismo namespace que el resto del archivo) |
+| `c_LargeStatePattern/` (antes `Large/StatePattern/`) | `Clase07.FSM.LargeStatePattern` | `IState.cs`, `StateMachine.cs` (copia propia, independiente de la de `b_SmallStatePattern/`) |
+| `d_LargeScriptableObjectStates/` (antes `Large/ScriptableObjectStates/`) | `Clase07.FSM.LargeScriptableObjectStates` | nada (ya autocontenida) |
 
-`Core/` se borra una vez que las dos copias existen y compilan. Escenas:
-`Small/a_Baseline/a_FSM_WeaponBaseline.unity`,
-`Small/b_StatePattern/b_FSM_WeaponStatePattern.unity`,
-`Large/a_StatePattern/a_FSM_GameFlow.unity` (`Large/b_ScriptableObjectStates/` sigue sin
+Las cuatro carpetas quedan directamente bajo `01_FSM/` — sin la agrupación intermedia
+`Small/`/`Large/` que tenían antes; esa información pasa a formar parte del nombre de
+cada carpeta. `Core/` se borra una vez que las dos copias existen y compilan. Escenas:
+`a_SmallBaseline/a_FSM_WeaponBaseline.unity`,
+`b_SmallStatePattern/b_FSM_WeaponStatePattern.unity`,
+`c_LargeStatePattern/c_FSM_GameFlow.unity` (`d_LargeScriptableObjectStates/` sigue sin
 escena).
 
 ### 02_DependencyInjection
@@ -141,15 +147,15 @@ mismo archivo — dejan de poder vivir en una sola carpeta autocontenida:
 - **`WeaponEquivalenceTests`** (`01_FSM/Tests/`): hoy corre la misma secuencia de
   inputs sobre `WeaponBaseline` y `WeaponStatePatternController` y compara sus
   resultados en runtime. Se reemplaza por dos suites independientes — una dentro de
-  `Small/a_Baseline/Tests/`, otra dentro de `Small/b_StatePattern/Tests/` — que corren
+  `a_SmallBaseline/Tests/`, otra dentro de `b_SmallStatePattern/Tests/` — que corren
   la misma secuencia de inputs contra **los mismos valores esperados hardcodeados**
   (extraídos del comportamiento actual, ya verificado). Se pierde la comparación
   cruzada en runtime a cambio de que cada carpeta quede autosuficiente.
 - **`FsmDemoViewsPlayModeTests`** (`01_FSM/Tests/PlayMode/`): hoy carga las tres
   escenas de FSM en un solo archivo y clickea todos los botones de cada una. Se parte
-  en un test PlayMode por implementación (uno en `Small/a_Baseline/Tests/PlayMode/`,
-  otro en `Small/b_StatePattern/Tests/PlayMode/`, otro en
-  `Large/a_StatePattern/Tests/PlayMode/`), cada uno cargando y verificando solo su
+  en un test PlayMode por implementación (uno en `a_SmallBaseline/Tests/PlayMode/`,
+  otro en `b_SmallStatePattern/Tests/PlayMode/`, otro en
+  `c_LargeStatePattern/Tests/PlayMode/`), cada uno cargando y verificando solo su
   propia escena.
 
 El resto de los tests actuales (`StateMachineTests`, `GameFlowControllerTests`,
@@ -167,12 +173,12 @@ punto exacto de cada implementación que es la razón de mostrarla — no una de
 genérica de la clase, sino qué mirar ahí y por qué es distinto de las otras variantes
 del mismo patrón:
 
-- **FSM chico** — `a_Baseline`: el `switch` de `WeaponBaseline.Tick`/`PressTrigger`
-  (ya crece con cada estado nuevo). `b_StatePattern`: el `ChangeState(...)` dentro de
-  cada estado (`WeaponIdleState`, etc.) — cada transición vive en el estado que la
+- **FSM chico** — `a_SmallBaseline`: el `switch` de `WeaponBaseline.Tick`/`PressTrigger`
+  (ya crece con cada estado nuevo). `b_SmallStatePattern`: el `ChangeState(...)` dentro
+  de cada estado (`WeaponIdleState`, etc.) — cada transición vive en el estado que la
   dispara, no en un switch central.
-- **FSM grande** — `a_StatePattern`: el `_substateMachine` dentro de `PlayingState` —
-  una máquina de estados adentro de un estado. `b_ScriptableObjectStates`: los
+- **FSM grande** — `c_LargeStatePattern`: el `_substateMachine` dentro de `PlayingState`
+  — una máquina de estados adentro de un estado. `d_LargeScriptableObjectStates`: los
   `[SerializeField]` de `PlayingStateSO` apuntando a los siguientes estados — la
   transición queda configurable desde el Inspector, no hardcodeada en código.
 - **DI** — `a_Singleton`: el `Instance` estático. `b_ServiceLocator`: la llamada a

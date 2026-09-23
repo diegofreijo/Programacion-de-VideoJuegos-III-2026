@@ -23,45 +23,45 @@
   Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
   Claude-Session: https://claude.ai/code/session_01YGZHSkcGRaTFS7xCnNWa5E
   ```
-- No se cambia el comportamiento observable de ninguna implementación ni se agregan escenas nuevas — `Large/b_ScriptableObjectStates` de FSM sigue sin escena (decisión de alcance ya existente).
+- No se cambia el comportamiento observable de ninguna implementación ni se agregan escenas nuevas — `d_LargeScriptableObjectStates` de FSM sigue sin escena (decisión de alcance ya existente).
 - Solo se borra `Shared/`/`Core/` y el asmdef de módulo de un módulo cuando un `grep` confirma que ninguna implementación restante los referencia — nunca antes.
 
 ---
-### Task 1: `01_FSM/Small/a_Baseline/` autocontenida
+### Task 1: `01_FSM/a_SmallBaseline/` autocontenida
 
 **Files:**
-- Move: `clases/clase07/Unity/Assets/01_FSM/Small/Baseline/WeaponBaseline.cs` → `clases/clase07/Unity/Assets/01_FSM/Small/a_Baseline/WeaponBaseline.cs`
-- Move: `clases/clase07/Unity/Assets/01_FSM/Demo/FsmWeaponBaselineDemoView.cs` → `clases/clase07/Unity/Assets/01_FSM/Small/a_Baseline/FsmWeaponBaselineDemoView.cs`
-- Move: `clases/clase07/Unity/Assets/01_FSM/01_FSM_WeaponBaseline.unity` (+ `.meta`) → `clases/clase07/Unity/Assets/01_FSM/Small/a_Baseline/a_FSM_WeaponBaseline.unity`
-- Create: `clases/clase07/Unity/Assets/01_FSM/Small/a_Baseline/Clase07.FSM.Small.Baseline.asmdef`
-- Move: `clases/clase07/Unity/Assets/01_FSM/Tests/WeaponBaselineTests.cs` → `clases/clase07/Unity/Assets/01_FSM/Small/a_Baseline/Tests/WeaponBaselineTests.cs`
-- Create: `clases/clase07/Unity/Assets/01_FSM/Small/a_Baseline/Tests/WeaponBaselineExpectedSequenceTests.cs`
-- Create: `clases/clase07/Unity/Assets/01_FSM/Small/a_Baseline/Tests/Clase07.FSM.Small.Baseline.Tests.asmdef`
-- Create: `clases/clase07/Unity/Assets/01_FSM/Small/a_Baseline/Tests/PlayMode/WeaponBaselineDemoViewPlayModeTests.cs`
-- Create: `clases/clase07/Unity/Assets/01_FSM/Small/a_Baseline/Tests/PlayMode/Clase07.FSM.Small.Baseline.Tests.PlayMode.asmdef`
+- Move: `clases/clase07/Unity/Assets/01_FSM/Small/Baseline/WeaponBaseline.cs` → `clases/clase07/Unity/Assets/01_FSM/a_SmallBaseline/WeaponBaseline.cs`
+- Move: `clases/clase07/Unity/Assets/01_FSM/Demo/FsmWeaponBaselineDemoView.cs` → `clases/clase07/Unity/Assets/01_FSM/a_SmallBaseline/FsmWeaponBaselineDemoView.cs`
+- Move: `clases/clase07/Unity/Assets/01_FSM/01_FSM_WeaponBaseline.unity` (+ `.meta`) → `clases/clase07/Unity/Assets/01_FSM/a_SmallBaseline/a_FSM_WeaponBaseline.unity`
+- Create: `clases/clase07/Unity/Assets/01_FSM/a_SmallBaseline/Clase07.FSM.SmallBaseline.asmdef`
+- Move: `clases/clase07/Unity/Assets/01_FSM/Tests/WeaponBaselineTests.cs` → `clases/clase07/Unity/Assets/01_FSM/a_SmallBaseline/Tests/WeaponBaselineTests.cs`
+- Create: `clases/clase07/Unity/Assets/01_FSM/a_SmallBaseline/Tests/WeaponBaselineExpectedSequenceTests.cs`
+- Create: `clases/clase07/Unity/Assets/01_FSM/a_SmallBaseline/Tests/Clase07.FSM.SmallBaseline.Tests.asmdef`
+- Create: `clases/clase07/Unity/Assets/01_FSM/a_SmallBaseline/Tests/PlayMode/WeaponBaselineDemoViewPlayModeTests.cs`
+- Create: `clases/clase07/Unity/Assets/01_FSM/a_SmallBaseline/Tests/PlayMode/Clase07.FSM.SmallBaseline.Tests.PlayMode.asmdef`
 
 **Interfaces:**
-- Produces: namespace `Clase07.FSM.Small.Baseline` — `WeaponState` (enum: `Idle`, `Firing`, `Reloading`), `WeaponBaseline` (`State`, `AmmoInMagazine`, `ShotsFired`, `PressTrigger()`, `Tick(float deltaTime)`, consts `FireDuration`/`ReloadDuration`/`MagazineSize`), `FsmWeaponBaselineDemoView : MonoBehaviour` (`OnFireClicked()`).
+- Produces: namespace `Clase07.FSM.SmallBaseline` — `WeaponState` (enum: `Idle`, `Firing`, `Reloading`), `WeaponBaseline` (`State`, `AmmoInMagazine`, `ShotsFired`, `PressTrigger()`, `Tick(float deltaTime)`, consts `FireDuration`/`ReloadDuration`/`MagazineSize`), `FsmWeaponBaselineDemoView : MonoBehaviour` (`OnFireClicked()`).
 - No consume — esta implementación no depende de `Core/` ni de ninguna otra carpeta del módulo.
 
 - [ ] **Step 1: Mover la carpeta de implementación con git**
 
 ```bash
 cd /Users/giga/code/Programacion-de-VideoJuegos-III-2026
-git mv clases/clase07/Unity/Assets/01_FSM/Small/Baseline clases/clase07/Unity/Assets/01_FSM/Small/a_Baseline
-git mv clases/clase07/Unity/Assets/01_FSM/Demo/FsmWeaponBaselineDemoView.cs clases/clase07/Unity/Assets/01_FSM/Small/a_Baseline/FsmWeaponBaselineDemoView.cs
-git mv clases/clase07/Unity/Assets/01_FSM/Demo/FsmWeaponBaselineDemoView.cs.meta clases/clase07/Unity/Assets/01_FSM/Small/a_Baseline/FsmWeaponBaselineDemoView.cs.meta
-git mv clases/clase07/Unity/Assets/01_FSM/01_FSM_WeaponBaseline.unity clases/clase07/Unity/Assets/01_FSM/Small/a_Baseline/a_FSM_WeaponBaseline.unity
-git mv clases/clase07/Unity/Assets/01_FSM/01_FSM_WeaponBaseline.unity.meta clases/clase07/Unity/Assets/01_FSM/Small/a_Baseline/a_FSM_WeaponBaseline.unity.meta
+git mv clases/clase07/Unity/Assets/01_FSM/Small/Baseline clases/clase07/Unity/Assets/01_FSM/a_SmallBaseline
+git mv clases/clase07/Unity/Assets/01_FSM/Demo/FsmWeaponBaselineDemoView.cs clases/clase07/Unity/Assets/01_FSM/a_SmallBaseline/FsmWeaponBaselineDemoView.cs
+git mv clases/clase07/Unity/Assets/01_FSM/Demo/FsmWeaponBaselineDemoView.cs.meta clases/clase07/Unity/Assets/01_FSM/a_SmallBaseline/FsmWeaponBaselineDemoView.cs.meta
+git mv clases/clase07/Unity/Assets/01_FSM/01_FSM_WeaponBaseline.unity clases/clase07/Unity/Assets/01_FSM/a_SmallBaseline/a_FSM_WeaponBaseline.unity
+git mv clases/clase07/Unity/Assets/01_FSM/01_FSM_WeaponBaseline.unity.meta clases/clase07/Unity/Assets/01_FSM/a_SmallBaseline/a_FSM_WeaponBaseline.unity.meta
 ```
 
 - [ ] **Step 2: Crear el asmdef runtime**
 
-`clases/clase07/Unity/Assets/01_FSM/Small/a_Baseline/Clase07.FSM.Small.Baseline.asmdef`:
+`clases/clase07/Unity/Assets/01_FSM/a_SmallBaseline/Clase07.FSM.SmallBaseline.asmdef`:
 
 ```json
 {
-    "name": "Clase07.FSM.Small.Baseline",
+    "name": "Clase07.FSM.SmallBaseline",
     "rootNamespace": "",
     "references": [
         "Unity.TextMeshPro"
@@ -96,15 +96,15 @@ En `WeaponBaseline.cs`, el método `Tick` es el punto exacto que hay que mirar (
 - [ ] **Step 4: Mover los tests existentes**
 
 ```bash
-git mv clases/clase07/Unity/Assets/01_FSM/Tests/WeaponBaselineTests.cs clases/clase07/Unity/Assets/01_FSM/Small/a_Baseline/Tests/WeaponBaselineTests.cs
-git mv clases/clase07/Unity/Assets/01_FSM/Tests/WeaponBaselineTests.cs.meta clases/clase07/Unity/Assets/01_FSM/Small/a_Baseline/Tests/WeaponBaselineTests.cs.meta
+git mv clases/clase07/Unity/Assets/01_FSM/Tests/WeaponBaselineTests.cs clases/clase07/Unity/Assets/01_FSM/a_SmallBaseline/Tests/WeaponBaselineTests.cs
+git mv clases/clase07/Unity/Assets/01_FSM/Tests/WeaponBaselineTests.cs.meta clases/clase07/Unity/Assets/01_FSM/a_SmallBaseline/Tests/WeaponBaselineTests.cs.meta
 ```
 
 El namespace del archivo movido (`Clase07.FSM.Tests`) y su contenido no cambian.
 
 - [ ] **Step 5: Extraer la mitad de `WeaponEquivalenceTests` que ejercita `WeaponBaseline`**
 
-Crear `clases/clase07/Unity/Assets/01_FSM/Small/a_Baseline/Tests/WeaponBaselineExpectedSequenceTests.cs`. Corre la misma secuencia de 7 disparos que hoy corre `WeaponEquivalenceTests.BothImplementations_MatchAfterFiringUntilEmptyAndReloading`, pero contra valores esperados hardcodeados (derivados de la lógica real: `MagazineSize=6`, cada disparo consume una bala hasta llegar a 0, el 7º intento sin balas pasa a `Reloading`, y tras suficiente tiempo total vuelve a `Idle` con el cargador lleno) en vez de comparar con `WeaponStatePatternController`:
+Crear `clases/clase07/Unity/Assets/01_FSM/a_SmallBaseline/Tests/WeaponBaselineExpectedSequenceTests.cs`. Corre la misma secuencia de 7 disparos que hoy corre `WeaponEquivalenceTests.BothImplementations_MatchAfterFiringUntilEmptyAndReloading`, pero contra valores esperados hardcodeados (derivados de la lógica real: `MagazineSize=6`, cada disparo consume una bala hasta llegar a 0, el 7º intento sin balas pasa a `Reloading`, y tras suficiente tiempo total vuelve a `Idle` con el cargador lleno) en vez de comparar con `WeaponStatePatternController`:
 
 ```csharp
 using NUnit.Framework;
@@ -112,7 +112,7 @@ using NUnit.Framework;
 namespace Clase07.FSM.Tests
 {
     // Corre la misma secuencia de inputs que WeaponStatePatternExpectedSequenceTests
-    // en Small/b_StatePattern/Tests/ — a propósito NO referencia ese tipo: cada
+    // en b_SmallStatePattern/Tests/ — a propósito NO referencia ese tipo: cada
     // implementación se verifica contra los mismos valores esperados hardcodeados
     // en vez de compararse en runtime, para que esta carpeta compile sola.
     public class WeaponBaselineExpectedSequenceTests
@@ -148,14 +148,14 @@ namespace Clase07.FSM.Tests
 
 - [ ] **Step 6: Crear el asmdef de tests EditMode**
 
-`clases/clase07/Unity/Assets/01_FSM/Small/a_Baseline/Tests/Clase07.FSM.Small.Baseline.Tests.asmdef`:
+`clases/clase07/Unity/Assets/01_FSM/a_SmallBaseline/Tests/Clase07.FSM.SmallBaseline.Tests.asmdef`:
 
 ```json
 {
-    "name": "Clase07.FSM.Small.Baseline.Tests",
+    "name": "Clase07.FSM.SmallBaseline.Tests",
     "rootNamespace": "",
     "references": [
-        "Clase07.FSM.Small.Baseline",
+        "Clase07.FSM.SmallBaseline",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],
@@ -179,7 +179,7 @@ namespace Clase07.FSM.Tests
 
 - [ ] **Step 7: Extraer el test PlayMode de esta escena**
 
-Crear `clases/clase07/Unity/Assets/01_FSM/Small/a_Baseline/Tests/PlayMode/WeaponBaselineDemoViewPlayModeTests.cs` con solo el caso de esta escena (hoy vive junto a los otros dos en `FsmDemoViewsPlayModeTests.cs`):
+Crear `clases/clase07/Unity/Assets/01_FSM/a_SmallBaseline/Tests/PlayMode/WeaponBaselineDemoViewPlayModeTests.cs` con solo el caso de esta escena (hoy vive junto a los otros dos en `FsmDemoViewsPlayModeTests.cs`):
 
 ```csharp
 using System.Collections;
@@ -197,7 +197,7 @@ namespace Clase07.FSM.Tests
         [UnityTest]
         public IEnumerator WeaponBaselineScene_LoadsAndRespondsToButtons()
         {
-            SceneManager.LoadScene("Assets/01_FSM/Small/a_Baseline/a_FSM_WeaponBaseline.unity", LoadSceneMode.Single);
+            SceneManager.LoadScene("Assets/01_FSM/a_SmallBaseline/a_FSM_WeaponBaseline.unity", LoadSceneMode.Single);
             yield return null;
 
             var buttons = Object.FindObjectsOfType<Button>();
@@ -218,14 +218,14 @@ namespace Clase07.FSM.Tests
 
 - [ ] **Step 8: Crear el asmdef de tests PlayMode**
 
-`clases/clase07/Unity/Assets/01_FSM/Small/a_Baseline/Tests/PlayMode/Clase07.FSM.Small.Baseline.Tests.PlayMode.asmdef`:
+`clases/clase07/Unity/Assets/01_FSM/a_SmallBaseline/Tests/PlayMode/Clase07.FSM.SmallBaseline.Tests.PlayMode.asmdef`:
 
 ```json
 {
-    "name": "Clase07.FSM.Small.Baseline.Tests.PlayMode",
+    "name": "Clase07.FSM.SmallBaseline.Tests.PlayMode",
     "rootNamespace": "",
     "references": [
-        "Clase07.FSM.Small.Baseline",
+        "Clase07.FSM.SmallBaseline",
         "UnityEngine.UI",
         "Unity.TextMeshPro"
     ],
@@ -291,42 +291,42 @@ EOF
 
 ---
 
-### Task 2: `01_FSM/Small/b_StatePattern/` autocontenida
+### Task 2: `01_FSM/b_SmallStatePattern/` autocontenida
 
 **Files:**
-- Move: `clases/clase07/Unity/Assets/01_FSM/Small/StatePattern/{WeaponContext.cs, WeaponStatePatternController.cs, WeaponIdleState.cs, WeaponFiringState.cs, WeaponReloadingState.cs}` → `clases/clase07/Unity/Assets/01_FSM/Small/b_StatePattern/` (mismos nombres)
-- Move: `clases/clase07/Unity/Assets/01_FSM/Demo/FsmWeaponStatePatternDemoView.cs` → `clases/clase07/Unity/Assets/01_FSM/Small/b_StatePattern/FsmWeaponStatePatternDemoView.cs`
-- Move: `clases/clase07/Unity/Assets/01_FSM/02_FSM_WeaponStatePattern.unity` (+ `.meta`) → `clases/clase07/Unity/Assets/01_FSM/Small/b_StatePattern/b_FSM_WeaponStatePattern.unity`
-- Create: `clases/clase07/Unity/Assets/01_FSM/Small/b_StatePattern/IState.cs` (copia de `Core/IState.cs`, namespace fusionado)
-- Create: `clases/clase07/Unity/Assets/01_FSM/Small/b_StatePattern/StateMachine.cs` (copia de `Core/StateMachine.cs`, namespace fusionado)
-- Create: `clases/clase07/Unity/Assets/01_FSM/Small/b_StatePattern/Clase07.FSM.Small.StatePattern.asmdef`
-- Create: `clases/clase07/Unity/Assets/01_FSM/Small/b_StatePattern/Tests/WeaponStatePatternExpectedSequenceTests.cs`
-- Create: `clases/clase07/Unity/Assets/01_FSM/Small/b_StatePattern/Tests/StateMachineTests.cs` (copia de `01_FSM/Tests/StateMachineTests.cs`, contra esta copia local del motor)
-- Create: `clases/clase07/Unity/Assets/01_FSM/Small/b_StatePattern/Tests/Clase07.FSM.Small.StatePattern.Tests.asmdef`
-- Create: `clases/clase07/Unity/Assets/01_FSM/Small/b_StatePattern/Tests/PlayMode/WeaponStatePatternDemoViewPlayModeTests.cs`
-- Create: `clases/clase07/Unity/Assets/01_FSM/Small/b_StatePattern/Tests/PlayMode/Clase07.FSM.Small.StatePattern.Tests.PlayMode.asmdef`
+- Move: `clases/clase07/Unity/Assets/01_FSM/Small/StatePattern/{WeaponContext.cs, WeaponStatePatternController.cs, WeaponIdleState.cs, WeaponFiringState.cs, WeaponReloadingState.cs}` → `clases/clase07/Unity/Assets/01_FSM/b_SmallStatePattern/` (mismos nombres)
+- Move: `clases/clase07/Unity/Assets/01_FSM/Demo/FsmWeaponStatePatternDemoView.cs` → `clases/clase07/Unity/Assets/01_FSM/b_SmallStatePattern/FsmWeaponStatePatternDemoView.cs`
+- Move: `clases/clase07/Unity/Assets/01_FSM/02_FSM_WeaponStatePattern.unity` (+ `.meta`) → `clases/clase07/Unity/Assets/01_FSM/b_SmallStatePattern/b_FSM_WeaponStatePattern.unity`
+- Create: `clases/clase07/Unity/Assets/01_FSM/b_SmallStatePattern/IState.cs` (copia de `Core/IState.cs`, namespace fusionado)
+- Create: `clases/clase07/Unity/Assets/01_FSM/b_SmallStatePattern/StateMachine.cs` (copia de `Core/StateMachine.cs`, namespace fusionado)
+- Create: `clases/clase07/Unity/Assets/01_FSM/b_SmallStatePattern/Clase07.FSM.SmallStatePattern.asmdef`
+- Create: `clases/clase07/Unity/Assets/01_FSM/b_SmallStatePattern/Tests/WeaponStatePatternExpectedSequenceTests.cs`
+- Create: `clases/clase07/Unity/Assets/01_FSM/b_SmallStatePattern/Tests/StateMachineTests.cs` (copia de `01_FSM/Tests/StateMachineTests.cs`, contra esta copia local del motor)
+- Create: `clases/clase07/Unity/Assets/01_FSM/b_SmallStatePattern/Tests/Clase07.FSM.SmallStatePattern.Tests.asmdef`
+- Create: `clases/clase07/Unity/Assets/01_FSM/b_SmallStatePattern/Tests/PlayMode/WeaponStatePatternDemoViewPlayModeTests.cs`
+- Create: `clases/clase07/Unity/Assets/01_FSM/b_SmallStatePattern/Tests/PlayMode/Clase07.FSM.SmallStatePattern.Tests.PlayMode.asmdef`
 
 **Interfaces:**
-- Produces: namespace `Clase07.FSM.Small.StatePattern` — `IState` (`OnEnter()`, `OnUpdate(float)`, `OnExit()`), `StateMachine<TState>` (`CurrentState`, `ChangeState(TState)`, `Tick(float)`, evento `StateChanged`), `WeaponContext`, `WeaponStatePatternController` (`Context`, `CurrentState`, `IdleState`/`FiringState`/`ReloadingState`, `PressTrigger()`, `Tick(float)`), `FsmWeaponStatePatternDemoView : MonoBehaviour` (`OnFireClicked()`).
+- Produces: namespace `Clase07.FSM.SmallStatePattern` — `IState` (`OnEnter()`, `OnUpdate(float)`, `OnExit()`), `StateMachine<TState>` (`CurrentState`, `ChangeState(TState)`, `Tick(float)`, evento `StateChanged`), `WeaponContext`, `WeaponStatePatternController` (`Context`, `CurrentState`, `IdleState`/`FiringState`/`ReloadingState`, `PressTrigger()`, `Tick(float)`), `FsmWeaponStatePatternDemoView : MonoBehaviour` (`OnFireClicked()`).
 - No consume — copia propia de `IState`/`StateMachine<TState>`, no referencia `Clase07.FSM.Core`.
 
 - [ ] **Step 1: Mover archivos con git**
 
 ```bash
 cd /Users/giga/code/Programacion-de-VideoJuegos-III-2026
-git mv clases/clase07/Unity/Assets/01_FSM/Small/StatePattern clases/clase07/Unity/Assets/01_FSM/Small/b_StatePattern
-git mv clases/clase07/Unity/Assets/01_FSM/Demo/FsmWeaponStatePatternDemoView.cs clases/clase07/Unity/Assets/01_FSM/Small/b_StatePattern/FsmWeaponStatePatternDemoView.cs
-git mv clases/clase07/Unity/Assets/01_FSM/Demo/FsmWeaponStatePatternDemoView.cs.meta clases/clase07/Unity/Assets/01_FSM/Small/b_StatePattern/FsmWeaponStatePatternDemoView.cs.meta
-git mv clases/clase07/Unity/Assets/01_FSM/02_FSM_WeaponStatePattern.unity clases/clase07/Unity/Assets/01_FSM/Small/b_StatePattern/b_FSM_WeaponStatePattern.unity
-git mv clases/clase07/Unity/Assets/01_FSM/02_FSM_WeaponStatePattern.unity.meta clases/clase07/Unity/Assets/01_FSM/Small/b_StatePattern/b_FSM_WeaponStatePattern.unity.meta
+git mv clases/clase07/Unity/Assets/01_FSM/Small/StatePattern clases/clase07/Unity/Assets/01_FSM/b_SmallStatePattern
+git mv clases/clase07/Unity/Assets/01_FSM/Demo/FsmWeaponStatePatternDemoView.cs clases/clase07/Unity/Assets/01_FSM/b_SmallStatePattern/FsmWeaponStatePatternDemoView.cs
+git mv clases/clase07/Unity/Assets/01_FSM/Demo/FsmWeaponStatePatternDemoView.cs.meta clases/clase07/Unity/Assets/01_FSM/b_SmallStatePattern/FsmWeaponStatePatternDemoView.cs.meta
+git mv clases/clase07/Unity/Assets/01_FSM/02_FSM_WeaponStatePattern.unity clases/clase07/Unity/Assets/01_FSM/b_SmallStatePattern/b_FSM_WeaponStatePattern.unity
+git mv clases/clase07/Unity/Assets/01_FSM/02_FSM_WeaponStatePattern.unity.meta clases/clase07/Unity/Assets/01_FSM/b_SmallStatePattern/b_FSM_WeaponStatePattern.unity.meta
 ```
 
 - [ ] **Step 2: Copiar `IState`/`StateMachine` con namespace fusionado**
 
-`clases/clase07/Unity/Assets/01_FSM/Small/b_StatePattern/IState.cs`:
+`clases/clase07/Unity/Assets/01_FSM/b_SmallStatePattern/IState.cs`:
 
 ```csharp
-namespace Clase07.FSM.Small.StatePattern
+namespace Clase07.FSM.SmallStatePattern
 {
     public interface IState
     {
@@ -337,15 +337,15 @@ namespace Clase07.FSM.Small.StatePattern
 }
 ```
 
-`clases/clase07/Unity/Assets/01_FSM/Small/b_StatePattern/StateMachine.cs`:
+`clases/clase07/Unity/Assets/01_FSM/b_SmallStatePattern/StateMachine.cs`:
 
 ```csharp
 using System;
 
-namespace Clase07.FSM.Small.StatePattern
+namespace Clase07.FSM.SmallStatePattern
 {
     // Copia local del motor genérico — esta carpeta es autocontenida a propósito,
-    // ver Large/a_StatePattern/StateMachine.cs para la otra copia independiente.
+    // ver c_LargeStatePattern/StateMachine.cs para la otra copia independiente.
     public class StateMachine<TState> where TState : class, IState
     {
         public TState CurrentState { get; private set; }
@@ -376,7 +376,7 @@ namespace Clase07.FSM.Small.StatePattern
 
 - [ ] **Step 3: Quitar los `using Clase07.FSM.Core;` que ya no hacen falta**
 
-En `WeaponStatePatternController.cs`, `WeaponIdleState.cs`, `WeaponFiringState.cs`, `WeaponReloadingState.cs`: borrar la línea `using Clase07.FSM.Core;` de cada uno (queda vacía esa línea, `IState`/`StateMachine<TState>` ya están en el mismo namespace `Clase07.FSM.Small.StatePattern`).
+En `WeaponStatePatternController.cs`, `WeaponIdleState.cs`, `WeaponFiringState.cs`, `WeaponReloadingState.cs`: borrar la línea `using Clase07.FSM.Core;` de cada uno (queda vacía esa línea, `IState`/`StateMachine<TState>` ya están en el mismo namespace `Clase07.FSM.SmallStatePattern`).
 
 - [ ] **Step 4: Agregar el comentario pedagógico en `ChangeState(...)`**
 
@@ -406,11 +406,11 @@ En `WeaponFiringState.cs` y `WeaponReloadingState.cs`, agregar una línea corta 
 
 - [ ] **Step 5: Crear el asmdef runtime**
 
-`clases/clase07/Unity/Assets/01_FSM/Small/b_StatePattern/Clase07.FSM.Small.StatePattern.asmdef`:
+`clases/clase07/Unity/Assets/01_FSM/b_SmallStatePattern/Clase07.FSM.SmallStatePattern.asmdef`:
 
 ```json
 {
-    "name": "Clase07.FSM.Small.StatePattern",
+    "name": "Clase07.FSM.SmallStatePattern",
     "rootNamespace": "",
     "references": [
         "Unity.TextMeshPro"
@@ -429,7 +429,7 @@ En `WeaponFiringState.cs` y `WeaponReloadingState.cs`, agregar una línea corta 
 
 - [ ] **Step 6: Test de secuencia esperada (mitad de `WeaponEquivalenceTests` para esta implementación)**
 
-Crear `clases/clase07/Unity/Assets/01_FSM/Small/b_StatePattern/Tests/WeaponStatePatternExpectedSequenceTests.cs`. Mismos valores esperados que `WeaponBaselineExpectedSequenceTests` (Task 1, Step 5), pero conducido a través de `WeaponStatePatternController` — a propósito no importa `Clase07.FSM.Small.Baseline`:
+Crear `clases/clase07/Unity/Assets/01_FSM/b_SmallStatePattern/Tests/WeaponStatePatternExpectedSequenceTests.cs`. Mismos valores esperados que `WeaponBaselineExpectedSequenceTests` (Task 1, Step 5), pero conducido a través de `WeaponStatePatternController` — a propósito no importa `Clase07.FSM.SmallBaseline`:
 
 ```csharp
 using NUnit.Framework;
@@ -478,16 +478,16 @@ namespace Clase07.FSM.Tests
 
 - [ ] **Step 7: Duplicar `StateMachineTests.cs` contra la copia local del motor genérico**
 
-`StateMachineTests.cs` (hoy en `01_FSM/Tests/`) testea `Clase07.FSM.Core.StateMachine<TState>` con un `RecordingState` de prueba — ya es autocontenido (no referencia ninguna otra implementación), pero como el motor ahora tiene una copia independiente en esta carpeta (Step 2) y otra en `Large/a_StatePattern/` (Task 3), hace falta una copia del test por cada copia del motor, o esta cobertura desaparece cuando `01_FSM/Tests/` se borre en la Task 5.
+`StateMachineTests.cs` (hoy en `01_FSM/Tests/`) testea `Clase07.FSM.Core.StateMachine<TState>` con un `RecordingState` de prueba — ya es autocontenido (no referencia ninguna otra implementación), pero como el motor ahora tiene una copia independiente en esta carpeta (Step 2) y otra en `c_LargeStatePattern/` (Task 3), hace falta una copia del test por cada copia del motor, o esta cobertura desaparece cuando `01_FSM/Tests/` se borre en la Task 5.
 
-Crear `clases/clase07/Unity/Assets/01_FSM/Small/b_StatePattern/Tests/StateMachineTests.cs` (mismo contenido que el original, namespace ajustado a `Clase07.FSM.Small.StatePattern.Tests`, sin el `using Clase07.FSM.Core;` ya que `IState`/`StateMachine<TState>` viven en `Clase07.FSM.Small.StatePattern`):
+Crear `clases/clase07/Unity/Assets/01_FSM/b_SmallStatePattern/Tests/StateMachineTests.cs` (mismo contenido que el original, namespace ajustado a `Clase07.FSM.SmallStatePattern.Tests`, sin el `using Clase07.FSM.Core;` ya que `IState`/`StateMachine<TState>` viven en `Clase07.FSM.SmallStatePattern`):
 
 ```csharp
 using System.Collections.Generic;
 using NUnit.Framework;
-using Clase07.FSM.Small.StatePattern;
+using Clase07.FSM.SmallStatePattern;
 
-namespace Clase07.FSM.Small.StatePattern.Tests
+namespace Clase07.FSM.SmallStatePattern.Tests
 {
     public class StateMachineTests
     {
@@ -565,14 +565,14 @@ namespace Clase07.FSM.Small.StatePattern.Tests
 
 - [ ] **Step 8: Crear el asmdef de tests EditMode**
 
-`clases/clase07/Unity/Assets/01_FSM/Small/b_StatePattern/Tests/Clase07.FSM.Small.StatePattern.Tests.asmdef`:
+`clases/clase07/Unity/Assets/01_FSM/b_SmallStatePattern/Tests/Clase07.FSM.SmallStatePattern.Tests.asmdef`:
 
 ```json
 {
-    "name": "Clase07.FSM.Small.StatePattern.Tests",
+    "name": "Clase07.FSM.SmallStatePattern.Tests",
     "rootNamespace": "",
     "references": [
-        "Clase07.FSM.Small.StatePattern",
+        "Clase07.FSM.SmallStatePattern",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],
@@ -596,7 +596,7 @@ namespace Clase07.FSM.Small.StatePattern.Tests
 
 - [ ] **Step 9: Extraer el test PlayMode de esta escena**
 
-Crear `clases/clase07/Unity/Assets/01_FSM/Small/b_StatePattern/Tests/PlayMode/WeaponStatePatternDemoViewPlayModeTests.cs`:
+Crear `clases/clase07/Unity/Assets/01_FSM/b_SmallStatePattern/Tests/PlayMode/WeaponStatePatternDemoViewPlayModeTests.cs`:
 
 ```csharp
 using System.Collections;
@@ -614,7 +614,7 @@ namespace Clase07.FSM.Tests
         [UnityTest]
         public IEnumerator WeaponStatePatternScene_LoadsAndRespondsToButtons()
         {
-            SceneManager.LoadScene("Assets/01_FSM/Small/b_StatePattern/b_FSM_WeaponStatePattern.unity", LoadSceneMode.Single);
+            SceneManager.LoadScene("Assets/01_FSM/b_SmallStatePattern/b_FSM_WeaponStatePattern.unity", LoadSceneMode.Single);
             yield return null;
 
             var buttons = Object.FindObjectsOfType<Button>();
@@ -635,14 +635,14 @@ namespace Clase07.FSM.Tests
 
 - [ ] **Step 10: Crear el asmdef de tests PlayMode**
 
-`clases/clase07/Unity/Assets/01_FSM/Small/b_StatePattern/Tests/PlayMode/Clase07.FSM.Small.StatePattern.Tests.PlayMode.asmdef`:
+`clases/clase07/Unity/Assets/01_FSM/b_SmallStatePattern/Tests/PlayMode/Clase07.FSM.SmallStatePattern.Tests.PlayMode.asmdef`:
 
 ```json
 {
-    "name": "Clase07.FSM.Small.StatePattern.Tests.PlayMode",
+    "name": "Clase07.FSM.SmallStatePattern.Tests.PlayMode",
     "rootNamespace": "",
     "references": [
-        "Clase07.FSM.Small.StatePattern",
+        "Clase07.FSM.SmallStatePattern",
         "UnityEngine.UI",
         "Unity.TextMeshPro"
     ],
@@ -706,42 +706,42 @@ EOF
 
 ---
 
-### Task 3: `01_FSM/Large/a_StatePattern/` autocontenida
+### Task 3: `01_FSM/c_LargeStatePattern/` autocontenida
 
 **Files:**
-- Move: `clases/clase07/Unity/Assets/01_FSM/Large/StatePattern/{GameFlowController.cs, IGameFlowState.cs, LoadingState.cs, MainMenuState.cs, PlayingState.cs, UserPlayingState.cs, PauseMenuState.cs, SettingsMenuState.cs}` → `clases/clase07/Unity/Assets/01_FSM/Large/a_StatePattern/` (mismos nombres)
-- Move: `clases/clase07/Unity/Assets/01_FSM/Demo/FsmGameFlowDemoView.cs` → `clases/clase07/Unity/Assets/01_FSM/Large/a_StatePattern/FsmGameFlowDemoView.cs`
-- Move: `clases/clase07/Unity/Assets/01_FSM/03_FSM_GameFlow.unity` (+ `.meta`) → `clases/clase07/Unity/Assets/01_FSM/Large/a_StatePattern/a_FSM_GameFlow.unity`
-- Create: `clases/clase07/Unity/Assets/01_FSM/Large/a_StatePattern/IState.cs` (copia de `Core/IState.cs`, namespace fusionado)
-- Create: `clases/clase07/Unity/Assets/01_FSM/Large/a_StatePattern/StateMachine.cs` (copia de `Core/StateMachine.cs`, namespace fusionado)
-- Create: `clases/clase07/Unity/Assets/01_FSM/Large/a_StatePattern/Clase07.FSM.Large.StatePattern.asmdef`
-- Move: `clases/clase07/Unity/Assets/01_FSM/Tests/GameFlowControllerTests.cs` → `clases/clase07/Unity/Assets/01_FSM/Large/a_StatePattern/Tests/GameFlowControllerTests.cs`
-- Create: `clases/clase07/Unity/Assets/01_FSM/Large/a_StatePattern/Tests/StateMachineTests.cs` (copia de `01_FSM/Tests/StateMachineTests.cs`, contra esta copia local del motor)
-- Create: `clases/clase07/Unity/Assets/01_FSM/Large/a_StatePattern/Tests/Clase07.FSM.Large.StatePattern.Tests.asmdef`
-- Create: `clases/clase07/Unity/Assets/01_FSM/Large/a_StatePattern/Tests/PlayMode/GameFlowDemoViewPlayModeTests.cs`
-- Create: `clases/clase07/Unity/Assets/01_FSM/Large/a_StatePattern/Tests/PlayMode/Clase07.FSM.Large.StatePattern.Tests.PlayMode.asmdef`
+- Move: `clases/clase07/Unity/Assets/01_FSM/Large/StatePattern/{GameFlowController.cs, IGameFlowState.cs, LoadingState.cs, MainMenuState.cs, PlayingState.cs, UserPlayingState.cs, PauseMenuState.cs, SettingsMenuState.cs}` → `clases/clase07/Unity/Assets/01_FSM/c_LargeStatePattern/` (mismos nombres)
+- Move: `clases/clase07/Unity/Assets/01_FSM/Demo/FsmGameFlowDemoView.cs` → `clases/clase07/Unity/Assets/01_FSM/c_LargeStatePattern/FsmGameFlowDemoView.cs`
+- Move: `clases/clase07/Unity/Assets/01_FSM/03_FSM_GameFlow.unity` (+ `.meta`) → `clases/clase07/Unity/Assets/01_FSM/c_LargeStatePattern/c_FSM_GameFlow.unity`
+- Create: `clases/clase07/Unity/Assets/01_FSM/c_LargeStatePattern/IState.cs` (copia de `Core/IState.cs`, namespace fusionado)
+- Create: `clases/clase07/Unity/Assets/01_FSM/c_LargeStatePattern/StateMachine.cs` (copia de `Core/StateMachine.cs`, namespace fusionado)
+- Create: `clases/clase07/Unity/Assets/01_FSM/c_LargeStatePattern/Clase07.FSM.LargeStatePattern.asmdef`
+- Move: `clases/clase07/Unity/Assets/01_FSM/Tests/GameFlowControllerTests.cs` → `clases/clase07/Unity/Assets/01_FSM/c_LargeStatePattern/Tests/GameFlowControllerTests.cs`
+- Create: `clases/clase07/Unity/Assets/01_FSM/c_LargeStatePattern/Tests/StateMachineTests.cs` (copia de `01_FSM/Tests/StateMachineTests.cs`, contra esta copia local del motor)
+- Create: `clases/clase07/Unity/Assets/01_FSM/c_LargeStatePattern/Tests/Clase07.FSM.LargeStatePattern.Tests.asmdef`
+- Create: `clases/clase07/Unity/Assets/01_FSM/c_LargeStatePattern/Tests/PlayMode/GameFlowDemoViewPlayModeTests.cs`
+- Create: `clases/clase07/Unity/Assets/01_FSM/c_LargeStatePattern/Tests/PlayMode/Clase07.FSM.LargeStatePattern.Tests.PlayMode.asmdef`
 
 **Interfaces:**
-- Produces: namespace `Clase07.FSM.Large.StatePattern` — `IState`, `StateMachine<TState>`, `IGameFlowState : IState` (`Name`), `GameFlowController` (`CurrentState`, `CurrentSubstateName`, `Load()`, `FinishLoading()`, `Play()`, `Pause()`, `Resume()`, `OpenSettings()`, `CloseSettings()`), `FsmGameFlowDemoView : MonoBehaviour`.
-- No consume — copia propia de `IState`/`StateMachine<TState>`, independiente de la de `Small/b_StatePattern/`.
+- Produces: namespace `Clase07.FSM.LargeStatePattern` — `IState`, `StateMachine<TState>`, `IGameFlowState : IState` (`Name`), `GameFlowController` (`CurrentState`, `CurrentSubstateName`, `Load()`, `FinishLoading()`, `Play()`, `Pause()`, `Resume()`, `OpenSettings()`, `CloseSettings()`), `FsmGameFlowDemoView : MonoBehaviour`.
+- No consume — copia propia de `IState`/`StateMachine<TState>`, independiente de la de `b_SmallStatePattern/`.
 
 - [ ] **Step 1: Mover archivos con git**
 
 ```bash
 cd /Users/giga/code/Programacion-de-VideoJuegos-III-2026
-git mv clases/clase07/Unity/Assets/01_FSM/Large/StatePattern clases/clase07/Unity/Assets/01_FSM/Large/a_StatePattern
-git mv clases/clase07/Unity/Assets/01_FSM/Demo/FsmGameFlowDemoView.cs clases/clase07/Unity/Assets/01_FSM/Large/a_StatePattern/FsmGameFlowDemoView.cs
-git mv clases/clase07/Unity/Assets/01_FSM/Demo/FsmGameFlowDemoView.cs.meta clases/clase07/Unity/Assets/01_FSM/Large/a_StatePattern/FsmGameFlowDemoView.cs.meta
-git mv clases/clase07/Unity/Assets/01_FSM/03_FSM_GameFlow.unity clases/clase07/Unity/Assets/01_FSM/Large/a_StatePattern/a_FSM_GameFlow.unity
-git mv clases/clase07/Unity/Assets/01_FSM/03_FSM_GameFlow.unity.meta clases/clase07/Unity/Assets/01_FSM/Large/a_StatePattern/a_FSM_GameFlow.unity.meta
+git mv clases/clase07/Unity/Assets/01_FSM/Large/StatePattern clases/clase07/Unity/Assets/01_FSM/c_LargeStatePattern
+git mv clases/clase07/Unity/Assets/01_FSM/Demo/FsmGameFlowDemoView.cs clases/clase07/Unity/Assets/01_FSM/c_LargeStatePattern/FsmGameFlowDemoView.cs
+git mv clases/clase07/Unity/Assets/01_FSM/Demo/FsmGameFlowDemoView.cs.meta clases/clase07/Unity/Assets/01_FSM/c_LargeStatePattern/FsmGameFlowDemoView.cs.meta
+git mv clases/clase07/Unity/Assets/01_FSM/03_FSM_GameFlow.unity clases/clase07/Unity/Assets/01_FSM/c_LargeStatePattern/c_FSM_GameFlow.unity
+git mv clases/clase07/Unity/Assets/01_FSM/03_FSM_GameFlow.unity.meta clases/clase07/Unity/Assets/01_FSM/c_LargeStatePattern/c_FSM_GameFlow.unity.meta
 ```
 
 - [ ] **Step 2: Copiar `IState`/`StateMachine` con namespace fusionado**
 
-`clases/clase07/Unity/Assets/01_FSM/Large/a_StatePattern/IState.cs`:
+`clases/clase07/Unity/Assets/01_FSM/c_LargeStatePattern/IState.cs`:
 
 ```csharp
-namespace Clase07.FSM.Large.StatePattern
+namespace Clase07.FSM.LargeStatePattern
 {
     public interface IState
     {
@@ -752,15 +752,15 @@ namespace Clase07.FSM.Large.StatePattern
 }
 ```
 
-`clases/clase07/Unity/Assets/01_FSM/Large/a_StatePattern/StateMachine.cs`:
+`clases/clase07/Unity/Assets/01_FSM/c_LargeStatePattern/StateMachine.cs`:
 
 ```csharp
 using System;
 
-namespace Clase07.FSM.Large.StatePattern
+namespace Clase07.FSM.LargeStatePattern
 {
     // Copia local del motor genérico — independiente de la copia en
-    // Small/b_StatePattern/StateMachine.cs, a propósito.
+    // b_SmallStatePattern/StateMachine.cs, a propósito.
     public class StateMachine<TState> where TState : class, IState
     {
         public TState CurrentState { get; private set; }
@@ -811,11 +811,11 @@ En `PlayingState.cs`, arriba del campo:
 
 - [ ] **Step 5: Crear el asmdef runtime**
 
-`clases/clase07/Unity/Assets/01_FSM/Large/a_StatePattern/Clase07.FSM.Large.StatePattern.asmdef`:
+`clases/clase07/Unity/Assets/01_FSM/c_LargeStatePattern/Clase07.FSM.LargeStatePattern.asmdef`:
 
 ```json
 {
-    "name": "Clase07.FSM.Large.StatePattern",
+    "name": "Clase07.FSM.LargeStatePattern",
     "rootNamespace": "",
     "references": [
         "Unity.TextMeshPro"
@@ -835,24 +835,24 @@ En `PlayingState.cs`, arriba del campo:
 - [ ] **Step 6: Mover `GameFlowControllerTests.cs`**
 
 ```bash
-git mv clases/clase07/Unity/Assets/01_FSM/Tests/GameFlowControllerTests.cs clases/clase07/Unity/Assets/01_FSM/Large/a_StatePattern/Tests/GameFlowControllerTests.cs
-git mv clases/clase07/Unity/Assets/01_FSM/Tests/GameFlowControllerTests.cs.meta clases/clase07/Unity/Assets/01_FSM/Large/a_StatePattern/Tests/GameFlowControllerTests.cs.meta
+git mv clases/clase07/Unity/Assets/01_FSM/Tests/GameFlowControllerTests.cs clases/clase07/Unity/Assets/01_FSM/c_LargeStatePattern/Tests/GameFlowControllerTests.cs
+git mv clases/clase07/Unity/Assets/01_FSM/Tests/GameFlowControllerTests.cs.meta clases/clase07/Unity/Assets/01_FSM/c_LargeStatePattern/Tests/GameFlowControllerTests.cs.meta
 ```
 
-Ya es autocontenido (solo referencia `Clase07.FSM.Large.StatePattern`) — no requiere cambios de contenido.
+Ya es autocontenido (solo referencia `Clase07.FSM.LargeStatePattern`) — no requiere cambios de contenido.
 
 - [ ] **Step 7: Duplicar `StateMachineTests.cs` contra la copia local del motor genérico**
 
 Mismo motivo que en Task 2, Step 7: el motor genérico ahora tiene una copia independiente en esta carpeta (Step 2), así que necesita su propia copia del test o la cobertura de `StateMachine<TState>` desaparece cuando `01_FSM/Tests/` se borre en la Task 5.
 
-Crear `clases/clase07/Unity/Assets/01_FSM/Large/a_StatePattern/Tests/StateMachineTests.cs` (mismo contenido que el original, namespace ajustado a `Clase07.FSM.Large.StatePattern.Tests`, sin el `using Clase07.FSM.Core;`):
+Crear `clases/clase07/Unity/Assets/01_FSM/c_LargeStatePattern/Tests/StateMachineTests.cs` (mismo contenido que el original, namespace ajustado a `Clase07.FSM.LargeStatePattern.Tests`, sin el `using Clase07.FSM.Core;`):
 
 ```csharp
 using System.Collections.Generic;
 using NUnit.Framework;
-using Clase07.FSM.Large.StatePattern;
+using Clase07.FSM.LargeStatePattern;
 
-namespace Clase07.FSM.Large.StatePattern.Tests
+namespace Clase07.FSM.LargeStatePattern.Tests
 {
     public class StateMachineTests
     {
@@ -930,14 +930,14 @@ namespace Clase07.FSM.Large.StatePattern.Tests
 
 - [ ] **Step 8: Crear el asmdef de tests EditMode**
 
-`clases/clase07/Unity/Assets/01_FSM/Large/a_StatePattern/Tests/Clase07.FSM.Large.StatePattern.Tests.asmdef`:
+`clases/clase07/Unity/Assets/01_FSM/c_LargeStatePattern/Tests/Clase07.FSM.LargeStatePattern.Tests.asmdef`:
 
 ```json
 {
-    "name": "Clase07.FSM.Large.StatePattern.Tests",
+    "name": "Clase07.FSM.LargeStatePattern.Tests",
     "rootNamespace": "",
     "references": [
-        "Clase07.FSM.Large.StatePattern",
+        "Clase07.FSM.LargeStatePattern",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],
@@ -961,7 +961,7 @@ namespace Clase07.FSM.Large.StatePattern.Tests
 
 - [ ] **Step 9: Extraer el test PlayMode de esta escena**
 
-Crear `clases/clase07/Unity/Assets/01_FSM/Large/a_StatePattern/Tests/PlayMode/GameFlowDemoViewPlayModeTests.cs`:
+Crear `clases/clase07/Unity/Assets/01_FSM/c_LargeStatePattern/Tests/PlayMode/GameFlowDemoViewPlayModeTests.cs`:
 
 ```csharp
 using System.Collections;
@@ -979,7 +979,7 @@ namespace Clase07.FSM.Tests
         [UnityTest]
         public IEnumerator GameFlowScene_LoadsAndRespondsToButtons()
         {
-            SceneManager.LoadScene("Assets/01_FSM/Large/a_StatePattern/a_FSM_GameFlow.unity", LoadSceneMode.Single);
+            SceneManager.LoadScene("Assets/01_FSM/c_LargeStatePattern/c_FSM_GameFlow.unity", LoadSceneMode.Single);
             yield return null;
 
             var buttons = Object.FindObjectsOfType<Button>();
@@ -1000,14 +1000,14 @@ namespace Clase07.FSM.Tests
 
 - [ ] **Step 10: Crear el asmdef de tests PlayMode**
 
-`clases/clase07/Unity/Assets/01_FSM/Large/a_StatePattern/Tests/PlayMode/Clase07.FSM.Large.StatePattern.Tests.PlayMode.asmdef`:
+`clases/clase07/Unity/Assets/01_FSM/c_LargeStatePattern/Tests/PlayMode/Clase07.FSM.LargeStatePattern.Tests.PlayMode.asmdef`:
 
 ```json
 {
-    "name": "Clase07.FSM.Large.StatePattern.Tests.PlayMode",
+    "name": "Clase07.FSM.LargeStatePattern.Tests.PlayMode",
     "rootNamespace": "",
     "references": [
-        "Clase07.FSM.Large.StatePattern",
+        "Clase07.FSM.LargeStatePattern",
         "UnityEngine.UI",
         "Unity.TextMeshPro"
     ],
@@ -1061,7 +1061,7 @@ rm clases/clase07/Unity_fsm_a_gameflow_statepattern_editmode.xml clases/clase07/
    clases/clase07/Unity_fsm_a_gameflow_statepattern_playmode.xml clases/clase07/Unity_fsm_a_gameflow_statepattern_playmode.log
 git add clases/clase07/Unity/Assets/01_FSM
 git commit -m "$(cat <<'EOF'
-clase07/FSM: Large/a_StatePattern autocontenida (copia propia de IState/StateMachine)
+clase07/FSM: c_LargeStatePattern autocontenida (copia propia de IState/StateMachine)
 
 Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01YGZHSkcGRaTFS7xCnNWa5E
@@ -1071,29 +1071,29 @@ EOF
 
 ---
 
-### Task 4: `01_FSM/Large/b_ScriptableObjectStates/` autocontenida
+### Task 4: `01_FSM/d_LargeScriptableObjectStates/` autocontenida
 
 **Files:**
-- Move: `clases/clase07/Unity/Assets/01_FSM/Large/ScriptableObjectStates/{GameFlowSORunner.cs, GameFlowStateSO.cs, LoadingStateSO.cs, MainMenuStateSO.cs, PauseMenuStateSO.cs, PlayingStateSO.cs, SettingsMenuStateSO.cs, UserPlayingStateSO.cs}` → `clases/clase07/Unity/Assets/01_FSM/Large/b_ScriptableObjectStates/` (mismos nombres)
-- Create: `clases/clase07/Unity/Assets/01_FSM/Large/b_ScriptableObjectStates/Clase07.FSM.Large.ScriptableObjectStates.asmdef`
-- Move: `clases/clase07/Unity/Assets/01_FSM/Tests/GameFlowSORunnerTests.cs` → `clases/clase07/Unity/Assets/01_FSM/Large/b_ScriptableObjectStates/Tests/GameFlowSORunnerTests.cs`
-- Create: `clases/clase07/Unity/Assets/01_FSM/Large/b_ScriptableObjectStates/Tests/Clase07.FSM.Large.ScriptableObjectStates.Tests.asmdef`
+- Move: `clases/clase07/Unity/Assets/01_FSM/Large/ScriptableObjectStates/{GameFlowSORunner.cs, GameFlowStateSO.cs, LoadingStateSO.cs, MainMenuStateSO.cs, PauseMenuStateSO.cs, PlayingStateSO.cs, SettingsMenuStateSO.cs, UserPlayingStateSO.cs}` → `clases/clase07/Unity/Assets/01_FSM/d_LargeScriptableObjectStates/` (mismos nombres)
+- Create: `clases/clase07/Unity/Assets/01_FSM/d_LargeScriptableObjectStates/Clase07.FSM.LargeScriptableObjectStates.asmdef`
+- Move: `clases/clase07/Unity/Assets/01_FSM/Tests/GameFlowSORunnerTests.cs` → `clases/clase07/Unity/Assets/01_FSM/d_LargeScriptableObjectStates/Tests/GameFlowSORunnerTests.cs`
+- Create: `clases/clase07/Unity/Assets/01_FSM/d_LargeScriptableObjectStates/Tests/Clase07.FSM.LargeScriptableObjectStates.Tests.asmdef`
 
 **Interfaces:**
-- Produces: namespace `Clase07.FSM.Large.ScriptableObjectStates` — `GameFlowStateSO : ScriptableObject` (`Name`, `Enter()`, `Tick(float)`, `Exit()`), `PlayingStateSO` (`Configure(...)`, `CurrentSubstateName`), `GameFlowSORunner` (`Initialize(...)`, `CurrentState`, `CurrentSubstateName`, `FinishLoading()`, `Play()`, `Pause()`, `Resume()`, `OpenSettings()`, `CloseSettings()`).
+- Produces: namespace `Clase07.FSM.LargeScriptableObjectStates` — `GameFlowStateSO : ScriptableObject` (`Name`, `Enter()`, `Tick(float)`, `Exit()`), `PlayingStateSO` (`Configure(...)`, `CurrentSubstateName`), `GameFlowSORunner` (`Initialize(...)`, `CurrentState`, `CurrentSubstateName`, `FinishLoading()`, `Play()`, `Pause()`, `Resume()`, `OpenSettings()`, `CloseSettings()`).
 - No consume — no depende de `Core/` ni de `IState`/`StateMachine<TState>`. Sin escena (decisión de alcance existente: esta variante solo se verifica por tests).
 
 - [ ] **Step 1: Mover la carpeta con git**
 
 ```bash
 cd /Users/giga/code/Programacion-de-VideoJuegos-III-2026
-git mv clases/clase07/Unity/Assets/01_FSM/Large/ScriptableObjectStates clases/clase07/Unity/Assets/01_FSM/Large/b_ScriptableObjectStates
+git mv clases/clase07/Unity/Assets/01_FSM/Large/ScriptableObjectStates clases/clase07/Unity/Assets/01_FSM/d_LargeScriptableObjectStates
 ```
 
 - [ ] **Step 2: Agregar el comentario pedagógico en los campos de transición de `PlayingStateSO`**
 
 ```csharp
-        // A diferencia de Large/a_StatePattern, acá "a qué estado puedo ir" no es
+        // A diferencia de c_LargeStatePattern, acá "a qué estado puedo ir" no es
         // código — son tres referencias serializadas, arrastrables desde el
         // Inspector sin tocar PlayingStateSO.cs.
         [SerializeField] private UserPlayingStateSO _userPlaying;
@@ -1103,11 +1103,11 @@ git mv clases/clase07/Unity/Assets/01_FSM/Large/ScriptableObjectStates clases/cl
 
 - [ ] **Step 3: Crear el asmdef runtime**
 
-`clases/clase07/Unity/Assets/01_FSM/Large/b_ScriptableObjectStates/Clase07.FSM.Large.ScriptableObjectStates.asmdef`:
+`clases/clase07/Unity/Assets/01_FSM/d_LargeScriptableObjectStates/Clase07.FSM.LargeScriptableObjectStates.asmdef`:
 
 ```json
 {
-    "name": "Clase07.FSM.Large.ScriptableObjectStates",
+    "name": "Clase07.FSM.LargeScriptableObjectStates",
     "rootNamespace": "",
     "references": [
         "Unity.TextMeshPro"
@@ -1127,22 +1127,22 @@ git mv clases/clase07/Unity/Assets/01_FSM/Large/ScriptableObjectStates clases/cl
 - [ ] **Step 4: Mover `GameFlowSORunnerTests.cs`**
 
 ```bash
-git mv clases/clase07/Unity/Assets/01_FSM/Tests/GameFlowSORunnerTests.cs clases/clase07/Unity/Assets/01_FSM/Large/b_ScriptableObjectStates/Tests/GameFlowSORunnerTests.cs
-git mv clases/clase07/Unity/Assets/01_FSM/Tests/GameFlowSORunnerTests.cs.meta clases/clase07/Unity/Assets/01_FSM/Large/b_ScriptableObjectStates/Tests/GameFlowSORunnerTests.cs.meta
+git mv clases/clase07/Unity/Assets/01_FSM/Tests/GameFlowSORunnerTests.cs clases/clase07/Unity/Assets/01_FSM/d_LargeScriptableObjectStates/Tests/GameFlowSORunnerTests.cs
+git mv clases/clase07/Unity/Assets/01_FSM/Tests/GameFlowSORunnerTests.cs.meta clases/clase07/Unity/Assets/01_FSM/d_LargeScriptableObjectStates/Tests/GameFlowSORunnerTests.cs.meta
 ```
 
 Ya es autocontenido — no requiere cambios de contenido.
 
 - [ ] **Step 5: Crear el asmdef de tests**
 
-`clases/clase07/Unity/Assets/01_FSM/Large/b_ScriptableObjectStates/Tests/Clase07.FSM.Large.ScriptableObjectStates.Tests.asmdef`:
+`clases/clase07/Unity/Assets/01_FSM/d_LargeScriptableObjectStates/Tests/Clase07.FSM.LargeScriptableObjectStates.Tests.asmdef`:
 
 ```json
 {
-    "name": "Clase07.FSM.Large.ScriptableObjectStates.Tests",
+    "name": "Clase07.FSM.LargeScriptableObjectStates.Tests",
     "rootNamespace": "",
     "references": [
-        "Clase07.FSM.Large.ScriptableObjectStates",
+        "Clase07.FSM.LargeScriptableObjectStates",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],
@@ -1184,7 +1184,7 @@ Expected: `0`.
 rm clases/clase07/Unity_fsm_b_so_states_editmode.xml clases/clase07/Unity_fsm_b_so_states_editmode.log
 git add clases/clase07/Unity/Assets/01_FSM
 git commit -m "$(cat <<'EOF'
-clase07/FSM: Large/b_ScriptableObjectStates autocontenida (asmdef propio)
+clase07/FSM: d_LargeScriptableObjectStates autocontenida (asmdef propio)
 
 Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01YGZHSkcGRaTFS7xCnNWa5E
@@ -1230,7 +1230,7 @@ git rm clases/clase07/Unity/Assets/01_FSM/Clase07.FSM.asmdef clases/clase07/Unit
 git rm -r clases/clase07/Unity/Assets/01_FSM/Tests
 ```
 
-Nota: `WeaponBaselineTests.cs`, `GameFlowControllerTests.cs` y `GameFlowSORunnerTests.cs` ya fueron movidos (no borrados) en las Tasks 1, 3 y 4 respectivamente — `git rm -r` sobre `Tests/` en este punto solo borra lo que quedó ahí: `StateMachineTests.cs` (ya duplicado en `Small/b_StatePattern/Tests/` y `Large/a_StatePattern/Tests/` en las Tasks 2 y 3 — este borrado es del original, no de una cobertura sin reemplazo), `WeaponEquivalenceTests.cs`, los dos asmdefs de módulo y `PlayMode/FsmDemoViewsPlayModeTests.cs`.
+Nota: `WeaponBaselineTests.cs`, `GameFlowControllerTests.cs` y `GameFlowSORunnerTests.cs` ya fueron movidos (no borrados) en las Tasks 1, 3 y 4 respectivamente — `git rm -r` sobre `Tests/` en este punto solo borra lo que quedó ahí: `StateMachineTests.cs` (ya duplicado en `b_SmallStatePattern/Tests/` y `c_LargeStatePattern/Tests/` en las Tasks 2 y 3 — este borrado es del original, no de una cobertura sin reemplazo), `WeaponEquivalenceTests.cs`, los dos asmdefs de módulo y `PlayMode/FsmDemoViewsPlayModeTests.cs`.
 
 - [ ] **Step 4: Verificación final — compilar y correr el módulo completo**
 
@@ -4651,18 +4651,18 @@ cada módulo" (las cuatro sub-listas con rutas de `.unity`) por:
 
 ```markdown
 - **01 — FSM**, tres escenas independientes:
-  - `Assets/01_FSM/Small/a_Baseline/a_FSM_WeaponBaseline.unity` — botón "Fire" para la
+  - `Assets/01_FSM/a_SmallBaseline/a_FSM_WeaponBaseline.unity` — botón "Fire" para la
     versión del arma con `enum` + `switch`, con texto de debug mostrando estado y
     munición.
-  - `Assets/01_FSM/Small/b_StatePattern/b_FSM_WeaponStatePattern.unity` — el mismo
+  - `Assets/01_FSM/b_SmallStatePattern/b_FSM_WeaponStatePattern.unity` — el mismo
     arma sobre el motor genérico de estados (`IState` + `StateMachine<TState>`, copia
     local de esta carpeta), en su propia escena.
-  - `Assets/01_FSM/Large/a_StatePattern/a_FSM_GameFlow.unity` — botones para avanzar
+  - `Assets/01_FSM/c_LargeStatePattern/c_FSM_GameFlow.unity` — botones para avanzar
     el game flow (`Finish Loading`, `Play`, `Pause`, `Open Settings`, `Close
     Settings`, `Resume`), con texto de debug mostrando el estado y el subestado
     activos. La escena muestra **sólo** la variante OOP del game flow; la variante con
     estados como `ScriptableObject`
-    (`Assets/01_FSM/Large/b_ScriptableObjectStates/`) se verifica por tests de
+    (`Assets/01_FSM/d_LargeScriptableObjectStates/`) se verifica por tests de
     EditMode en vez de montarse también en una escena — sigue siendo una decisión de
     alcance deliberada, ver [`SPEC.md`](SPEC.md).
 - **02 — Dependency Injection**, tres escenas casi idénticas (botón "Coin" + texto
@@ -4717,9 +4717,9 @@ En cada una de las cuatro secciones "Módulo N — ..." de `SPEC.md`, reemplazar
 rutas de carpeta antiguas por las nuevas (mismo mapeo que la tabla del spec de
 diseño):
 
-- Módulo 1 — FSM: `Small/Baseline/` → `Small/a_Baseline/`, `Small/StatePattern/` →
-  `Small/b_StatePattern/`, `Large/StatePattern/` → `Large/a_StatePattern/`,
-  `Large/ScriptableObjectStates/` → `Large/b_ScriptableObjectStates/`. Sacar toda
+- Módulo 1 — FSM: `Small/Baseline/` → `a_SmallBaseline/`, `Small/StatePattern/` →
+  `b_SmallStatePattern/`, `Large/StatePattern/` → `c_LargeStatePattern/`,
+  `Large/ScriptableObjectStates/` → `d_LargeScriptableObjectStates/`. Sacar toda
   mención a `Core/` compartido — reemplazar por "cada una de las dos implementaciones
   State Pattern (chica y grande) tiene su propia copia de `IState`/`StateMachine<TState>`".
 - Módulo 2 — DI: `01_Singleton/` → `a_Singleton/`, `02_ServiceLocator/` →
