@@ -6,6 +6,6 @@ namespace Clase07.DI.VContainerExample
     // depender de assets de audio en un ejemplo didáctico.
     public class AudioService : IAudioService
     {
-        public void PlayCoinSound() => Debug.Log("[AudioService] coin!");
+        public void PlayCoinSound(string origen = "") => Debug.Log(origen + "[AudioService] coin!");
     }
 }

@@ -11,6 +11,7 @@ namespace Clase07.FSM.SmallStatePattern
 
         public StateMachine(TState initialState)
         {
+            // var l = new List<int>();
             CurrentState = initialState ?? throw new ArgumentNullException(nameof(initialState));
             CurrentState.OnEnter();
         }

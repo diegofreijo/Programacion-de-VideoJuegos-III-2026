@@ -3,6 +3,7 @@ namespace Clase07.FSM.SmallStatePattern
     public class WeaponStatePatternController
     {
         public WeaponContext Context { get; } = new WeaponContext();
+
         public IState CurrentState => _machine.CurrentState;
         public IState IdleState { get; }
         public IState FiringState { get; }

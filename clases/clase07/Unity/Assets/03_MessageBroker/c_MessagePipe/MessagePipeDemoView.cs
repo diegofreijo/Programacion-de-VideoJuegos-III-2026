@@ -18,7 +18,9 @@ namespace Clase07.MessageBroker.MessagePipeExample
         // pero resuelto por MessagePipe: se inyectan interfaces específicas por tipo de
         // mensaje (IPublisher<T>/ISubscriber<T>) en vez de un broker genérico propio.
         [Inject]
-        public void Construct(IPublisher<ScorePickedUpEvent> publisher, ISubscriber<ScorePickedUpEvent> subscriber)
+        public void Construct(
+            IPublisher<ScorePickedUpEvent> publisher, 
+            ISubscriber<ScorePickedUpEvent> subscriber)
         {
             _publisher = publisher;
             _subscription = subscriber.Subscribe(OnScorePickedUp);

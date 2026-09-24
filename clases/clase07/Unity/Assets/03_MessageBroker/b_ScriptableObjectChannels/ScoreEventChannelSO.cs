@@ -10,7 +10,13 @@ namespace Clase07.MessageBroker.ScriptableObjectChannels
     [CreateAssetMenu(fileName = "ScoreEventChannel", menuName = "Clase07/MessageBroker/Score Event Channel")]
     public class ScoreEventChannelSO : ScriptableObject
     {
+        [SerializeField] private int lastScore = 0;
+
         public event Action<ScorePickedUpEvent> OnRaised;
-        public void Raise(ScorePickedUpEvent evt) => OnRaised?.Invoke(evt);
+        public void Raise(ScorePickedUpEvent evt)
+        {
+            lastScore = evt.Amount;
+            OnRaised?.Invoke(evt);
+        }
     }
 }

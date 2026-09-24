@@ -5,6 +5,7 @@ namespace Clase07.DI.ServiceLocatorPattern
         public static void Bootstrap()
         {
             ServiceLocator.Register<IScoreService>(new ScoreService());
+            // ServiceLocator.Register<IAudioService>(new ConsoleAudioService());
             ServiceLocator.Register<IAudioService>(new AudioService());
         }
     }

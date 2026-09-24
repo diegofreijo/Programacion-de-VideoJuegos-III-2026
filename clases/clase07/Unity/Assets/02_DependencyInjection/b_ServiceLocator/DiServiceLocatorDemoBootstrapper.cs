@@ -18,7 +18,7 @@ namespace Clase07.DI.ServiceLocatorPattern
             // El consumidor pide el servicio por tipo en el momento en que lo
             // necesita — a diferencia de VContainer (c_VContainer/), esta
             // dependencia no aparece en ningún constructor ni firma pública.
-            var scoreService = ServiceLocator.Resolve<IScoreService>();
+            IScoreService scoreService = ServiceLocator.Resolve<IScoreService>();
             ServiceLocator.Resolve<IAudioService>().PlayCoinSound();
             scoreService.AddScore(10);
             _scoreLabel.text = $"Score: {scoreService.CurrentScore}";
