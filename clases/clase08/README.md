@@ -32,6 +32,40 @@ no son excluyentes. Aquí destacamos el propósito más útil para la explicaci�
 El modo del test lo determina su **assembly**, no el atributo: usar `[UnityTest]`
 no convierte automáticamente una prueba en Play Mode.
 
+## Ejecutar Edit Mode desde VS Code sin abrir la interfaz de Unity
+
+Configuración para **Windows**, con Unity **6000.3.9f1** instalado y una licencia
+local válida. No requiere Unity CLI ni extensiones de testing de VS Code.
+Unity sí se ejecuta como proceso en segundo plano: estos tests usan su motor y
+no se pueden reemplazar por `dotnet test`, aunque usen NUnit.
+
+1. Abrir **la carpeta `clases/clase08`** mediante **File > Open Folder** en VS Code.
+   Si se abre la raíz del repositorio, VS Code no carga esta `.vscode` anidada.
+2. Cerrar el proyecto clase08 si está abierto en Unity. Otros proyectos pueden
+   permanecer abiertos.
+3. Abrir la paleta con **Ctrl+Shift+P**, elegir **Tasks: Run Task** y ejecutar
+   **Clase08: Edit Mode - todos**.
+4. La terminal muestra el resultado y cada caso: se esperan **5 aprobados**.
+5. Usar **Clase08: Edit Mode - filtrar clase o metodo** para ejecutar, por ejemplo,
+   `Clase08.Tests.EditMode.DanioEditModeTests` (3 casos).
+
+El script `scripts/Test-EditMode.ps1` lee la versión del proyecto y encuentra el
+Editor en la ubicación predeterminada de Unity Hub. Si está instalado en otro
+directorio, definir `UNITY_EDITOR_PATH` con la ruta completa a `Unity.exe` antes
+de iniciar VS Code, o ejecutar el script con `-UnityEditorPath` desde la terminal.
+La primera ejecución puede tardar mientras Unity importa y compila el proyecto.
+
+Las tareas invocan `-batchmode -nographics -runTests -testPlatform EditMode`:
+inician Unity sin ventanas, ejecutan los tests y finalizan el proceso. No pasan
+`-quit`, para que el Test Runner alcance a escribir sus resultados. Cada corrida
+genera un XML NUnit y un log con fecha en `Unity/TestResults/`; un fallo o cero
+tests encontrados hace que la tarea termine con error. No ejecutar ambas tareas
+a la vez sobre el mismo proyecto.
+
+Esta configuración utiliza **Tasks y la terminal**, no agrega tests al panel
+Testing ni botones de ejecución sobre los métodos C#. Los `.asmdef` permanecen
+visibles para poder explicar cómo se separan los assemblies de pruebas.
+
 ## Ejecutar desde terminal (opcional)
 
 Con Unity CLI instalado, desde la raíz del repositorio y con este proyecto cerrado

@@ -1,0 +1,15 @@
+{
+  "files.exclude": {
+    "**/*.meta": true,
+    "Unity/Library": true,
+    "Unity/Temp": true,
+    "Unity/Logs": true,
+    "Unity/obj": true
+  },
+  "search.exclude": {
+    "Unity/Library": true,
+    "Unity/Temp": true,
+    "Unity/Logs": true,
+    "Unity/TestResults": true
+  }
+}
