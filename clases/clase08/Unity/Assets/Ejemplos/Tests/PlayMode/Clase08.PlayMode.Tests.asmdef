@@ -1,0 +1,5 @@
+{
+  "name": "Clase08.PlayMode.Tests",
+  "references": ["Clase08.Runtime"],
+  "optionalUnityReferences": ["TestAssemblies"]
+}

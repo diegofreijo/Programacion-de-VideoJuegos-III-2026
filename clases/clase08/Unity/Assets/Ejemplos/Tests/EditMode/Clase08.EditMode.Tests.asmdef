@@ -1,0 +1,6 @@
+{
+  "name": "Clase08.EditMode.Tests",
+  "references": ["Clase08.Runtime"],
+  "includePlatforms": ["Editor"],
+  "optionalUnityReferences": ["TestAssemblies"]
+}
