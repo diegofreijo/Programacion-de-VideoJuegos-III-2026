@@ -89,7 +89,14 @@ Correr los tests en batch, sin abrir el Editor, como en la [clase 08](../../clas
 
 ### 4.3. Trabajar con un agente
 
-Es **obligatorio** construir la herramienta trabajando con un agente de LLM (Claude Code, Codex, Copilot en modo agente, Cursor, Gemini CLI, …): el que tengan a mano. Un chat donde ustedes copian y pegan el código no cuenta como agente. Si no consiguen acceso a ninguno, háblenlo conmigo antes de empezar.
+Es **obligatorio** construir la herramienta trabajando con un agente de LLM (Claude Code, Codex, Copilot en modo agente, Antigravity, …): el que tengan a mano. Un chat donde ustedes copian y pegan el código no cuenta como agente. Si no consiguen acceso a ninguno, háblenlo conmigo antes de empezar.
+
+Dos caminos para conseguir uno gratis (las ofertas cambian seguido: confirmen las condiciones en las páginas oficiales al anotarse):
+
+* **GitHub Copilot Student**: gratis mientras sean alumnos. Se pide desde *Settings → Education benefits* de su cuenta personal de GitHub, con una constancia de alumno regular. La aprobación puede tardar días, así que pídanlo cuanto antes. Tiene un límite mensual de uso. [Cómo pedirlo](https://docs.github.com/en/copilot/how-tos/copilot-on-github/set-up-copilot/enable-copilot/set-up-for-students).
+* **Antigravity** (Google): tiene un plan gratuito con cuota semanal, con una cuenta de Gmail **personal**, no la de la universidad. [Página oficial](https://antigravity.google/).
+
+Les conviene pedir los dos, por si uno no los aprueba. Cursor y Gemini CLI ya no son opciones gratuitas para nosotros: la oferta para estudiantes de Cursor es solo de EE.UU. y Gemini CLI dejó su plan gratis.
 
 Agreguen al repo un `AGENTS.md` con, como mínimo:
 
