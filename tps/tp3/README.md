@@ -100,6 +100,12 @@ Agreguen al repo un `AGENTS.md` con, como mínimo:
 
 Pueden tomar como ejemplo el [`AGENTS.md` de clase14](../../clases/clase14/AGENTS.md), pero tiene que estar escrito para su proyecto: uno copiado no le sirve a un agente que trabaje en su repo.
 
+#### 4.3.1. Trabajar con issues de GitHub (recomendado)
+
+No es obligatorio, pero les aconsejo que el agente trabaje a partir de **issues de GitHub**: escriben cada tarea como un issue (qué hay que hacer y cómo se comprueba que está hecho) y le piden al agente que la resuelva. Los agentes pueden leer, comentar y cerrar issues con la [CLI de GitHub](https://cli.github.com/) (`gh issue view`, `gh issue comment`, …), y los commits o PRs que hagan pueden referenciarlos (`#12`).
+
+Así cada pedido queda escrito antes de empezar, el agente tiene un objetivo claro y queda un registro de qué le pidieron, qué hizo y cómo lo verificaron. Si trabajan así, estaría bueno que lo muestren en la defensa: recorrer un issue, el trabajo del agente y cómo lo revisaron.
+
 ### 4.4. Documentar lo necesario para evaluar
 
 Actualicen el `README.md` del repo con una sección del TP3 que explique, como mínimo, qué prototipo eligieron, cómo abrir la herramienta y cómo correr los tests.
