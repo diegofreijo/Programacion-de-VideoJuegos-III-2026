@@ -8,3 +8,20 @@ TestResults/
 *.csproj
 *.sln
 *.slnx
+
+# Builds
+[Bb]uild/
+[Bb]uilds/
+
+# Unity artifacts
+[Mm]emoryCaptures/
+[Rr]ecordings/
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+sysinfo.txt
+crashlytics-build.log
+*.apk
+*.aab
+*.unitypackage
+*.app
