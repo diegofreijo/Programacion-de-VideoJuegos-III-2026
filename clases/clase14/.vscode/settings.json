@@ -1,0 +1,13 @@
+{
+    // Abrir VS Code en clases/clase14: C# Dev Kit carga la solución que genera Unity
+    "dotnet.defaultSolution": "Unity/Unity.slnx",
+
+    "files.exclude": {
+        "**/*.meta": true
+    },
+    "search.exclude": {
+        "**/*.meta": true,
+        "Unity/Library": true,
+        "Unity/Temp": true
+    }
+}

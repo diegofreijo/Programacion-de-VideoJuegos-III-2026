@@ -82,6 +82,12 @@ Desde VS Code, abriendo la carpeta `clases/clase14`, están las tareas equivalen
 otro lado, definir `UNITY_EDITOR_PATH`. Cada corrida deja su reporte NUnit y su log en
 `Unity/TestResults/`.
 
+Para que VS Code compile y dé IntelliSense, Unity tiene que generar la solución (`Unity/Unity.slnx`
+y los `.csproj`, que no se versionan). Eso lo hace el paquete `com.unity.ide.visualstudio`: en
+**Edit > Preferences > External Tools** elegir *Visual Studio Code* y tocar **Regenerate project
+files**. VS Code necesita las extensiones *C# Dev Kit* y *Unity*; abriendo `clases/clase14` carga
+esa solución sola.
+
 `scripts/Run-Method.ps1` ejecuta cualquier método estático de Editor en batch. Por ejemplo,
 `./scripts/Run-Method.ps1 Clase14.Editor.SampleContent.Generate` regenera los enemigos, oleadas,
 el diálogo y las escenas de ejemplo; `Clase14.Editor.SampleContent.GenerateScenes`, solo las escenas.
