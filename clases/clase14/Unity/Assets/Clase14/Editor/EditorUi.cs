@@ -33,7 +33,7 @@ namespace Clase14.Editor
 
         static readonly Color Gray = new Color(0.5f, 0.5f, 0.5f, 0.5f);
 
-        public static Label Stat() => new Label { style = { marginLeft = 2 } };
+        public static Label Stat() => new Label { style = { marginLeft = 2, whiteSpace = WhiteSpace.Normal } };
 
         /// <summary>Vuelve a llenar <paramref name="container"/> con un HelpBox por problema, o uno verde si no hay.</summary>
         public static void ShowProblems(VisualElement container, List<string> problems)

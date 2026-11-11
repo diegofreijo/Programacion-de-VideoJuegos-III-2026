@@ -95,7 +95,7 @@ namespace Clase14.Editor
             AddBoundColumn<FloatField>("Golpes/s", nameof(EnemyDefinition.attacksPerSecond), 70);
             AddComputedColumn("DPS", 55, enemy => enemy.EstimatedDps.ToString("0.#"),
                 enemy => enemy.EstimatedDps > EnemyDefinition.MaxDesignDps);
-            AddComputedColumn("Estado", 230, enemy =>
+            AddComputedColumn("Estado", 340, enemy =>
             {
                 var problems = enemy.Validate();
                 return problems.Count == 0 ? "OK" : $"⚠ {problems[0]}" + (problems.Count > 1 ? $" (+{problems.Count - 1})" : "");
@@ -138,7 +138,7 @@ namespace Clase14.Editor
             {
                 title = title,
                 width = width,
-                stretchable = true,
+                stretchable = false,
                 makeCell = () =>
                 {
                     var field = new TField();
@@ -167,7 +167,8 @@ namespace Clase14.Editor
             {
                 title = title,
                 width = width,
-                stretchable = true,
+                // Solo la columna ancha (Estado) se estira con la ventana.
+                stretchable = width > 100,
                 makeCell = () => new Label { style = { unityTextAlign = TextAnchor.MiddleLeft, paddingLeft = 4 } },
                 bindCell = (element, index) =>
                 {
