@@ -26,6 +26,14 @@ namespace Clase14.Editor
         [MenuItem("Clase14/Regenerar contenido de ejemplo", priority = 100)]
         public static void Generate()
         {
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                Debug.LogWarning("Clase14: salir de Play Mode antes de regenerar el contenido.");
+                return;
+            }
+            // Las escenas se recrean: antes, ofrecer guardar los cambios de la escena abierta.
+            if (!Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+                return;
             foreach (var folder in new[] { BalanceWindow.EnemiesFolder, WavesFolder, DialogueFolder, ScenesFolder })
                 Directory.CreateDirectory(folder);
             AssetDatabase.Refresh();
@@ -53,6 +61,7 @@ namespace Clase14.Editor
                 new EditorBuildSettingsScene(ProfilerScene, true),
             };
             AssetDatabase.SaveAssets();
+            EditorSceneManager.OpenScene(MainScene);
             Debug.Log("Clase14: contenido de ejemplo generado.");
         }
 

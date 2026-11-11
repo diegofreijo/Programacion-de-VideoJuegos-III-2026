@@ -36,9 +36,9 @@ namespace Clase14.Editor
             // Si los datos cambian por otro lado (Undo, OnValidate, la ventana de balanceo), el slider se actualiza.
             slider.TrackPropertyValue(property, _ => slider.SetValueWithoutNotify(new Vector2(min.floatValue, max.floatValue)));
 
-            var minField = new FloatField { style = { width = 48 } };
+            var minField = new FloatField { isDelayed = true, style = { width = 48 } };
             minField.BindProperty(min);
-            var maxField = new FloatField { style = { width = 48 } };
+            var maxField = new FloatField { isDelayed = true, style = { width = 48 } };
             maxField.BindProperty(max);
 
             row.Add(slider);

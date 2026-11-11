@@ -47,6 +47,10 @@ namespace Clase14.Editor
             root.Add(buttons);
 
             root.TrackSerializedObjectValue(serializedObject, _ => Refresh());
+            // También los enemigos referenciados: si se editan en la ventana de balanceo, la vista previa se entera.
+            foreach (var entry in ((WaveDefinition)target).entries)
+                if (entry?.enemy != null)
+                    root.TrackSerializedObjectValue(new SerializedObject(entry.enemy), _ => Refresh());
             Refresh();
             return root;
         }

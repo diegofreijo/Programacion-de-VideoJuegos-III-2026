@@ -21,7 +21,7 @@ namespace Clase14.Editor
         MultiColumnListView m_Table;
         Label m_Summary;
 
-        [MenuItem("Clase14/Ventana de balanceo %#b", priority = 0)]
+        [MenuItem("Clase14/Ventana de balanceo %&b", priority = 0)]
         public static BalanceWindow Open()
         {
             var window = GetWindow<BalanceWindow>();
@@ -142,19 +142,26 @@ namespace Clase14.Editor
                 makeCell = () =>
                 {
                     var field = new TField();
+                    // Delayed: el valor se aplica al confirmar (Enter o perder el foco), no en cada tecla.
+                    if (field is TextField text) text.isDelayed = true;
+                    if (field is FloatField number) number.isDelayed = true;
                     setup?.Invoke(field);
                     return field;
                 },
                 bindCell = (element, index) =>
                 {
-                    var serialized = new SerializedObject(m_Enemies[index]);
+                    var enemy = m_Enemies[index];
+                    var serialized = new SerializedObject(enemy);
                     ((IBindable)element).BindProperty(serialized.FindProperty(propertyName));
-                    // Al cambiar cualquier valor, las columnas calculadas y el resumen se actualizan.
-                    element.TrackSerializedObjectValue(serialized, _ =>
-                    {
-                        m_Table.RefreshItem(index);
-                        UpdateSummary();
-                    });
+                    // Una sola columna vigila el asset: al cambiar cualquier valor se actualizan las
+                    // columnas calculadas de esa fila (buscada de nuevo, por si la lista cambió) y el resumen.
+                    if (propertyName == nameof(EnemyDefinition.displayName))
+                        element.TrackSerializedObjectValue(serialized, _ =>
+                        {
+                            var row = m_Enemies.IndexOf(enemy);
+                            if (row >= 0) m_Table.RefreshItem(row);
+                            UpdateSummary();
+                        });
                 },
                 unbindCell = (element, _) => element.Unbind(),
             });

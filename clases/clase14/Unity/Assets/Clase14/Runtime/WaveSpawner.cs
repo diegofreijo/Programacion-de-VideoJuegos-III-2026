@@ -33,6 +33,7 @@ namespace Clase14
             for (var i = 0; i < waves.Count; i++)
             {
                 CurrentWaveIndex = i;
+                if (waves[i] == null) continue;
                 yield return PlayWave(waves[i]);
                 yield return new WaitForSeconds(pauseBetweenWaves);
             }

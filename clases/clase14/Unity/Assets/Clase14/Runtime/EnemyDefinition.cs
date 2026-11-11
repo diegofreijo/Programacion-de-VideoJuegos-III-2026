@@ -14,7 +14,7 @@ namespace Clase14
 
         [Header("Identidad")]
         [Tooltip("Nombre que ve el jugador. Si queda vacío, OnValidate usa el nombre del asset.")]
-        public string displayName;
+        [Delayed] public string displayName;
 
         public Color color = Color.red;
 
@@ -73,11 +73,17 @@ namespace Clase14
         [ContextMenu("Restablecer valores de diseño")]
         void ResetToDesignDefaults()
         {
+#if UNITY_EDITOR
+            UnityEditor.Undo.RecordObject(this, "Restablecer valores de diseño");
+#endif
             maxHealth = 10f;
             moveSpeed = 2f;
             damage = 1f;
             attacksPerSecond = 1f;
             reward = 1;
+#if UNITY_EDITOR
+            UnityEditor.EditorUtility.SetDirty(this);
+#endif
         }
     }
 }

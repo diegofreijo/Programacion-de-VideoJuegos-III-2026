@@ -18,7 +18,7 @@ dispara. En la consola se imprime el diálogo de ejemplo.
 | `OnValidate` corrigiendo datos | `EnemyDefinition.OnValidate`, `WaveDefinition.OnValidate` |
 | PropertyDrawer propio (rango min–max), en UI Toolkit **y** en IMGUI | `Editor/MinMaxRangeDrawer.cs` |
 | Custom Inspector en UI Toolkit con vista previa, validaciones y botones | `Editor/EnemyDefinitionEditor.cs`, `Editor/WaveDefinitionEditor.cs` |
-| EditorWindow de balanceo (tabla editable, datos inválidos en rojo, `MenuItem`) | `Editor/BalanceWindow.cs` — menú **Clase14 > Ventana de balanceo** (Ctrl+Shift+B) |
+| EditorWindow de balanceo (tabla editable, datos inválidos en rojo, `MenuItem`) | `Editor/BalanceWindow.cs` — menú **Clase14 > Ventana de balanceo** (Ctrl+Alt+B) |
 | Editor de diálogos por nodos con Graph Toolkit | `Editor/Dialogue/` — doble clic en `Data/Dialogos/Guardia.dialogue` |
 | Importer: del grafo a un asset de runtime | `Editor/Dialogue/DialogueImporter.cs` → `Runtime/DialogueAsset.cs` |
 | Tests de Edit Mode y Play Mode | `Tests/EditMode/`, `Tests/PlayMode/` |

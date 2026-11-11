@@ -23,6 +23,11 @@ namespace Clase14
             m_Beam.enabled = false;
         }
 
+        void OnDestroy()
+        {
+            if (m_Beam != null) Destroy(m_Beam.material);
+        }
+
         void Update()
         {
             m_BeamTimer -= Time.deltaTime;
