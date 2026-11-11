@@ -1,0 +1,5 @@
+{
+  "name": "Clase14.Juego",
+  "rootNamespace": "Clase14",
+  "references": ["Clase14.ScriptableObjects", "Clase14.Atributos"]
+}

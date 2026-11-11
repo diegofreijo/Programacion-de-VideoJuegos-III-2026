@@ -1,0 +1,6 @@
+{
+  "name": "Clase14.Inspectors.Editor",
+  "rootNamespace": "Clase14.Editor",
+  "references": ["Clase14.ScriptableObjects", "Clase14.Atributos", "Clase14.Juego"],
+  "includePlatforms": ["Editor"]
+}

@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Clase14/Scenes/Main.unity
     guid: 8641fc55c6127bb43b369cc2f6ad9452
   - enabled: 1
+    path: Assets/Clase14/Scenes/Dialogo.unity
+    guid: 76ee8299f6b79f541a006298dc4c0f9b
+  - enabled: 1
     path: Assets/Clase14/Scenes/Profiler.unity
     guid: d3e8252b25e2a254abad1e429625ecbb
   m_configObjects: {}

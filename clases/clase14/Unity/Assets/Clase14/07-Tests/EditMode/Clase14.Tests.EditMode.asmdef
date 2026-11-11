@@ -1,0 +1,10 @@
+{
+  "name": "Clase14.Tests.EditMode",
+  "rootNamespace": "Clase14.Tests.EditMode",
+  "references": [
+    "Clase14.ScriptableObjects", "Clase14.Atributos", "Clase14.Juego", "Clase14.GraphToolkit",
+    "Clase14.Ventanas.Editor", "Clase14.GraphToolkit.Editor", "Clase14.Build.Editor"
+  ],
+  "includePlatforms": ["Editor"],
+  "optionalUnityReferences": ["TestAssemblies"]
+}

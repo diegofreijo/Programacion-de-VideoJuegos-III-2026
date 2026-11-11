@@ -1,0 +1,6 @@
+{
+  "name": "Clase14.GraphToolkit.Editor",
+  "rootNamespace": "Clase14.Editor",
+  "references": ["Clase14.GraphToolkit"],
+  "includePlatforms": ["Editor"]
+}
