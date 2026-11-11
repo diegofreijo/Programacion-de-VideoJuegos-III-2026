@@ -183,3 +183,19 @@ entrar en Play Mode.
 distinto del diálogo, el importer es el más simple de todos, reusa `Validate()` y
 `WaveSpawner.Spawn`, y tiene escena propia. Si lo que importa es lo que más van a necesitar los
 alumnos en sus TPs, **la 2 (campaña)**.
+
+## Funciones nuevas que solo entran en un grafo
+
+Un grafo se justifica cuando los datos tienen **ciclos** (se vuelve a un estado anterior),
+**convergencia** (varios caminos llegan al mismo nodo) o **ramas con condición**. Si no tienen
+ninguna de las tres, una lista o una tabla en el Inspector es mejor. Todas estas son funciones
+nuevas y chicas para el juego de oleadas:
+
+| # | Idea | Por qué necesita un grafo |
+| --- | --- | --- |
+| 9 | **Ciclo de la torreta** (sobrecalentamiento): Activa → Recalentada → Enfriando → Activa | Ciclo, y dos salidas de Enfriando que convergen en Activa. **Elegida: Spec en #20** (`docs/specs/20-clase14-ciclo-torreta.md`). |
+| 10 | **Fases del jefe**: Fase 1 → (vida < 60%) Fase 2 → (vida < 30%) Fase 3; desde cualquiera, (más de 20 s) → Furia | Ramas con condición y convergencia en Furia. |
+| 11 | **Transformaciones de enemigos**: el Orco muere y aparecen 2 Duendes; el Berserker baja de 50% y pasa a BerserkerElite | Varios orígenes y destinos por enemigo; la validación detecta ciclos (Orco → Duende → Orco). |
+| 12 | **Reacciones de estados alterados**: Fuego + Hielo → Vapor; Fuego + Veneno → Explosión | El nodo Reacción tiene dos entradas (muchos a muchos). La más grande: pide crear estados alterados. |
+| 13 | **Eventos encadenados del objetivo**: vida < 50% → refuerzos → 3 s → sobrecarga de torretas | Ramas por umbral que convergen en la misma acción. Casi el `DialogueAsset` con otros nodos. |
+| 14 | **Rutas con bifurcaciones** (waypoints) | Convergencia y ramas con peso, pero las posiciones se editan mejor en la escena: sirve de **contraejemplo**, cuando el grafo de nodos es la herramienta equivocada. |
