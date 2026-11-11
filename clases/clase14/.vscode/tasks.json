@@ -1,0 +1,53 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Clase14: Edit Mode - todos",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/scripts/Test.ps1"],
+      "group": { "kind": "test", "isDefault": true },
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+      "runOptions": { "instanceLimit": 1 }
+    },
+    {
+      "label": "Clase14: Play Mode - todos",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/scripts/Test.ps1", "-Platform", "PlayMode"],
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+      "runOptions": { "instanceLimit": 1 }
+    },
+    {
+      "label": "Clase14: Edit Mode - filtrar clase o metodo",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/scripts/Test.ps1", "-TestFilter", "${input:testFilter}"],
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+      "runOptions": { "instanceLimit": 1 }
+    },
+    {
+      "label": "Clase14: Build de Windows",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/scripts/Build.ps1"],
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+      "runOptions": { "instanceLimit": 1 }
+    }
+  ],
+  "inputs": [
+    {
+      "id": "testFilter",
+      "type": "promptString",
+      "description": "Nombre completo de clase o metodo de Edit Mode",
+      "default": "Clase14.Tests.EditMode.CombatRulesTests"
+    }
+  ]
+}
