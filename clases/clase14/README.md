@@ -5,32 +5,50 @@ datos viven en ScriptableObjects, y un conjunto de **herramientas de Editor** pa
 diseñador los edite sin depender del programador. Unity **6000.6.5f1** (Graph Toolkit necesita
 6000.6 o posterior).
 
-Abrí `clases/clase14/Unity` desde Unity Hub y la escena `Assets/Clase14/Scenes/Main.unity`.
-Al darle Play aparecen dos oleadas que caminan hacia el objetivo del centro y una torreta las
-dispara. En la consola se imprime el diálogo de ejemplo.
+Abrí `clases/clase14/Unity` desde Unity Hub. Hay tres escenas (menú **Clase14 > Escenas** para
+saltar entre ellas):
 
-## Qué mirar
+- **Main**: al darle Play aparecen dos oleadas que caminan hacia el objetivo del centro y una
+  torreta las dispara. Arriba a la izquierda, un HUD con la oleada, los enemigos vivos y la vida del
+  objetivo. En la consola se imprime el diálogo de ejemplo.
+- **Dialogo**: el diálogo del editor de nodos usado en un juego. Mové al jugador con WASD o las
+  flechas hasta el Guardia, apretá **E** para hablar, **1**/**2** para elegir y **Espacio** para seguir.
+- **Profiler**: una oleada gigante escrita mal a propósito, para ver picos de GC (ver abajo).
 
-| Tema | Dónde |
-| --- | --- |
-| Datos en ScriptableObjects | `Runtime/EnemyDefinition.cs`, `Runtime/WaveDefinition.cs`; assets en `Data/` |
-| Atributos: `[Header]`, `[Tooltip]`, `[Range]`, `[Min]`, `[ContextMenu]`, `[CreateAssetMenu]` | `EnemyDefinition.cs` |
-| `OnValidate` corrigiendo datos | `EnemyDefinition.OnValidate`, `WaveDefinition.OnValidate` |
-| PropertyDrawer propio (rango min–max), en UI Toolkit **y** en IMGUI | `Editor/MinMaxRangeDrawer.cs` |
-| Custom Inspector en UI Toolkit con vista previa, validaciones y botones | `Editor/EnemyDefinitionEditor.cs`, `Editor/WaveDefinitionEditor.cs` |
-| EditorWindow de balanceo (tabla editable, datos inválidos en rojo, `MenuItem`) | `Editor/BalanceWindow.cs` — menú **Clase14 > Ventana de balanceo** (Ctrl+Alt+B) |
-| Editor de diálogos por nodos con Graph Toolkit | `Editor/Dialogue/` — doble clic en `Data/Dialogos/Guardia.dialogue` |
-| Importer: del grafo a un asset de runtime | `Editor/Dialogue/DialogueImporter.cs` → `Runtime/DialogueAsset.cs` |
-| Tests de Edit Mode y Play Mode | `Tests/EditMode/`, `Tests/PlayMode/` |
-| Build por línea de comandos | `Editor/BuildScript.cs`, `scripts/Build.ps1` |
-| Picos de GC para el Profiler | escena `Scenes/Profiler.unity` |
-| Instrucciones para agentes de código | [`AGENTS.md`](AGENTS.md) |
+## Recorrido de la clase
 
-(Las rutas de la tabla son relativas a `Unity/Assets/Clase14/`.)
+El código está en `Unity/Assets/Clase14/`, en una carpeta por tema, numeradas en el orden de la
+clase. Cada una tiene su `Runtime/` (código del juego) y/o su `Editor/` (solo corre en el Editor),
+un assembly propio (`.asmdef`) y un `LEEME.md` que dice qué mirar primero.
+
+| # | Tema | Dónde |
+| --- | --- | --- |
+| 01 | Datos en ScriptableObjects; atributos `[Header]`, `[Tooltip]`, `[Range]`, `[Min]`, `[ContextMenu]`, `[CreateAssetMenu]`; `OnValidate` corrigiendo datos; `Validate()` con los avisos | `01-ScriptableObjects/Runtime/EnemyDefinition.cs`, `WaveDefinition.cs`; assets en `Data/` |
+| 02 | Atributo propio y PropertyDrawer (rango min–max), en UI Toolkit **y** en IMGUI | `02-Atributos/Runtime/FloatRange.cs`, `02-Atributos/Editor/MinMaxRangeDrawer.cs` |
+| 03 | Custom Inspector en UI Toolkit con vista previa, validaciones y botones | `03-Inspectors/Editor/EnemyDefinitionEditor.cs`, `WaveDefinitionEditor.cs` |
+| 04 | EditorWindow de balanceo (tabla editable, datos inválidos en rojo, `MenuItem`) | `04-Ventanas/Editor/BalanceWindow.cs` — menú **Clase14 > Ventana de balanceo** (Ctrl+Alt+B) |
+| 05 | Editor de diálogos por nodos con Graph Toolkit, el importer que lo convierte en un asset de runtime y el juego que lo usa | `05-GraphToolkit/Editor/Dialogue/` — doble clic en `Data/Dialogos/Guardia.dialogue`; `05-GraphToolkit/Runtime/DialogueNpc.cs` y la escena **Dialogo** |
+| 06 | El juego: componentes, reglas puras (`CombatRules`), HUD; el código con basura para el Profiler | `06-Juego/Runtime/` |
+| 07 | Tests de Edit Mode y Play Mode | `07-Tests/EditMode/`, `07-Tests/PlayMode/` |
+| 08 | Build por línea de comandos y generación del contenido de ejemplo | `08-Build/Editor/BuildScript.cs`, `SampleContent.cs`, `scripts/Build.ps1` |
+| — | Instrucciones para agentes de código | [`AGENTS.md`](AGENTS.md) |
 
 Hay dos enemigos con datos inválidos a propósito (**Berserker**: DPS por encima del máximo de
 diseño; **Fantasma**: color casi transparente) y una oleada que los usa (`Oleada3Jefe`), para ver
 cómo se marcan los problemas en el Inspector y en la ventana de balanceo.
+
+### Assemblies
+
+Un `.asmdef` por tema y por lado: `Clase14.ScriptableObjects`, `Clase14.Atributos`,
+`Clase14.Atributos.Editor`, `Clase14.Inspectors.Editor`, `Clase14.Ventanas.Editor`,
+`Clase14.GraphToolkit`, `Clase14.GraphToolkit.Editor`, `Clase14.Juego`, `Clase14.Build.Editor` y
+los dos de tests. Cada uno declara de cuáles depende, y Unity no permite ciclos: por eso el
+Inspector de oleadas abre la ventana de balanceo por su menú (`EditorApplication.ExecuteMenuItem`)
+en vez de llamar a `BalanceWindow`. Los assemblies `*.Editor` solo se compilan en el Editor y no
+entran en el build.
+
+Ojo al renombrar o mover un assembly: los `.dialogue` guardan el nombre del assembly de cada nodo.
+Los nodos tienen `[MovedFrom]` para que los grafos guardados antes sigan abriendo.
 
 ## IMGUI y UI Toolkit
 
@@ -66,11 +84,11 @@ otro lado, definir `UNITY_EDITOR_PATH`. Cada corrida deja su reporte NUnit y su 
 
 `scripts/Run-Method.ps1` ejecuta cualquier método estático de Editor en batch. Por ejemplo,
 `./scripts/Run-Method.ps1 Clase14.Editor.SampleContent.Generate` regenera los enemigos, oleadas,
-el diálogo y las escenas de ejemplo.
+el diálogo y las escenas de ejemplo; `Clase14.Editor.SampleContent.GenerateScenes`, solo las escenas.
 
 ## Profiler
 
-Abrir `Scenes/Profiler.unity`, abrir **Window > Analysis > Profiler** y darle Play. La oleada
+Abrir `Scenes/Profiler.unity` (**Clase14 > Escenas > Profiler**), abrir **Window > Analysis > Profiler** y darle Play. La oleada
 gigante (600 enemigos) usa `carelessEnemies`: cada enemigo busca el objetivo en cada frame con
 `FindObjectsByType`, LINQ y concatenación de strings (`Enemy.FindTargetCarelessly`). En el módulo
 **CPU Usage** se ven los picos de **GC.Alloc** y de recolección de basura. Desactivar

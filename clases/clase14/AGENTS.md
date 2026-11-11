@@ -11,14 +11,29 @@ El proyecto Unity está en `Unity/`; los scripts de línea de comandos, en `scri
 
 ## Mapa del código
 
-| Carpeta (`Unity/Assets/Clase14/`) | Assembly | Contenido |
+Una carpeta por tema de la clase en `Unity/Assets/Clase14/`, cada una con su `Runtime/` y/o
+`Editor/` y un `.asmdef` por lado. Los namespaces no siguen las carpetas: `Clase14` (runtime),
+`Clase14.Editor` y `Clase14.Editor.Dialogue`.
+
+| Carpeta | Assembly | Contenido |
 | --- | --- | --- |
-| `Runtime/` | `Clase14.Runtime` | Datos (`EnemyDefinition`, `WaveDefinition`), reglas puras (`CombatRules`) y componentes (`Enemy`, `Turret`, `WaveSpawner`, `DefendedTarget`). Diálogo de runtime: `DialogueAsset`. |
-| `Editor/` | `Clase14.Editor` | PropertyDrawer, Inspectors y `BalanceWindow` en UI Toolkit; `SampleContent` (genera datos y escenas); `BuildScript`. |
-| `Editor/Dialogue/` | `Clase14.Editor` | Grafo de Graph Toolkit: nodos, validación (`DialogueValidation`) e importer a `DialogueAsset`. |
-| `Tests/EditMode/`, `Tests/PlayMode/` | `Clase14.Tests.*` | Tests NUnit. |
-| `Data/`, `Scenes/` | — | Assets generados por `SampleContent.Generate`. |
+| `01-ScriptableObjects/Runtime/` | `Clase14.ScriptableObjects` | Datos: `EnemyDefinition`, `WaveDefinition` (con su `Validate()`). |
+| `02-Atributos/Runtime/`, `Editor/` | `Clase14.Atributos`, `.Editor` | `FloatRange` + `MinMaxRangeAttribute`; su PropertyDrawer. |
+| `03-Inspectors/Editor/` | `Clase14.Inspectors.Editor` | Inspectors de enemigo y oleada; `EditorUi` (piezas de UI compartidas). |
+| `04-Ventanas/Editor/` | `Clase14.Ventanas.Editor` | `BalanceWindow`. |
+| `05-GraphToolkit/Runtime/` | `Clase14.GraphToolkit` | `DialogueAsset` (lo que genera el importer), `DialogueNpc`, `DialogueBox`, `PlayerMover`, `DialoguePlayer`. |
+| `05-GraphToolkit/Editor/Dialogue/` | `Clase14.GraphToolkit.Editor` | Grafo de Graph Toolkit: nodos, validación (`DialogueValidation`) e importer. |
+| `06-Juego/Runtime/` | `Clase14.Juego` | Reglas puras (`CombatRules`) y componentes (`Enemy`, `Turret`, `WaveSpawner`, `DefendedTarget`, `Hud`); `SpriteFactory`, `WorldText`. |
+| `07-Tests/EditMode/`, `PlayMode/` | `Clase14.Tests.*` | Tests NUnit. |
+| `08-Build/Editor/` | `Clase14.Build.Editor` | `BuildScript`, `SampleContent` (genera datos y escenas), `SceneMenu`. |
+| `Data/`, `Scenes/` | — | Assets generados por `SampleContent`. Escenas: `Main`, `Dialogo`, `Profiler`. |
 | `Settings/` | — | URP: pipeline asset `URP-2D` con 2D Renderer. El SRP Batcher está apagado a propósito: con él, los sprites de `SpriteFactory` salen con la textura equivocada. |
+
+Dependencias entre assemblies (sin ciclos): `ScriptableObjects` → `Atributos`; `Juego` →
+`ScriptableObjects`; `GraphToolkit` → `Juego`; los `*.Editor` → los de runtime que editan;
+`Ventanas.Editor` → `Inspectors.Editor`; `Build.Editor` → todos. Si un archivo nuevo necesita un
+tipo de otro tema, agregá la referencia en el `.asmdef`; si eso arma un ciclo, la dependencia está
+al revés.
 
 ## Comandos
 
@@ -30,7 +45,8 @@ Unity no pueden abrir el mismo proyecto):
 ./scripts/Test.ps1 -Platform PlayMode    # tests de Play Mode
 ./scripts/Test.ps1 -TestFilter Clase14.Tests.EditMode.CombatRulesTests
 ./scripts/Build.ps1                      # build de Windows en Unity/Build/Windows
-./scripts/Run-Method.ps1 Clase14.Editor.SampleContent.Generate   # regenerar datos y escenas
+./scripts/Run-Method.ps1 Clase14.Editor.SampleContent.Generate         # regenerar datos y escenas
+./scripts/Run-Method.ps1 Clase14.Editor.SampleContent.GenerateScenes   # solo las escenas
 ```
 
 Todos corren Unity en `-batchmode`, sin ventanas. La primera corrida tarda más (importa el
@@ -46,8 +62,11 @@ proyecto). Los reportes y logs quedan en `Unity/TestResults/`.
   ventana de balanceo y los tests las leen de ahí: no dupliques la regla en la UI.
 - `OnValidate` corrige datos (clamp, valores por defecto); no avisa. Los avisos van en `Validate()`.
 - La UI de Editor se hace en **UI Toolkit** (`CreateInspectorGUI`, `CreateGUI`), no en IMGUI.
-- Código de Editor solo en `Editor/` (assembly `Clase14.Editor`). `Runtime/` no puede usar
-  `UnityEditor` ni `Unity.GraphToolkit.Editor`, o el build falla.
+- Código nuevo en la carpeta del tema que muestra. Código de Editor solo en una carpeta `Editor/`
+  (assemblies `*.Editor`). Las carpetas `Runtime/` no pueden usar `UnityEditor` ni
+  `Unity.GraphToolkit.Editor`, o el build falla.
+- Al mover o renombrar clases de nodos, o su assembly, agregá `[MovedFrom]`: los `.dialogue` guardan
+  el tipo con su assembly.
 - Nombres de código en inglés; textos que ve el usuario y comentarios, en español.
 - Los nombres de puertos de los nodos de diálogo (`DialoguePorts`) son claves que usa el importer:
   no los renombres sin migrar los `.dialogue`.
