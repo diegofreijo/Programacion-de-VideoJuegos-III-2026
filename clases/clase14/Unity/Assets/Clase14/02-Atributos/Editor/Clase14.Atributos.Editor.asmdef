@@ -1,0 +1,6 @@
+{
+  "name": "Clase14.Atributos.Editor",
+  "rootNamespace": "Clase14.Editor",
+  "references": ["Clase14.Atributos"],
+  "includePlatforms": ["Editor"]
+}

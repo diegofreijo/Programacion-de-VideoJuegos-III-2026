@@ -1,7 +1,0 @@
-{
-  "name": "Clase14.Tests.EditMode",
-  "rootNamespace": "Clase14.Tests.EditMode",
-  "references": ["Clase14.Runtime", "Clase14.Editor"],
-  "includePlatforms": ["Editor"],
-  "optionalUnityReferences": ["TestAssemblies"]
-}

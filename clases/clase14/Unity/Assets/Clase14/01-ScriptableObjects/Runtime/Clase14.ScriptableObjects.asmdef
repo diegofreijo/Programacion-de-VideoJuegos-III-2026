@@ -1,0 +1,5 @@
+{
+  "name": "Clase14.ScriptableObjects",
+  "rootNamespace": "Clase14",
+  "references": ["Clase14.Atributos"]
+}

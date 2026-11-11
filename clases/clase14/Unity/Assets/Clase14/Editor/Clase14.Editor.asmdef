@@ -1,6 +1,0 @@
-{
-  "name": "Clase14.Editor",
-  "rootNamespace": "Clase14.Editor",
-  "references": ["Clase14.Runtime"],
-  "includePlatforms": ["Editor"]
-}

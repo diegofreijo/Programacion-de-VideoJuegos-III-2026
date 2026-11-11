@@ -1,6 +1,0 @@
-{
-  "name": "Clase14.Tests.PlayMode",
-  "rootNamespace": "Clase14.Tests.PlayMode",
-  "references": ["Clase14.Runtime"],
-  "optionalUnityReferences": ["TestAssemblies"]
-}
