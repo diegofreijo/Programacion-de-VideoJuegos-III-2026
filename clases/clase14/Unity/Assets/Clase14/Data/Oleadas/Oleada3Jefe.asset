@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3f8863d616926443b1b31d7ff0c6fae, type: 3}
+  m_Name: Oleada3Jefe
+  m_EditorClassIdentifier: Clase14.Runtime::Clase14.WaveDefinition
+  entries:
+  - enemy: {fileID: 11400000, guid: 9104c795789378b429765f302a4bb8bb, type: 2}
+    count: 3
+  - enemy: {fileID: 11400000, guid: 385ccbb9170c2d342b0729a6da0da518, type: 2}
+    count: 2
+  spawnInterval:
+    Min: 1
+    Max: 2
+  spawnRadius: 9
