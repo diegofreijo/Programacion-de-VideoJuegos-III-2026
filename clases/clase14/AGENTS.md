@@ -5,7 +5,7 @@ proyecto. Es un ejemplo para la materia: copiá la idea a tus TPs y adaptala.
 
 ## Qué es
 
-Juego 2D top-down de oleadas de enemigos en **Unity 6000.6.5f1**, más herramientas de Editor:
+Juego 2D top-down de oleadas de enemigos en **Unity 6000.6.5f1** con **URP** (2D Renderer), más herramientas de Editor:
 Inspectors propios, una ventana de balanceo y un editor de diálogos por nodos (Graph Toolkit).
 El proyecto Unity está en `Unity/`; los scripts de línea de comandos, en `scripts/`.
 
@@ -18,6 +18,7 @@ El proyecto Unity está en `Unity/`; los scripts de línea de comandos, en `scri
 | `Editor/Dialogue/` | `Clase14.Editor` | Grafo de Graph Toolkit: nodos, validación (`DialogueValidation`) e importer a `DialogueAsset`. |
 | `Tests/EditMode/`, `Tests/PlayMode/` | `Clase14.Tests.*` | Tests NUnit. |
 | `Data/`, `Scenes/` | — | Assets generados por `SampleContent.Generate`. |
+| `Settings/` | — | URP: pipeline asset `URP-2D` con 2D Renderer. El SRP Batcher está apagado a propósito: con él, los sprites de `SpriteFactory` salen con la textura equivocada. |
 
 ## Comandos
 
