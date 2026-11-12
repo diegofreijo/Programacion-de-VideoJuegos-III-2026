@@ -5,7 +5,7 @@ datos viven en ScriptableObjects, y un conjunto de **herramientas de Editor** pa
 diseñador los edite sin depender del programador. Unity **6000.6.5f1** (Graph Toolkit necesita
 6000.6 o posterior).
 
-Abrí `clases/clase14/Unity` desde Unity Hub. Hay tres escenas (menú **Clase14 > Escenas** para
+Abrí `clases/clase14/Unity` desde Unity Hub. Hay cuatro escenas (menú **Clase14 > Escenas** para
 saltar entre ellas):
 
 - **Main**: al darle Play aparecen dos oleadas que caminan hacia el objetivo del centro y una
@@ -14,6 +14,8 @@ saltar entre ellas):
 - **Dialogo**: el diálogo del editor de nodos usado en un juego. Mové al jugador con WASD o las
   flechas hasta el Guardia, apretá **E** para hablar, **1**/**2** para elegir y **Espacio** para seguir.
 - **Profiler**: una oleada gigante escrita mal a propósito, para ver picos de GC (ver abajo).
+- **Torreta**: una torreta manejada por un ciclo de estados hecho con Graph Toolkit. Se pone roja
+  cuando se recalienta, naranja mientras se enfría y vuelve a amarilla, contra una oleada larga.
 
 ## Recorrido de la clase
 
@@ -30,7 +32,8 @@ un assembly propio (`.asmdef`) y un `LEEME.md` que dice qué mirar primero.
 | 05 | Editor de diálogos por nodos con Graph Toolkit, el importer que lo convierte en un asset de runtime y el juego que lo usa | `05-GraphToolkit/Editor/Dialogue/` — doble clic en `Data/Dialogos/Guardia.dialogue`; `05-GraphToolkit/Runtime/DialogueNpc.cs` y la escena **Dialogo** |
 | 06 | El juego: componentes, reglas puras (`CombatRules`), HUD; el código con basura para el Profiler | `06-Juego/Runtime/` |
 | 07 | Tests de Edit Mode y Play Mode | `07-Tests/EditMode/`, `07-Tests/PlayMode/` |
-| 08 | Build por línea de comandos y generación del contenido de ejemplo | `08-Build/Editor/BuildScript.cs`, `SampleContent.cs`, `scripts/Build.ps1` |
+| 08 | Build por línea de comandos, generación del contenido de ejemplo y capturas en batch | `08-Build/Editor/BuildScript.cs`, `SampleContent.cs`, `SceneCapture.cs`, `scripts/Build.ps1` |
+| 09 | Un grafo que necesita ser grafo: el ciclo de sobrecalentamiento de la torreta (tiene un ciclo y caminos que convergen), con el mismo modelo grafo → importer → asset | `09-CicloTorreta/` — doble clic en `Data/CiclosTorreta/Sobrecalentamiento.turretcycle`; escena **Torreta** |
 | — | Instrucciones para agentes de código | [`AGENTS.md`](AGENTS.md) |
 
 Hay dos enemigos con datos inválidos a propósito (**Berserker**: DPS por encima del máximo de
@@ -41,8 +44,8 @@ cómo se marcan los problemas en el Inspector y en la ventana de balanceo.
 
 Un `.asmdef` por tema y por lado: `Clase14.ScriptableObjects`, `Clase14.Atributos`,
 `Clase14.Atributos.Editor`, `Clase14.Inspectors.Editor`, `Clase14.Ventanas.Editor`,
-`Clase14.GraphToolkit`, `Clase14.GraphToolkit.Editor`, `Clase14.Juego`, `Clase14.Build.Editor` y
-los dos de tests. Cada uno declara de cuáles depende, y Unity no permite ciclos: por eso el
+`Clase14.GraphToolkit`, `Clase14.GraphToolkit.Editor`, `Clase14.Juego`, `Clase14.Build.Editor`,
+`Clase14.CicloTorreta`, `Clase14.CicloTorreta.Editor` y los dos de tests. Cada uno declara de cuáles depende, y Unity no permite ciclos: por eso el
 Inspector de oleadas abre la ventana de balanceo por su menú (`EditorApplication.ExecuteMenuItem`)
 en vez de llamar a `BalanceWindow`. Los assemblies `*.Editor` solo se compilan en el Editor y no
 entran en el build.
@@ -67,6 +70,10 @@ Graph Toolkit es el módulo de Unity para hacer editores basados en nodos. Uno d
 **no ejecuta** el grafo: un `ScriptedImporter` lo convierte en un asset simple
 (`DialogueAsset`) que es lo único que usa el juego.
 
+El segundo grafo, el ciclo de la torreta (`09-CicloTorreta/`), usa el mismo modelo con datos que no
+entran en una lista: un ciclo de estados con caminos que convergen. Cada grafo declara sus nodos
+con `[UseWithGraph]` para que no aparezcan en el otro.
+
 ## Ejecutar tests y build sin abrir el Editor
 
 Igual que en la clase 08, con el proyecto **cerrado** en Unity. Desde `clases/clase14`:
@@ -90,7 +97,10 @@ esa solución sola.
 
 `scripts/Run-Method.ps1` ejecuta cualquier método estático de Editor en batch. Por ejemplo,
 `./scripts/Run-Method.ps1 Clase14.Editor.SampleContent.Generate` regenera los enemigos, oleadas,
-el diálogo y las escenas de ejemplo; `Clase14.Editor.SampleContent.GenerateScenes`, solo las escenas.
+el diálogo, el ciclo de la torreta y las escenas de ejemplo; `Clase14.Editor.SampleContent.GenerateScenes`,
+solo las escenas. Con `-Graphics` corre con dispositivo gráfico (sin ventanas igual), para métodos
+que renderizan: `./scripts/Run-Method.ps1 -Graphics Clase14.Editor.SceneCapture.CaptureOverheatedTurret`
+deja en `Unity/TestResults/torreta-recalentada.png` la escena Torreta con la torreta recalentada.
 
 ## Profiler
 

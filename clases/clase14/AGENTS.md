@@ -6,14 +6,16 @@ proyecto. Es un ejemplo para la materia: copiá la idea a tus TPs y adaptala.
 ## Qué es
 
 Juego 2D top-down de oleadas de enemigos en **Unity 6000.6.5f1** con **URP** (2D Renderer), más herramientas de Editor:
-Inspectors propios, una ventana de balanceo y un editor de diálogos por nodos (Graph Toolkit).
+Inspectors propios, una ventana de balanceo y dos grafos de Graph Toolkit: un editor de diálogos y
+el ciclo de sobrecalentamiento de la torreta.
 El proyecto Unity está en `Unity/`; los scripts de línea de comandos, en `scripts/`.
 
 ## Mapa del código
 
 Una carpeta por tema de la clase en `Unity/Assets/Clase14/`, cada una con su `Runtime/` y/o
 `Editor/` y un `.asmdef` por lado. Los namespaces no siguen las carpetas: `Clase14` (runtime),
-`Clase14.Editor` y `Clase14.Editor.Dialogue`.
+`Clase14.Editor`, `Clase14.Editor.Dialogue` y `Clase14.Editor.TurretCycle`. Ojo: dentro de
+`Clase14.Editor`, `TurretCycle` es ese namespace; el componente se escribe `Clase14.TurretCycle`.
 
 | Carpeta | Assembly | Contenido |
 | --- | --- | --- |
@@ -25,12 +27,14 @@ Una carpeta por tema de la clase en `Unity/Assets/Clase14/`, cada una con su `Ru
 | `05-GraphToolkit/Editor/Dialogue/` | `Clase14.GraphToolkit.Editor` | Grafo de Graph Toolkit: nodos, validación (`DialogueValidation`) e importer. |
 | `06-Juego/Runtime/` | `Clase14.Juego` | Reglas puras (`CombatRules`) y componentes (`Enemy`, `Turret`, `WaveSpawner`, `DefendedTarget`, `Hud`); `SpriteFactory`, `WorldText`. |
 | `07-Tests/EditMode/`, `PlayMode/` | `Clase14.Tests.*` | Tests NUnit. |
-| `08-Build/Editor/` | `Clase14.Build.Editor` | `BuildScript`, `SampleContent` (genera datos y escenas), `SceneMenu`. |
-| `Data/`, `Scenes/` | — | Assets generados por `SampleContent`. Escenas: `Main`, `Dialogo`, `Profiler`. |
+| `08-Build/Editor/` | `Clase14.Build.Editor` | `BuildScript`, `SampleContent` (genera datos y escenas), `SceneMenu`, `SceneCapture` (PNG en batch). |
+| `09-CicloTorreta/Runtime/` | `Clase14.CicloTorreta` | `TurretCycleAsset` (lo que genera el importer, con el enum `TurretCondition`), `TurretCycleRunner` (recorrido puro), `TurretCycle` (maneja a la `Turret`). |
+| `09-CicloTorreta/Editor/` | `Clase14.CicloTorreta.Editor` | Grafo `.turretcycle`: nodos Inicio y Estado (`TurretCyclePorts`), validación (`TurretCycleValidation`) e importer. |
+| `Data/`, `Scenes/` | — | Assets generados por `SampleContent`. Escenas: `Main`, `Dialogo`, `Profiler`, `Torreta`. |
 | `Settings/` | — | URP: pipeline asset `URP-2D` con 2D Renderer. El SRP Batcher está apagado a propósito: con él, los sprites de `SpriteFactory` salen con la textura equivocada. |
 
 Dependencias entre assemblies (sin ciclos): `ScriptableObjects` → `Atributos`; `Juego` →
-`ScriptableObjects`; `GraphToolkit` → `Juego`; los `*.Editor` → los de runtime que editan;
+`ScriptableObjects`; `GraphToolkit` → `Juego`; `CicloTorreta` → `Juego`; los `*.Editor` → los de runtime que editan;
 `Ventanas.Editor` → `Inspectors.Editor`; `Build.Editor` → todos. Si un archivo nuevo necesita un
 tipo de otro tema, agregá la referencia en el `.asmdef`; si eso arma un ciclo, la dependencia está
 al revés.
@@ -47,10 +51,12 @@ Unity no pueden abrir el mismo proyecto):
 ./scripts/Build.ps1                      # build de Windows en Unity/Build/Windows
 ./scripts/Run-Method.ps1 Clase14.Editor.SampleContent.Generate         # regenerar datos y escenas
 ./scripts/Run-Method.ps1 Clase14.Editor.SampleContent.GenerateScenes   # solo las escenas
+./scripts/Run-Method.ps1 -Graphics Clase14.Editor.SceneCapture.CaptureOverheatedTurret  # PNG de la escena Torreta
 ```
 
 Todos corren Unity en `-batchmode`, sin ventanas. La primera corrida tarda más (importa el
-proyecto). Los reportes y logs quedan en `Unity/TestResults/`.
+proyecto). Los reportes, logs y capturas quedan en `Unity/TestResults/`. Para verificar algo visual,
+leé la captura: nunca abras el juego con ventana.
 
 ## Reglas
 
@@ -68,9 +74,10 @@ proyecto). Los reportes y logs quedan en `Unity/TestResults/`.
 - Al mover o renombrar clases de nodos, o su assembly, agregá `[MovedFrom]`: los `.dialogue` guardan
   el tipo con su assembly.
 - Nombres de código en inglés; textos que ve el usuario y comentarios, en español.
-- Los nombres de puertos de los nodos de diálogo (`DialoguePorts`) son claves que usa el importer:
-  no los renombres sin migrar los `.dialogue`.
-- No edites a mano los `.asset`, `.unity` ni `.dialogue` (YAML con GUIDs). Cambiá
+- Los nombres de puertos de los nodos (`DialoguePorts`, `TurretCyclePorts`) son claves que usa el
+  importer: no los renombres sin migrar los `.dialogue` y `.turretcycle`.
+- Cada nodo declara su grafo con `[UseWithGraph]`; uno nuevo sin eso aparece en todos los grafos.
+- No edites a mano los `.asset`, `.unity`, `.dialogue` ni `.turretcycle` (YAML con GUIDs). Cambiá
   `SampleContent` y regenerá, o pedile a una persona que lo haga en el Editor.
 - No agregues paquetes ni cambies la versión de Unity sin preguntar.
 - Si una API de Unity no te consta, buscala en la documentación de 6000.6 antes de usarla: Graph
