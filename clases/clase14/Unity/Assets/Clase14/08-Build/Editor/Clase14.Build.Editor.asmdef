@@ -1,6 +1,6 @@
 {
   "name": "Clase14.Build.Editor",
   "rootNamespace": "Clase14.Editor",
-  "references": ["Clase14.ScriptableObjects", "Clase14.Atributos", "Clase14.Juego", "Clase14.GraphToolkit", "Clase14.Ventanas.Editor", "Clase14.GraphToolkit.Editor"],
+  "references": ["Clase14.ScriptableObjects", "Clase14.Atributos", "Clase14.Juego", "Clase14.GraphToolkit", "Clase14.Ventanas.Editor", "Clase14.GraphToolkit.Editor", "Clase14.CicloTorreta", "Clase14.CicloTorreta.Editor"],
   "includePlatforms": ["Editor"]
 }

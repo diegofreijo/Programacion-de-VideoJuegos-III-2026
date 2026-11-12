@@ -8,6 +8,14 @@ namespace Clase14
         [Min(0)] public float damage = 4f;
         [Range(0.1f, 20f)] public float shotsPerSecond = 3f;
         [Min(0.5f)] public float range = 6f;
+        [Tooltip("Si está apagado no dispara. Lo usa, por ejemplo, el ciclo de sobrecalentamiento (09-CicloTorreta).")]
+        public bool canFire = true;
+
+        /// <summary>Se invoca después de cada disparo.</summary>
+        public event System.Action Fired;
+
+        /// <summary>Si hay algún enemigo vivo dentro del alcance.</summary>
+        public bool HasEnemyInRange => FindClosestEnemy() != null;
 
         float m_Cooldown;
         LineRenderer m_Beam;
@@ -34,7 +42,7 @@ namespace Clase14
             if (m_BeamTimer <= 0f) m_Beam.enabled = false;
 
             m_Cooldown -= Time.deltaTime;
-            if (m_Cooldown > 0f) return;
+            if (m_Cooldown > 0f || !canFire) return;
 
             var target = FindClosestEnemy();
             if (target == null) return;
@@ -46,6 +54,7 @@ namespace Clase14
 
             target.TakeHit(damage);
             m_Cooldown = 1f / shotsPerSecond;
+            Fired?.Invoke();
         }
 
         Enemy FindClosestEnemy()

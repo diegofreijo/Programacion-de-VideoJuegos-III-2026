@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Clase14/Scenes/Profiler.unity
     guid: d3e8252b25e2a254abad1e429625ecbb
+  - enabled: 1
+    path: Assets/Clase14/Scenes/Torreta.unity
+    guid: a98b23b187b738242bdfeb0ab3771391
   m_configObjects: {}

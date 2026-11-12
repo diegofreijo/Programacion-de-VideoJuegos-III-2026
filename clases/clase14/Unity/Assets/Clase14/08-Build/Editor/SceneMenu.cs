@@ -15,6 +15,9 @@ namespace Clase14.Editor
         [MenuItem("Clase14/Escenas/Profiler (picos de GC)", priority = 42)]
         static void OpenProfiler() => Open(SampleContent.ProfilerScene);
 
+        [MenuItem("Clase14/Escenas/Torreta (ciclo de sobrecalentamiento)", priority = 43)]
+        static void OpenTurret() => Open(SampleContent.TurretScene);
+
         static void Open(string path)
         {
             if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())

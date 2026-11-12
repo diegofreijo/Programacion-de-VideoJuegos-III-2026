@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Clase14.Editor.Dialogue;
+using Clase14.Editor.TurretCycle;
 using Unity.GraphToolkit.Editor;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -18,10 +19,13 @@ namespace Clase14.Editor
         const string DataFolder = "Assets/Clase14/Data";
         const string WavesFolder = DataFolder + "/Oleadas";
         const string DialogueFolder = DataFolder + "/Dialogos";
+        const string TurretCycleFolder = DataFolder + "/CiclosTorreta";
         const string ScenesFolder = "Assets/Clase14/Scenes";
         public const string MainScene = ScenesFolder + "/Main.unity";
         public const string ProfilerScene = ScenesFolder + "/Profiler.unity";
         public const string DialogueScene = ScenesFolder + "/Dialogo.unity";
+        public const string TurretScene = ScenesFolder + "/Torreta.unity";
+        public const string SampleTurretCycle = TurretCycleFolder + "/Sobrecalentamiento." + TurretCycleGraph.AssetExtension;
         public const string SampleDialogue = DialogueFolder + "/Guardia." + DialogueGraph.AssetExtension;
 
         [MenuItem("Clase14/Regenerar contenido de ejemplo", priority = 100)]
@@ -35,7 +39,7 @@ namespace Clase14.Editor
             // Las escenas se recrean: antes, ofrecer guardar los cambios de la escena abierta.
             if (!Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
                 return;
-            foreach (var folder in new[] { BalanceWindow.EnemiesFolder, WavesFolder, DialogueFolder, ScenesFolder })
+            foreach (var folder in new[] { BalanceWindow.EnemiesFolder, WavesFolder, DialogueFolder, TurretCycleFolder, ScenesFolder })
                 Directory.CreateDirectory(folder);
             AssetDatabase.Refresh();
 
@@ -50,11 +54,14 @@ namespace Clase14.Editor
             var wave2 = Wave("Oleada2", new FloatRange(0.4f, 1f), 9f, (rata, 10), (orco, 6), (golem, 2));
             Wave("Oleada3Jefe", new FloatRange(1f, 2f), 9f, (golem, 3), (berserker, 2));
             var giant = Wave("OleadaGigante", new FloatRange(0f, 0.01f), 12f, (rata, 400), (orco, 150), (golem, 50));
+            // Larga y pareja, para que en la escena Torreta el ciclo dé varias vueltas.
+            var longWave = Wave("OleadaLarga", new FloatRange(0.3f, 0.6f), 9f, (rata, 120), (orco, 20));
 
             CreateSampleDialogue();
+            CreateSampleTurretCycle();
             AssetDatabase.SaveAssets();
 
-            CreateScenes(wave1, wave2, giant);
+            CreateScenes(wave1, wave2, giant, longWave);
             Debug.Log("Clase14: contenido de ejemplo generado.");
         }
 
@@ -72,20 +79,23 @@ namespace Clase14.Editor
             CreateScenes(
                 AssetDatabase.LoadAssetAtPath<WaveDefinition>(WavesFolder + "/Oleada1.asset"),
                 AssetDatabase.LoadAssetAtPath<WaveDefinition>(WavesFolder + "/Oleada2.asset"),
-                AssetDatabase.LoadAssetAtPath<WaveDefinition>(WavesFolder + "/OleadaGigante.asset"));
+                AssetDatabase.LoadAssetAtPath<WaveDefinition>(WavesFolder + "/OleadaGigante.asset"),
+                AssetDatabase.LoadAssetAtPath<WaveDefinition>(WavesFolder + "/OleadaLarga.asset"));
             Debug.Log("Clase14: escenas generadas.");
         }
 
-        static void CreateScenes(WaveDefinition wave1, WaveDefinition wave2, WaveDefinition giant)
+        static void CreateScenes(WaveDefinition wave1, WaveDefinition wave2, WaveDefinition giant, WaveDefinition longWave)
         {
             CreateScene(MainScene, new List<WaveDefinition> { wave1, wave2 }, careless: false, withDialogue: true);
             CreateDialogueScene();
             CreateScene(ProfilerScene, new List<WaveDefinition> { giant }, careless: true, withDialogue: false);
+            CreateTurretScene(longWave);
             EditorBuildSettings.scenes = new[]
             {
                 new EditorBuildSettingsScene(MainScene, true),
                 new EditorBuildSettingsScene(DialogueScene, true),
                 new EditorBuildSettingsScene(ProfilerScene, true),
+                new EditorBuildSettingsScene(TurretScene, true),
             };
             AssetDatabase.SaveAssets();
             EditorSceneManager.OpenScene(MainScene);
@@ -172,6 +182,64 @@ namespace Clase14.Editor
             graph.UndoEndRecordGraph();
         }
 
+        /// <summary>Arma el ciclo de torreta de ejemplo por código y lo importa.</summary>
+        public static TurretCycleAsset CreateSampleTurretCycle()
+        {
+            AssetDatabase.DeleteAsset(SampleTurretCycle);
+            var graph = GraphDatabase.CreateGraph<TurretCycleGraph>(SampleTurretCycle);
+            BuildSampleTurretCycle(graph);
+            GraphDatabase.SaveGraph(graph);
+            AssetDatabase.ImportAsset(SampleTurretCycle);
+            return AssetDatabase.LoadAssetAtPath<TurretCycleAsset>(SampleTurretCycle);
+        }
+
+        /// <summary>
+        /// Activa → (Disparos ≥ 10) → Recalentada → (Pasaron 2 s) → Enfriando → (Pasaron 3 s o Sin
+        /// enemigos) → Activa. Tiene un ciclo, y dos caminos que convergen en Activa.
+        /// </summary>
+        public static void BuildSampleTurretCycle(Graph graph)
+        {
+            graph.UndoBeginRecordGraph("Ciclo de torreta de ejemplo");
+
+            var start = Add(graph, new CycleStartNode(), 0, 160);
+            var active = State(graph, 260, 80, "Activa", canFire: true, rate: 1f, new Color(1f, 0.9f, 0.2f),
+                (TurretCondition.ShotsFired, 10f));
+            var hot = State(graph, 700, -120, "Recalentada", canFire: false, rate: 1f, new Color(0.9f, 0.15f, 0.1f),
+                (TurretCondition.TimeElapsed, 2f));
+            var cooling = State(graph, 700, 320, "Enfriando", canFire: true, rate: 0.5f, new Color(1f, 0.55f, 0.1f),
+                (TurretCondition.TimeElapsed, 3f), (TurretCondition.NoEnemiesInRange, 0f));
+
+            graph.Connect(start.GetOutputPortByName(TurretCyclePorts.Next), active.GetInputPortByName(TurretCyclePorts.In));
+            LinkState(graph, active, 0, hot);
+            LinkState(graph, hot, 0, cooling);
+            LinkState(graph, cooling, 0, active);
+            LinkState(graph, cooling, 1, active);
+
+            graph.UndoEndRecordGraph();
+        }
+
+        static StateNode State(Graph graph, float x, float y, string name, bool canFire, float rate, Color color,
+            params (TurretCondition condition, float value)[] transitions)
+        {
+            var node = Add(graph, new StateNode(), x, y);
+            // Los puertos de transición dependen de esta opción: después de cambiarla se redefine el nodo.
+            node.GetNodeOptionByName(TurretCyclePorts.TransitionCount).TrySetValue(transitions.Length);
+            node.DefineNode();
+            node.GetInputPortByName(TurretCyclePorts.Name).TrySetValue(name);
+            node.GetInputPortByName(TurretCyclePorts.CanFire).TrySetValue(canFire);
+            node.GetInputPortByName(TurretCyclePorts.FireRate).TrySetValue(rate);
+            node.GetInputPortByName(TurretCyclePorts.Color).TrySetValue(color);
+            for (var i = 0; i < transitions.Length; i++)
+            {
+                node.GetInputPortByName(TurretCyclePorts.Condition(i)).TrySetValue(transitions[i].condition);
+                node.GetInputPortByName(TurretCyclePorts.Value(i)).TrySetValue(transitions[i].value);
+            }
+            return node;
+        }
+
+        static void LinkState(Graph graph, StateNode from, int transition, StateNode to) =>
+            graph.Connect(from.GetOutputPortByName(TurretCyclePorts.TransitionOut(transition)), to.GetInputPortByName(TurretCyclePorts.In));
+
         static T Add<T>(Graph graph, T node, float x, float y) where T : Node
         {
             graph.AddNode(node);
@@ -226,6 +294,32 @@ namespace Clase14.Editor
             }
 
             EditorSceneManager.SaveScene(scene, path);
+        }
+
+        /// <summary>Una torreta manejada por el ciclo de sobrecalentamiento, contra una oleada larga.</summary>
+        static void CreateTurretScene(WaveDefinition wave)
+        {
+            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            CreateCamera(8f);
+
+            var target = new GameObject("Objetivo").AddComponent<DefendedTarget>();
+            target.maxHealth = 300f;
+            var turret = new GameObject("Torreta").AddComponent<Turret>();
+            turret.transform.position = Vector3.zero;
+            turret.transform.localScale = Vector3.one * 0.6f;
+            // Con el namespace completo: dentro de Clase14.Editor, "TurretCycle" es el namespace del grafo.
+            // El ciclo se carga después de NewScene, igual que el diálogo.
+            turret.gameObject.AddComponent<Clase14.TurretCycle>().cycle = AssetDatabase.LoadAssetAtPath<TurretCycleAsset>(SampleTurretCycle);
+
+            var spawner = new GameObject("Oleadas").AddComponent<WaveSpawner>();
+            spawner.target = target;
+            spawner.waves = new List<WaveDefinition> { wave };
+
+            var hud = new GameObject("HUD").AddComponent<Hud>();
+            hud.spawner = spawner;
+            hud.target = target;
+
+            EditorSceneManager.SaveScene(scene, TurretScene);
         }
 
         /// <summary>El jugador camina hasta el Guardia y conversa con él usando el diálogo del grafo.</summary>
