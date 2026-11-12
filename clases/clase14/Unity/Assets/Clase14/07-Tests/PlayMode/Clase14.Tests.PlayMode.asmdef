@@ -1,6 +1,6 @@
 {
   "name": "Clase14.Tests.PlayMode",
   "rootNamespace": "Clase14.Tests.PlayMode",
-  "references": ["Clase14.ScriptableObjects", "Clase14.Atributos", "Clase14.Juego", "Clase14.GraphToolkit"],
+  "references": ["Clase14.ScriptableObjects", "Clase14.Atributos", "Clase14.Juego", "Clase14.GraphToolkit", "Clase14.CicloTorreta"],
   "optionalUnityReferences": ["TestAssemblies"]
 }

@@ -31,6 +31,7 @@ namespace Clase14.Editor.Dialogue
     // nombre del assembly de cada nodo; sin esto, al renombrarlo los nodos quedan "Missing".
     [MovedFrom(true, sourceAssembly: "Clase14.Editor")]
     [Serializable]
+    [UseWithGraph(typeof(DialogueGraph))] // Sin esto, los nodos de diálogo aparecen también en el ciclo de torreta.
     [Node("Diálogo", null, "Inicio")]
     public class StartNode : Node
     {
@@ -43,6 +44,7 @@ namespace Clase14.Editor.Dialogue
     /// <summary>Una línea dicha por un personaje.</summary>
     [MovedFrom(true, sourceAssembly: "Clase14.Editor")]
     [Serializable]
+    [UseWithGraph(typeof(DialogueGraph))]
     [Node("Diálogo", null, "Línea")]
     public class LineNode : Node
     {
@@ -58,6 +60,7 @@ namespace Clase14.Editor.Dialogue
     /// <summary>Una línea con opciones: cada opción tiene su texto y su propia salida.</summary>
     [MovedFrom(true, sourceAssembly: "Clase14.Editor")]
     [Serializable]
+    [UseWithGraph(typeof(DialogueGraph))]
     [Node("Diálogo", null, "Elección")]
     public class ChoiceNode : Node
     {
@@ -92,6 +95,7 @@ namespace Clase14.Editor.Dialogue
     /// <summary>Fin explícito del diálogo.</summary>
     [MovedFrom(true, sourceAssembly: "Clase14.Editor")]
     [Serializable]
+    [UseWithGraph(typeof(DialogueGraph))]
     [Node("Diálogo", null, "Fin")]
     public class EndNode : Node
     {

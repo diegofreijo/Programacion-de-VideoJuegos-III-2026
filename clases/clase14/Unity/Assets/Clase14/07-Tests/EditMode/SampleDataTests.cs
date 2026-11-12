@@ -20,6 +20,14 @@ namespace Clase14.Tests.EditMode
         }
 
         [Test]
+        public void ElCicloDeTorretaVersionado_TieneLosTresEstados()
+        {
+            var cycle = AssetDatabase.LoadAssetAtPath<TurretCycleAsset>(SampleContent.SampleTurretCycle);
+            Assert.That(cycle, Is.Not.Null);
+            Assert.That(cycle.states.Select(s => s.name), Is.EqualTo(new[] { "Activa", "Recalentada", "Enfriando" }));
+        }
+
+        [Test]
         public void LaVentanaDeBalanceo_EncuentraTodosLosEnemigos()
         {
             var names = BalanceWindow.FindAllEnemies().Select(e => e.name).ToList();

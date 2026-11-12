@@ -1,0 +1,6 @@
+{
+  "name": "Clase14.CicloTorreta.Editor",
+  "rootNamespace": "Clase14.Editor.TurretCycle",
+  "references": ["Clase14.CicloTorreta"],
+  "includePlatforms": ["Editor"]
+}
