@@ -92,22 +92,23 @@ namespace Clase14.Editor.TurretCycle
         /// Todos los nodos a los que se llega siguiendo salidas desde <paramref name="start"/>. Como el
         /// grafo tiene ciclos, se marca cada nodo visto para no recorrerlo dos veces.
         /// </summary>
-        public static HashSet<INode> Reachable(INode start)
+        public static HashSet<INode> Reachable(INode start) => new HashSet<INode>(ReachableInOrder(start));
+
+        /// <summary>Lo mismo que <see cref="Reachable"/>, en el orden en que se alcanzan (el importer numera así los Estados).</summary>
+        public static List<INode> ReachableInOrder(INode start)
         {
+            var order = new List<INode> { start };
             var seen = new HashSet<INode> { start };
-            var pending = new Queue<INode>();
-            pending.Enqueue(start);
-            while (pending.Count > 0)
+            for (var i = 0; i < order.Count; i++)
             {
-                var node = pending.Dequeue();
-                foreach (var output in node.GetOutputPorts())
+                foreach (var output in order[i].GetOutputPorts())
                 {
                     var next = output.FirstConnectedPort?.GetNode();
                     if (next != null && seen.Add(next))
-                        pending.Enqueue(next);
+                        order.Add(next);
                 }
             }
-            return seen;
+            return order;
         }
     }
 }

@@ -38,21 +38,7 @@ namespace Clase14.Editor.TurretCycle
 
             // Primero se numeran los Estados en el orden en que se alcanzan, después se enlazan.
             // Los ciclos no son problema: cada nodo recibe su índice una sola vez.
-            var order = new List<StateNode>();
-            var pending = new Queue<INode>();
-            var seen = new HashSet<INode> { start };
-            pending.Enqueue(start);
-            while (pending.Count > 0)
-            {
-                var node = pending.Dequeue();
-                if (node is StateNode state) order.Add(state);
-                foreach (var output in node.GetOutputPorts())
-                {
-                    var next = output.FirstConnectedPort?.GetNode();
-                    if (next != null && seen.Add(next))
-                        pending.Enqueue(next);
-                }
-            }
+            var order = TurretCycleValidation.ReachableInOrder(start).OfType<StateNode>().ToList();
             var indices = new Dictionary<INode, int>();
             for (var i = 0; i < order.Count; i++) indices[order[i]] = i;
 

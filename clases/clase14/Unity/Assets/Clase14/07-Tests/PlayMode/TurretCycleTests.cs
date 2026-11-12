@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
 namespace Clase14.Tests.PlayMode
@@ -26,6 +27,39 @@ namespace Clase14.Tests.PlayMode
                 if (obj != null) Object.Destroy(obj);
             m_Created.Clear();
             yield return null;
+        }
+
+        // La escena real, con el ciclo y la oleada versionados: la torreta tiene que dar una vuelta
+        // entera. El tiempo corre ×4 para que el test dure unos segundos.
+        [UnityTest]
+        public IEnumerator EscenaTorreta_DaLaVueltaCompletaContraLaOleada()
+        {
+            yield return SceneManager.LoadSceneAsync("Torreta");
+            var scene = SceneManager.GetSceneByName("Torreta");
+            var cycle = Object.FindAnyObjectByType<TurretCycle>();
+            Assert.That(cycle, Is.Not.Null);
+
+            var visited = new List<string> { cycle.Runner.Current.name };
+            Time.timeScale = 4f;
+            try
+            {
+                for (var elapsed = 0f; elapsed < 30f && visited.Count < 4; elapsed += Time.deltaTime)
+                {
+                    var name = cycle.Runner.Current.name;
+                    if (name != visited[visited.Count - 1]) visited.Add(name);
+                    yield return null;
+                }
+            }
+            finally
+            {
+                Time.timeScale = 1f;
+            }
+
+            Assert.That(visited, Is.EqualTo(new[] { "Activa", "Recalentada", "Enfriando", "Activa" }));
+
+            // Se descarga la escena para que su oleada no siga en los otros tests.
+            SceneManager.SetActiveScene(SceneManager.CreateScene("Vacia"));
+            yield return SceneManager.UnloadSceneAsync(scene);
         }
 
         [UnityTest]

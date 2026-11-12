@@ -77,6 +77,16 @@ namespace Clase14.Tests.EditMode
         }
 
         [Test]
+        public void DosInicios_EsUnAviso()
+        {
+            var graph = SampleGraph();
+            graph.UndoBeginRecordGraph("Otro Inicio");
+            graph.AddNode(new CycleStartNode());
+            graph.UndoEndRecordGraph();
+            Assert.That(Messages(graph, TurretCycleIssue.Level.Warning), Has.Some.Contains("más de un Inicio"));
+        }
+
+        [Test]
         public void TransicionSinConectar_EsUnAviso()
         {
             var (graph, _) = OneStateGraph();
